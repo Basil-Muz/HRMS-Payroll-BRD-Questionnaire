@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRMS Payroll BRD — Stakeholder Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@9.0.0/build/index.umd.js"></script>
+<style>
+  :root{
+    --ink:#0d1117; --ink3:#57606a; --paper:#ffffff; --paper2:#f6f8fa;
+    --rule:#d0d7de; --accent:#0969da;
+    --green:#1a7f37; --green-bg:#dafbe1;
+    --amber:#9a6700; --amber-bg:#fff8c5;
+    --red:#cf222e;   --red-bg:#ffebe9;
+    --purple:#6639ba; --purple-bg:#fbefff;
+    --ok:#3fb950;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+    background:var(--paper2); color:var(--ink); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:'DM Serif Display',Georgia,serif;font-weight:400}
+
+  /* ---------- Sticky header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--ink); color:#fff;
+    border-bottom:1px solid #21262d;
+  }
+  .topbar-inner{
+    max-width:780px; margin:0 auto; padding:12px 20px;
+    display:flex; align-items:center; gap:16px;
+  }
+  .topbar-title{font-size:15px; font-weight:600; letter-spacing:.2px; white-space:nowrap}
+  .topbar-title small{display:block;font-size:11px;font-weight:400;color:#8b949e;letter-spacing:.3px}
+  .progress-wrap{flex:1; display:flex; align-items:center; gap:10px}
+  .progress-track{flex:1; height:8px; background:#21262d; border-radius:999px; overflow:hidden}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg,#1f6feb,#3fb950); transition:width .35s ease}
+  .progress-count{font-size:13px; font-weight:600; color:#c9d1d9; white-space:nowrap; min-width:62px; text-align:right}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:radial-gradient(120% 140% at 80% -10%,#161b22 0%,#0d1117 55%);
+    color:#fff; border-bottom:1px solid #21262d;
+  }
+  .hero-inner{max-width:780px; margin:0 auto; padding:46px 20px 40px}
+  .eyebrow{
+    display:inline-block; font-size:12px; letter-spacing:1.6px; text-transform:uppercase;
+    color:#58a6ff; font-weight:600; margin-bottom:14px;
+  }
+  .hero h1{font-size:40px; line-height:1.1; margin-bottom:12px}
+  .hero p{color:#9da7b3; font-size:16px; max-width:600px}
+  .stats{display:flex; gap:14px; margin-top:28px; flex-wrap:wrap}
+  .stat{
+    flex:1; min-width:120px; background:#161b22; border:1px solid #21262d;
+    border-radius:12px; padding:16px 18px;
+  }
+  .stat .n{font-family:'DM Serif Display',serif; font-size:30px; line-height:1; color:#fff}
+  .stat .l{font-size:12px; color:#8b949e; margin-top:6px; letter-spacing:.3px}
+
+  /* ---------- Form layout ---------- */
+  .form-wrap{max-width:780px; margin:0 auto; padding:8px 20px 60px}
+
+  .section-pill{
+    display:flex; align-items:center; gap:10px;
+    margin:38px 0 18px; padding:10px 16px; border-radius:999px;
+    font-weight:700; font-size:14px; letter-spacing:.3px; width:fit-content;
+  }
+  .section-pill .dot{width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.55}
+  .section-pill .sn{opacity:.7; font-weight:600}
+
+  /* ---------- Card ---------- */
+  .card{
+    background:var(--paper); border:1px solid var(--rule); border-radius:14px;
+    padding:22px 22px 20px; margin-bottom:18px; scroll-margin-top:90px;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .card.answered{border-color:var(--ok)}
+  .card.error{border-color:var(--red); box-shadow:0 0 0 4px rgba(207,34,46,.12)}
+  .card-head{display:flex; align-items:flex-start; gap:12px; margin-bottom:6px}
+  .qnum{
+    flex:none; width:34px; height:34px; border-radius:9px;
+    background:var(--paper2); border:1px solid var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:14px; color:var(--ink3);
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .card.answered .qnum{background:var(--green-bg); color:var(--green); border-color:var(--ok)}
+  .qhead-text{flex:1}
+  .gap-badge{
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.7px;
+    text-transform:uppercase; padding:3px 9px; border-radius:6px; margin-bottom:6px;
+  }
+  .gap-MISSING-RULE{background:var(--red-bg); color:var(--red)}
+  .gap-MISSING-WORKFLOW{background:var(--purple-bg); color:var(--purple)}
+  .gap-AMBIGUOUS{background:var(--amber-bg); color:var(--amber)}
+  .gap-SCALABILITY{background:#ddf4ff; color:#0550ae}
+  .qtitle{font-weight:700; font-size:13px; color:var(--ink3); letter-spacing:.2px}
+  .qtext{font-size:18px; font-weight:600; line-height:1.4; margin:6px 0 0; color:var(--ink)}
+
+  .why{
+    display:flex; gap:9px; align-items:flex-start;
+    background:var(--paper2); border-left:3px solid var(--accent);
+    padding:10px 13px; border-radius:0 8px 8px 0; margin:14px 0 16px;
+    font-size:13.5px; color:var(--ink3);
+  }
+  .why b{color:var(--accent); font-weight:700; letter-spacing:.3px}
+  .why svg{flex:none;margin-top:1px}
+
+  .opts{display:flex; flex-direction:column; gap:10px}
+  .opt{
+    display:flex; gap:13px; align-items:flex-start;
+    border:1.5px solid var(--rule); border-radius:11px; padding:13px 15px;
+    cursor:pointer; user-select:none; transition:all .15s; background:#fff;
+  }
+  .opt:hover{border-color:#b0b8c0; background:#fbfcfd}
+  .opt.selected{border-color:var(--accent); background:#f1f8ff}
+  .opt-badge{
+    flex:none; width:26px; height:26px; border-radius:7px; color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:14px;
+  }
+  .badge-A{background:var(--green)} .badge-B{background:var(--amber)} .badge-C{background:var(--red)}
+  .opt-body{flex:1; font-size:14.5px; line-height:1.45; padding-top:1px}
+  .radio{
+    flex:none; width:20px; height:20px; border-radius:50%; border:2px solid var(--rule);
+    margin-top:2px; position:relative; transition:border-color .15s;
+  }
+  .opt.selected .radio{border-color:var(--accent)}
+  .opt.selected .radio::after{
+    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--accent);
+  }
+
+  .custom-wrap{margin-top:14px}
+  .custom-wrap label{display:block; font-size:12.5px; font-weight:600; color:var(--ink3); margin-bottom:6px; letter-spacing:.2px}
+  .custom-wrap textarea{
+    width:100%; min-height:60px; resize:vertical; font-family:inherit; font-size:14px;
+    border:1.5px solid var(--rule); border-radius:10px; padding:11px 13px; color:var(--ink);
+    background:var(--paper2); transition:border-color .15s,background .15s;
+  }
+  .custom-wrap textarea:focus{outline:none; border-color:var(--accent); background:#fff}
+  .err-msg{display:none; color:var(--red); font-size:13px; font-weight:600; margin-top:12px}
+  .card.error .err-msg{display:block}
+
+  /* ---------- Submit zone ---------- */
+  .submit-zone{
+    margin-top:34px; background:var(--paper); border:1px solid var(--rule);
+    border-radius:16px; padding:28px; text-align:center;
+  }
+  .submit-zone h3{font-size:24px; margin-bottom:6px}
+  .submit-zone p{color:var(--ink3); font-size:14.5px; margin-bottom:20px}
+  .btn{
+    font-family:inherit; font-size:16px; font-weight:700; letter-spacing:.3px;
+    border:none; border-radius:11px; padding:15px 34px; cursor:pointer;
+    background:var(--accent); color:#fff; transition:transform .08s, background .2s, box-shadow .2s;
+    box-shadow:0 2px 0 rgba(0,0,0,.06);
+  }
+  .btn:hover{background:#0860ca}
+  .btn:active{transform:translateY(1px)}
+  .missing-list{
+    display:none; margin-top:18px; text-align:left; background:var(--red-bg);
+    border:1px solid #ffc1ba; border-radius:10px; padding:14px 16px; font-size:13.5px; color:#86151f;
+  }
+  .missing-list b{display:block;margin-bottom:6px;color:var(--red)}
+  .missing-list span{display:inline-block; margin:2px 4px 2px 0; padding:2px 8px; background:#fff; border:1px solid #ffc1ba; border-radius:6px; font-weight:600; cursor:pointer}
+
+  /* ---------- Overlay ---------- */
+  .overlay{
+    display:none; position:fixed; inset:0; z-index:100;
+    background:rgba(13,17,23,.72); backdrop-filter:blur(3px);
+    align-items:center; justify-content:center;
+  }
+  .overlay.show{display:flex}
+  .overlay-box{
+    background:#fff; border-radius:16px; padding:34px 40px; text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.4); min-width:280px;
+  }
+  .spinner{
+    width:44px; height:44px; margin:0 auto 18px; border-radius:50%;
+    border:4px solid #e6ebf1; border-top-color:var(--accent); animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .overlay-text{font-size:16px; font-weight:600; color:var(--ink)}
+  .overlay-sub{font-size:13px; color:var(--ink3); margin-top:6px}
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed; bottom:24px; right:24px; z-index:120;
+    background:var(--ink); color:#fff; padding:15px 20px; border-radius:12px;
+    font-size:14px; font-weight:600; box-shadow:0 12px 36px rgba(0,0,0,.35);
+    display:flex; align-items:center; gap:11px;
+    transform:translateY(140%); opacity:0; transition:transform .4s cubic-bezier(.2,.9,.3,1.2), opacity .4s;
+    max-width:360px;
+  }
+  .toast.show{transform:translateY(0); opacity:1}
+  .toast .tick{flex:none; width:24px; height:24px; border-radius:50%; background:var(--ok); display:flex; align-items:center; justify-content:center}
+
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+  .shake{animation:shake .4s}
+
+  @media(max-width:560px){
+    .hero h1{font-size:30px}
+    .topbar-title small{display:none}
+    .card{padding:18px 16px}
+    .qtext{font-size:16px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Sticky header ===== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-title">HRMS Payroll BRD<small>Stakeholder Questionnaire</small></div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-count" id="progressCount">0 / 47</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Business Requirements Document</span>
+    <h1>Employee Management Module</h1>
+    <p>Please answer all 47 questions below. Each represents an open decision in the BRD that must be resolved before development can proceed. Your responses generate a formatted Word document for sign-off.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">47</div><div class="l">Decisions</div></div>
+      <div class="stat"><div class="n">8</div><div class="l">Sections</div></div>
+      <div class="stat"><div class="n" id="statAnswered">0</div><div class="l">Answered</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Form ===== -->
+<main class="form-wrap" id="formWrap"></main>
+
+<!-- ===== Overlay ===== -->
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <div class="spinner"></div>
+    <div class="overlay-text" id="overlayText">Building Word document…</div>
+    <div class="overlay-sub" id="overlaySub">Please wait a moment</div>
+  </div>
+</div>
+
+<!-- ===== Toast ===== -->
+<div class="toast" id="toast">
+  <span class="tick">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span id="toastText">Submitted successfully</span>
+</div>
+
+<script>
+/* ============================================================
+   EmailJS
+   ============================================================ */
+const EJS_SVC = "service_810fwvr";
+const EJS_TPL = "template_r5dzues";
+const EJS_KEY = "qUhHhbd3LDMq4AcQB";
+emailjs.init({ publicKey: EJS_KEY });
+
+/* ============================================================
+   Data
+   ============================================================ */
+const SECTIONS = [
+  { id:1, name:"Personal Information",          scBg:"#ddf4ff", scFg:"#0550ae" },
+  { id:2, name:"Official Information",           scBg:"#ccfbf1", scFg:"#0d5b52" },
+  { id:3, name:"Salary Structure & Statutory",  scBg:"#ede9fe", scFg:"#5b21b6" },
+  { id:4, name:"Employee Lifecycle",            scBg:"#fef3c7", scFg:"#92400e" },
+  { id:5, name:"Leave & Attendance",            scBg:"#cffafe", scFg:"#0e7490" },
+  { id:6, name:"Workflows & Approvals",         scBg:"#fce7f3", scFg:"#9d174d" },
+  { id:7, name:"Access Control & Permissions",  scBg:"#dbeafe", scFg:"#1e40af" },
+  { id:8, name:"Reporting & Notifications",     scBg:"#d1fae5", scFg:"#064e3b" },
+];
+
+const QUESTIONS = [
+  /* ---- Section 1 ---- */
+  { id:"Q1", sec:1, gap:"MISSING RULE", title:"Employee Code Format",
+    q:"What is the desired format for auto-generated employee codes?",
+    why:"Drives ID generation algorithm — prefix logic, padding length, and sequence scope.",
+    A:"Numeric only with zero-padding — e.g. 00001, 00002 (global sequence across all branches)",
+    B:"Branch prefix + numeric — e.g. MUZ-001, BLR-001 (separate sequence per branch)",
+    C:"Company prefix + year + numeric — e.g. MUZ2025001 (resets every year)" },
+  { id:"Q2", sec:1, gap:"MISSING RULE", title:"Employee Code — Retired Codes",
+    q:"When an employee is relieved or deleted, what happens to their employee code?",
+    why:"Determines sequence gap policy — affects EPFO and statutory filings.",
+    A:"Permanently retired — never reused (safest for statutory compliance)",
+    B:"Can be reassigned to a new employee after a waiting period",
+    C:"Archived and visible in history but never reused" },
+  { id:"Q3", sec:1, gap:"MISSING RULE", title:"Employee Code — Legacy Migration",
+    q:"For existing employees with manually entered codes, how should migration be handled?",
+    why:"Impacts unique constraint handling — determines if the system respects legacy codes or normalises all IDs.",
+    A:"Keep old codes as-is; auto-generation only applies to new employees going forward",
+    B:"Reassign new auto-generated codes to all employees including existing ones",
+    C:"Keep old codes but validate against new format; flag mismatches for HR review" },
+  { id:"Q4", sec:1, gap:"SCALABILITY", title:"Dynamic Attribute — Who Can Define New Attributes?",
+    q:"Who is authorised to add new dynamic employee attributes (e.g. disability type, special categories)?",
+    why:"Determines admin screen scope — super-admin-only vs branch-level multi-tenant attribute management.",
+    A:"Super Admin only — one person controls all attribute definitions across the company",
+    B:"Any HR Admin at branch level can define attributes for their branch",
+    C:"Super Admin defines global attributes; branch HR can add branch-specific ones" },
+  { id:"Q5", sec:1, gap:"AMBIGUOUS", title:"Date of Birth — Statutory Calculations",
+    q:"Which date of birth should be used for statutory age-based calculations?",
+    why:"Single decision affects PF exit reason, gratuity eligibility, and retirement date.",
+    A:"Aadhar DOB always — legal date governs all statutory calculations",
+    B:"Actual DOB for all calculations; Aadhar DOB stored for reference only",
+    C:"Aadhar DOB for statutory; Actual DOB for HR purposes like birthday wishes" },
+  { id:"Q6", sec:1, gap:"MISSING RULE", title:"Photo Upload — Mandatory Before Verification?",
+    q:"Is an employee photo mandatory before the record can be verified and activated?",
+    why:"Determines form validation logic — whether verification button is blocked without a photo.",
+    A:"Mandatory — verification cannot proceed without a photo",
+    B:"Optional — verification can proceed; photo shown as pending with a reminder",
+    C:"Mandatory only for certain roles (e.g. field staff); optional for back-office" },
+
+  /* ---- Section 2 ---- */
+  { id:"Q7", sec:2, gap:"MISSING WORKFLOW", title:"Apprentice Conversion — Who Initiates?",
+    q:"Who can initiate an apprentice-to-employee conversion?",
+    why:"Drives workflow routing — manager initiation needs a manager-facing screen; HR-only is simpler.",
+    A:"HR only — manager submits a physical/email request; HR enters it in the system",
+    B:"Manager initiates via portal; HR reviews and approves before conversion",
+    C:"System auto-prompts HR when apprenticeship period ends; HR decides to convert or extend" },
+  { id:"Q8", sec:2, gap:"MISSING WORKFLOW", title:"Apprentice — Payroll Coverage",
+    q:"Should apprentices appear in payroll runs?",
+    why:"If yes, requires a separate apprentice salary structure and statutory exemption rules.",
+    A:"Yes — apprentices have a stipend processed through payroll under a separate salary structure",
+    B:"No — apprentice stipend is handled outside payroll; only employees are in payroll runs",
+    C:"Optional per apprentice — HR marks each one as payroll-managed or externally managed" },
+  { id:"Q9", sec:2, gap:"MISSING RULE", title:"Probation Confirmation — How Does It Happen?",
+    q:"How should the probation-to-confirmed status transition be handled?",
+    why:"Determines whether the system has an auto-scheduler or a manual HR action button.",
+    A:"Manual only — HR reviews and clicks Confirm after probation period; no automation",
+    B:"System sends reminder to HR/manager before end date; HR must confirm manually",
+    C:"System auto-confirms after probation end if no action taken; HR can extend or reject beforehand" },
+  { id:"Q10", sec:2, gap:"AMBIGUOUS", title:"Reporting Hierarchy — Leave Approval Routing",
+    q:"For leave approval, how does the two-level reporting hierarchy work?",
+    why:"Directly determines the leave approval workflow engine — sequential vs parallel approval.",
+    A:"Level 1 approves first; only if approved, Level 2 gets notified — sequential",
+    B:"Level 1 is the only approver for routine leave; Level 2 only for extended leave over 3 days",
+    C:"Both levels notified simultaneously; either can approve or reject — parallel" },
+  { id:"Q11", sec:2, gap:"AMBIGUOUS", title:"Amendment Date Rule — Which Fields Are Covered?",
+    q:"The first-of-month amendment date rule — which fields does it apply to?",
+    why:"Defines scope of the amendment scheduler — all fields vs salary-only changes the edit model.",
+    A:"Salary and official designation/grade changes only — all other fields are edited directly",
+    B:"All fields — every change creates a new amendment record effective first of next month",
+    C:"HR decides per field — some fields are immediate-edit, others go through amendment workflow" },
+  { id:"Q12", sec:2, gap:"MISSING RULE", title:"Notice Period Shortfall — Auto Deduction",
+    q:"If an employee leaves before completing their notice period, how should the shortfall be handled?",
+    why:"Determines whether payroll has a notice-shortfall deduction component or it is handled manually.",
+    A:"System automatically calculates shortfall days x daily rate and deducts from final settlement",
+    B:"HR manually enters the shortfall deduction amount in the final settlement screen",
+    C:"System calculates and shows the amount, but HR must approve before it is applied" },
+
+  /* ---- Section 3 ---- */
+  { id:"Q13", sec:3, gap:"MISSING RULE", title:"Salary Formula — Calculation Order",
+    q:"When multiple allowances use formulas that depend on each other, what calculation order should apply?",
+    why:"Core algorithm decision for the formula engine — determines base variable and loop prevention.",
+    A:"Gross Salary is entered by HR; all other allowances are derived from Gross using formulas",
+    B:"Basic is entered by HR; all other allowances are derived from Basic using formulas",
+    C:"HR defines a calculation order (sequence number per allowance); system computes in that order" },
+  { id:"Q14", sec:3, gap:"MISSING RULE", title:"Formula Change — Effective Date Rule",
+    q:"If a salary formula is changed, when does it take effect?",
+    why:"Determines whether the system needs an effective-date engine for formula versions.",
+    A:"Prospectively from the next payroll run — current month is not affected",
+    B:"From first of the current month if changed before payroll cut-off, else next month",
+    C:"HR specifies effective date when saving the formula; system applies from that date" },
+  { id:"Q15", sec:3, gap:"MISSING RULE", title:"PF Gross — When HRA/Bonus Exceeds 20% of Basic+DA",
+    q:"If HRA or Bonus exceeds 20% of Basic+DA, how should the system handle PF gross calculation?",
+    why:"Determines whether payroll needs an auto-correction engine or a manual alert for PF compliance.",
+    A:"System automatically includes the excess amount in PF gross — no HR intervention needed",
+    B:"System alerts HR with a compliance warning; HR manually adjusts before payroll is finalised",
+    C:"System shows a warning and suggests a correction, but allows HR to override if needed" },
+  { id:"Q16", sec:3, gap:"MISSING RULE", title:"TDS — Tax Regime Policy",
+    q:"How should the system handle old vs new income tax regime for TDS calculation?",
+    why:"Single biggest driver of TDS engine complexity — employee-choice vs company-fixed.",
+    A:"Employee chooses their regime via self-service at start of year; system stores preference per employee",
+    B:"Company-fixed policy — all employees under the same regime set by finance/HR",
+    C:"System calculates TDS under both regimes and applies whichever gives lower tax for each employee" },
+  { id:"Q17", sec:3, gap:"MISSING RULE", title:"TDS — Investment Declaration Submission",
+    q:"How will employees submit investment declarations (80C, HRA, LTA) for TDS computation?",
+    why:"Determines if an employee self-service declaration module needs to be built.",
+    A:"Employee submits via self-service portal with proof upload; HR reviews and approves",
+    B:"Accounts/HR collects declarations manually and enters them in the payroll system",
+    C:"Provisional declaration entered at start of year; actuals entered at year-end with proofs" },
+  { id:"Q18", sec:3, gap:"MISSING RULE", title:"TDS — Mid-Year Joiner (Form 12B)",
+    q:"For employees who join mid-year from another company, how should previous salary be handled for TDS?",
+    why:"If Form 12B is used, the system needs an input screen for previous employer salary and tax deducted.",
+    A:"Employee provides Form 12B; HR enters previous employer salary and TDS paid into the system",
+    B:"System ignores previous employer salary; TDS calculated only on current employer income",
+    C:"HR manually adjusts the TDS projection for the year after reviewing Form 12B separately" },
+  { id:"Q19", sec:3, gap:"AMBIGUOUS", title:"Profession Tax — Jurisdiction Assignment",
+    q:"How should the system determine which PT period structure (Panchayat vs Municipality) applies?",
+    why:"This is the branching logic for the PT scheduler — branch-level vs employee-level config.",
+    A:"Branch-level setting — all employees in a branch follow the same PT jurisdiction",
+    B:"Employee-level setting — PT jurisdiction set individually per employee on their profile",
+    C:"Location-level setting — linked to the employee work location, not their branch" },
+  { id:"Q20", sec:3, gap:"MISSING RULE", title:"Profession Tax — Slab Configuration",
+    q:"Should PT slabs be configurable in system settings without a code deployment?",
+    why:"Determines if PT slabs are hardcoded constants or a configurable admin table.",
+    A:"Yes — PT slabs must be configurable by admin to handle future government changes without code deployments",
+    B:"No — PT slabs are hardcoded; a developer makes changes if government revises slabs",
+    C:"Configurable per jurisdiction — each branch/location can have its own slab table" },
+  { id:"Q21", sec:3, gap:"AMBIGUOUS", title:"ESI — Conflicting Status: Out of Coverage + Relieved",
+    q:"If an employee is both out-of-coverage and relieved in the same period, which status appears in the ESI report?",
+    why:"Determines report generation priority logic — data-level rule vs reporting filter.",
+    A:"Data-level rule — underlying record is marked RELIEVED; out-of-coverage is overridden at source",
+    B:"Reporting-level filter — both statuses exist in data; ESI report displays RELIEVED",
+    C:"System alerts HR to manually resolve the conflict before generating the ESI report" },
+  { id:"Q22", sec:3, gap:"MISSING RULE", title:"Voluntary PF — Employer Contribution Basis",
+    q:"If an employee voluntarily contributes on full PF salary above Rs.15,000 ceiling, does the employer also match?",
+    why:"Determines employer PF ledger computation — separate rates change payroll calculation significantly.",
+    A:"Employer always capped at statutory (12% of Rs.15,000 = Rs.1,800) regardless of employee choice",
+    B:"Employer matches employee basis — if employee contributes on full PF salary, employer does too",
+    C:"Employer contribution basis is set independently per employee by HR" },
+  { id:"Q23", sec:3, gap:"MISSING RULE", title:"WPS — Output Report Format",
+    q:"What is the required output format for WPS (Wage Protection System) compliance reporting?",
+    why:"Determines the report generator — SIF file needs a specific format vs simple Excel.",
+    A:"Standard SIF (Salary Information File) format for WPS portal submission",
+    B:"Excel/CSV report for internal records only — WPS submission is handled manually",
+    C:"Both — SIF file for submission and Excel for internal audit records" },
+
+  /* ---- Section 4 ---- */
+  { id:"Q24", sec:4, gap:"MISSING WORKFLOW", title:"Onboarding — Who Can Verify Employee Records?",
+    q:"Who is authorised to verify and activate an employee record in the system?",
+    why:"Determines role-based access for the Verify action button.",
+    A:"HR Admin only — branch managers have no verification access",
+    B:"HR Admin or Branch Manager — either can verify employees in their branch",
+    C:"Two-step: Branch Manager approves first, HR Admin does final verification" },
+  { id:"Q25", sec:4, gap:"MISSING WORKFLOW", title:"Onboarding — Login Credential Generation",
+    q:"When should system login credentials be generated and sent to a new employee?",
+    why:"Determines whether an automated email trigger is needed on record verification.",
+    A:"Automatically on verification — system sends credentials to employee personal email immediately",
+    B:"HR manually triggers credential generation and sending after verification",
+    C:"Automatically on Date of Joining — credentials activate on DOJ even if verified earlier" },
+  { id:"Q26", sec:4, gap:"MISSING WORKFLOW", title:"Resignation — Can Employees Submit via Portal?",
+    q:"Can employees submit their resignation through the self-service portal?",
+    why:"If yes, a resignation request module with approval chain must be built.",
+    A:"Yes — employees submit resignation via portal; triggers manager to HR to finance approval chain",
+    B:"No — HR always enters resignation details; employees resign through HR offline",
+    C:"Yes — but only for voluntary resignation; terminations are always entered by HR only" },
+  { id:"Q27", sec:4, gap:"MISSING WORKFLOW", title:"Full and Final Settlement — What Triggers It?",
+    q:"What triggers the Full and Final settlement payroll run?",
+    why:"Determines if an automated trigger is built or payroll officer manually initiates.",
+    A:"Automatic — system creates F&F payroll task when relieving date is entered and approved",
+    B:"Manual — payroll officer explicitly initiates F&F run after all clearances are confirmed",
+    C:"Semi-automatic — system prompts payroll officer on relieving date; officer confirms to proceed" },
+  { id:"Q28", sec:4, gap:"MISSING RULE", title:"Rehire — New Record or Reactivation?",
+    q:"If a previously relieved employee is rehired, how should it be handled?",
+    why:"Determines database model — reactivation reuses same employee ID and PF UAN.",
+    A:"Reactivate existing record — same employee code, PF UAN, ESI IP number carried forward",
+    B:"Create a new employee record — new code, but link to old record for historical reference",
+    C:"HR decides per case — option to reactivate or create new with a linkage to old profile" },
+
+  /* ---- Section 5 ---- */
+  { id:"Q29", sec:5, gap:"MISSING RULE", title:"Leave Auto-Allocation — First Month Pro-Ration",
+    q:"For monthly leave allocation, how should the first month be handled for a new joiner?",
+    why:"Determines pro-ration logic in the leave allocation scheduler.",
+    A:"Full month credit for the joining month regardless of joining date",
+    B:"Pro-rated based on remaining working days in the joining month",
+    C:"No credit for joining month; allocation starts from the next full month" },
+  { id:"Q30", sec:5, gap:"MISSING RULE", title:"Leave Balance — Negative Balance Policy",
+    q:"Can an employee take leave beyond their available balance?",
+    why:"Determines if a hard block or soft warning is implemented in leave request submission.",
+    A:"Hard block — system rejects leave application if balance is insufficient",
+    B:"Soft warning — system warns but allows; negative days treated as Loss of Pay in payroll",
+    C:"Manager discretion — manager can approve beyond balance; system flags as advance leave" },
+  { id:"Q31", sec:5, gap:"MISSING RULE", title:"Leave Year-End — Carry Forward or Lapse",
+    q:"At year-end, what happens to unused earned leave balance?",
+    why:"Core leave ledger design decision — carry-forward cap vs encashment vs unlimited rollover.",
+    A:"Carry forward up to a maximum limit (e.g. 45 days); excess lapses",
+    B:"All unused leave is encashed and paid out in January payroll",
+    C:"Carry forward without limit — full unused balance rolls over to next year" },
+  { id:"Q32", sec:5, gap:"MISSING RULE", title:"Maternity Leave — During Leave Accrual",
+    q:"Should earned leave continue to accrue during maternity leave?",
+    why:"Determines if the leave accrual engine has an exception handler for maternity status.",
+    A:"Yes — leave accrues normally during maternity leave as employee is still on company rolls",
+    B:"No — leave accrual is paused for the full duration of maternity leave",
+    C:"Partial — leave accrues for first 3 months of maternity; paused beyond that" },
+  { id:"Q33", sec:5, gap:"AMBIGUOUS", title:"Comp Off — Expiry Period",
+    q:"Is there an expiry period for compensatory off leave?",
+    why:"If comp off expires, the system needs an expiry scheduler and notification.",
+    A:"Yes — comp off expires if not availed within 30 days of accrual",
+    B:"Yes — comp off expires within configurable period (60 or 90 days as per leave policy)",
+    C:"No expiry — comp off accumulates indefinitely and can be availed anytime" },
+  { id:"Q34", sec:5, gap:"MISSING RULE", title:"Attendance — Source of Login/Logout Data",
+    q:"What is the source of attendance login/logout data for shift tracking?",
+    why:"Integration architecture changes completely — biometric needs device API; web punch needs self-service screen.",
+    A:"Biometric device integration — system pulls data from biometric/access control via API or file import",
+    B:"Web/app-based self-punch — employees mark attendance on the portal or mobile app",
+    C:"Both — biometric for on-site employees; web punch for remote/WFH employees" },
+  { id:"Q35", sec:5, gap:"MISSING RULE", title:"Attendance — Absent Auto-Marking",
+    q:"If no attendance record exists for a working day, how should the system handle it?",
+    why:"Auto-LOP triggers payroll deduction automatically; manual review gives HR control.",
+    A:"Auto-mark absent and apply Loss of Pay in payroll after grace period with no regularisation",
+    B:"Flag as exception for HR review — no automatic LOP until HR confirms",
+    C:"Notify employee and manager; auto-mark absent only if unresolved after 3 days" },
+  { id:"Q36", sec:5, gap:"MISSING RULE", title:"Holiday Groups — Religion-Specific Assignment",
+    q:"Who assigns religion-specific holidays to individual employees?",
+    why:"Self-service means a module in the employee portal; HR-only means admin screens only.",
+    A:"HR only — employees cannot self-assign religious holidays",
+    B:"Employee self-selects applicable religious holidays from an approved list via self-service",
+    C:"Derived automatically from the Religion field on the employee profile — no manual assignment" },
+
+  /* ---- Section 6 ---- */
+  { id:"Q37", sec:6, gap:"MISSING WORKFLOW", title:"Salary Revision — Approval Chain",
+    q:"What is the approval chain for a salary revision?",
+    why:"Determines how many workflow states and notification steps the salary revision module requires.",
+    A:"HR Admin enters revision then HR Head approves then effective in payroll (two-step)",
+    B:"Manager recommends then HR Admin reviews then Finance approves then effective (three-step)",
+    C:"HR Admin directly updates salary — no approval chain; amendment history auto-created" },
+  { id:"Q38", sec:6, gap:"MISSING WORKFLOW", title:"Bulk Verification — Partial Batch Failure",
+    q:"In bulk employee verification, if some records fail validation, what happens to the passing records?",
+    why:"All-or-nothing means simpler transaction; partial approval means splitting the batch.",
+    A:"All-or-nothing — entire batch is held until all records pass; no partial approval",
+    B:"Passing records are verified immediately; failed records stay in pending queue for correction",
+    C:"HR decides per batch — system shows pass/fail summary and HR chooses to proceed or hold" },
+  { id:"Q39", sec:6, gap:"MISSING WORKFLOW", title:"Leave Approval — When Approver Is on Leave",
+    q:"If the leave approver is themselves on leave, how should leave requests be handled?",
+    why:"Determines if a delegation engine needs to be built — auto-escalation requires a secondary approver hierarchy.",
+    A:"Auto-escalate to Level 2 reporting head or HR after 24 hours with no response",
+    B:"Approver must designate a delegate before going on leave — system enforces this",
+    C:"HR Admin acts as backup approver for all pending requests when approver is absent" },
+
+  /* ---- Section 7 ---- */
+  { id:"Q40", sec:7, gap:"MISSING RULE", title:"Salary Visibility — Manager Access",
+    q:"Should managers be able to view their team members salary details?",
+    why:"Core RBAC table decision — salary field visibility for manager role changes every screen permission check.",
+    A:"No — salary details visible only to HR Admin and Finance; managers see only grade/band",
+    B:"Yes — managers can view but not edit salary of their direct reports",
+    C:"Partially — managers see CTC band but not the salary component breakup" },
+  { id:"Q41", sec:7, gap:"MISSING RULE", title:"Sensitive Data — Masking for Lower Roles",
+    q:"Should PAN, Aadhar, and bank account numbers be masked for roles below HR Admin?",
+    why:"Determines field-level masking implementation — required for data privacy compliance.",
+    A:"Always mask (show XXXX1234) for all roles below HR Admin including managers",
+    B:"Employees can see their own details unmasked; viewing others data is always masked",
+    C:"No masking — all authorised users with access to the employee profile see full data" },
+  { id:"Q42", sec:7, gap:"MISSING RULE", title:"Employee Self-Service — Editable Fields",
+    q:"Which fields should employees be able to update themselves via the self-service portal?",
+    why:"Determines self-service edit permissions — direct-edit vs change-request-with-approval are fundamentally different.",
+    A:"Address and emergency contact only — all other changes require HR intervention",
+    B:"Address, contact, bank details, and documents — all changes go through HR approval workflow",
+    C:"Read-only portal for employees — no self-editing; employees raise requests to HR via helpdesk" },
+
+  /* ---- Section 8 ---- */
+  { id:"Q43", sec:8, gap:"MISSING RULE", title:"Statutory Reports — Submission Format",
+    q:"Should the system generate statutory reports in exact government-submission format?",
+    why:"Exact format means building file generators for ECR, ESI return, and Form 24Q.",
+    A:"Yes — system must generate submission-ready files (ECR for EPFO, ESI returns, Form 24Q for TRACES)",
+    B:"No — system generates data in Excel; accounts team formats and submits to government portals",
+    C:"Phase 1: Excel export; Phase 2: government-format file generation (to be scoped separately)" },
+  { id:"Q44", sec:8, gap:"MISSING RULE", title:"Notification Channels",
+    q:"Through which channels should the system send HR notifications and reminders?",
+    why:"Each additional channel requires a third-party integration — email-only is simplest.",
+    A:"Email only — all notifications sent to company email addresses",
+    B:"Email plus in-app notifications (bell icon in portal) — no SMS or mobile",
+    C:"Email plus in-app plus SMS/WhatsApp for critical alerts (probation end, payroll deadline)" },
+  { id:"Q45", sec:8, gap:"MISSING RULE", title:"Employee List Export — Sensitive Data",
+    q:"When HR exports the employee list to Excel, should sensitive fields be included?",
+    why:"Determines whether export function needs role-based column filtering.",
+    A:"Two templates — standard export (no salary/PAN/bank) and full export (HR-only, with reason log)",
+    B:"Single export — all columns included; access to export feature is controlled by role",
+    C:"User configures columns before export; sensitive columns visible only to authorised roles" },
+  { id:"Q46", sec:8, gap:"MISSING RULE", title:"Audit Trail — Retention Period",
+    q:"How long should audit logs (all create/edit/delete actions) be retained in the system?",
+    why:"Determines database partitioning strategy and archival policy.",
+    A:"7 years — in line with statutory compliance requirements for labour and tax records",
+    B:"3 years — sufficient for internal HR and payroll audit purposes",
+    C:"Indefinitely — never purge; archive older records to cold storage after 3 years" },
+  { id:"Q47", sec:8, gap:"MISSING RULE", title:"Form 16 — Generation in System",
+    q:"Should the system generate Form 16 (TDS certificate) for employees?",
+    why:"Form 16 Part B can be system-generated; Part A must come from TRACES — determines if a PDF merge pipeline needs to be built.",
+    A:"Yes — system generates Form 16 Part B; HR uploads Part A from TRACES and system merges them",
+    B:"No — Form 16 generation is handled by the accounts team outside this system",
+    C:"System generates structured data for Form 16; final PDF is produced by accounts team" },
+];
+
+/* ============================================================
+   State
+   ============================================================ */
+const sel = {};      // qid -> "A"|"B"|"C"|null
+const custom = {};   // qid -> string
+QUESTIONS.forEach(q => { sel[q.id] = null; custom[q.id] = ""; });
+
+const cardEls = {};  // qid -> card element
+
+/* ============================================================
+   Build form (createElement only — no innerHTML template literals)
+   ============================================================ */
+function gapClass(gap){ return "gap-" + gap.replace(/\s+/g, "-"); }
+
+function svgInfo(){
+  const ns = "http://www.w3.org/2000/svg";
+  const s = document.createElementNS(ns,"svg");
+  s.setAttribute("width","15"); s.setAttribute("height","15");
+  s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("fill","none");
+  const c = document.createElementNS(ns,"circle");
+  c.setAttribute("cx","12"); c.setAttribute("cy","12"); c.setAttribute("r","10");
+  c.setAttribute("stroke","#0969da"); c.setAttribute("stroke-width","2");
+  const l = document.createElementNS(ns,"path");
+  l.setAttribute("d","M12 11v5M12 7.5v.5");
+  l.setAttribute("stroke","#0969da"); l.setAttribute("stroke-width","2"); l.setAttribute("stroke-linecap","round");
+  s.appendChild(c); s.appendChild(l);
+  return s;
+}
+
+function buildForm(){
+  const wrap = document.getElementById("formWrap");
+  let currentSec = 0;
+
+  QUESTIONS.forEach((q, idx) => {
+    // Section pill
+    if (q.sec !== currentSec){
+      currentSec = q.sec;
+      const s = SECTIONS.find(x => x.id === currentSec);
+      const pill = document.createElement("div");
+      pill.className = "section-pill";
+      pill.style.background = s.scBg;
+      pill.style.color = s.scFg;
+      const dot = document.createElement("span"); dot.className = "dot";
+      const sn = document.createElement("span"); sn.className = "sn"; sn.textContent = "Section " + s.id;
+      const nm = document.createElement("span"); nm.textContent = s.name;
+      pill.appendChild(dot); pill.appendChild(sn); pill.appendChild(nm);
+      wrap.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id = "card-" + q.id;
+    cardEls[q.id] = card;
+
+    // Head
+    const head = document.createElement("div");
+    head.className = "card-head";
+    const num = document.createElement("div");
+    num.className = "qnum";
+    num.textContent = idx + 1;
+    const htext = document.createElement("div");
+    htext.className = "qhead-text";
+    const badge = document.createElement("span");
+    badge.className = "gap-badge " + gapClass(q.gap);
+    badge.textContent = q.gap;
+    const title = document.createElement("div");
+    title.className = "qtitle";
+    title.textContent = q.title;
+    const qt = document.createElement("div");
+    qt.className = "qtext";
+    qt.textContent = q.q;
+    htext.appendChild(badge);
+    htext.appendChild(title);
+    htext.appendChild(qt);
+    head.appendChild(num);
+    head.appendChild(htext);
+    card.appendChild(head);
+
+    // Why box
+    const why = document.createElement("div");
+    why.className = "why";
+    why.appendChild(svgInfo());
+    const whyTxt = document.createElement("div");
+    const whyB = document.createElement("b");
+    whyB.textContent = "Why this matters: ";
+    whyTxt.appendChild(whyB);
+    whyTxt.appendChild(document.createTextNode(q.why));
+    why.appendChild(whyTxt);
+    card.appendChild(why);
+
+    // Options
+    const opts = document.createElement("div");
+    opts.className = "opts";
+    ["A","B","C"].forEach(tag => {
+      const opt = document.createElement("div");
+      opt.className = "opt";
+      opt.setAttribute("data-tag", tag);
+      const bdg = document.createElement("div");
+      bdg.className = "opt-badge badge-" + tag;
+      bdg.textContent = tag;
+      const body = document.createElement("div");
+      body.className = "opt-body";
+      body.textContent = q[tag];
+      const radio = document.createElement("div");
+      radio.className = "radio";
+      opt.appendChild(bdg);
+      opt.appendChild(body);
+      opt.appendChild(radio);
+      opt.addEventListener("click", function(){ toggleOpt(q.id, tag); });
+      opts.appendChild(opt);
+    });
+    card.appendChild(opts);
+
+    // Custom textarea
+    const cwrap = document.createElement("div");
+    cwrap.className = "custom-wrap";
+    const clabel = document.createElement("label");
+    clabel.textContent = "Other / additional notes (optional)";
+    const ta = document.createElement("textarea");
+    ta.placeholder = "If none of the options fit, describe your preferred approach here…";
+    ta.addEventListener("input", function(){
+      custom[q.id] = ta.value;
+      updateCardState(q.id);
+      updateProgress();
+    });
+    cwrap.appendChild(clabel);
+    cwrap.appendChild(ta);
+    card.appendChild(cwrap);
+
+    // Error message
+    const em = document.createElement("div");
+    em.className = "err-msg";
+    em.textContent = "Please select an option or provide a note for this question.";
+    card.appendChild(em);
+
+    wrap.appendChild(card);
+  });
+
+  // Submit zone
+  const sz = document.createElement("div");
+  sz.className = "submit-zone";
+  const h3 = document.createElement("h3");
+  h3.textContent = "Submit your responses";
+  const p = document.createElement("p");
+  p.textContent = "All 47 questions must be answered. On submit, a Word document is generated and downloaded for your records.";
+  const btn = document.createElement("button");
+  btn.className = "btn";
+  btn.textContent = "Generate Word Document & Submit";
+  btn.addEventListener("click", onSubmit);
+  const ml = document.createElement("div");
+  ml.className = "missing-list";
+  ml.id = "missingList";
+  sz.appendChild(h3);
+  sz.appendChild(p);
+  sz.appendChild(btn);
+  sz.appendChild(ml);
+  wrap.appendChild(sz);
+}
+
+/* ============================================================
+   Interaction
+   ============================================================ */
+function isAnswered(qid){
+  return !!sel[qid] || (custom[qid] && custom[qid].trim().length > 0);
+}
+
+function toggleOpt(qid, tag){
+  const card = cardEls[qid];
+  const optEls = card.querySelectorAll(".opt");
+  if (sel[qid] === tag){
+    sel[qid] = null;
+  } else {
+    sel[qid] = tag;
+  }
+  optEls.forEach(o => {
+    o.classList.toggle("selected", o.getAttribute("data-tag") === sel[qid]);
+  });
+  updateCardState(qid);
+  updateProgress();
+}
+
+function updateCardState(qid){
+  const card = cardEls[qid];
+  const answered = isAnswered(qid);
+  card.classList.toggle("answered", answered);
+  if (answered) card.classList.remove("error");
+}
+
+function countAnswered(){
+  return QUESTIONS.filter(q => isAnswered(q.id)).length;
+}
+
+function updateProgress(){
+  const n = countAnswered();
+  const pct = Math.round((n / QUESTIONS.length) * 100);
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressCount").textContent = n + " / " + QUESTIONS.length;
+  document.getElementById("statAnswered").textContent = n;
+}
+
+/* ============================================================
+   Submit + validation
+   ============================================================ */
+function onSubmit(){
+  const missing = QUESTIONS.filter(q => !isAnswered(q.id));
+  const ml = document.getElementById("missingList");
+
+  // clear previous errors
+  QUESTIONS.forEach(q => cardEls[q.id].classList.remove("error"));
+
+  if (missing.length > 0){
+    missing.forEach(q => cardEls[q.id].classList.add("error"));
+
+    // build missing list
+    ml.innerHTML = "";
+    const b = document.createElement("b");
+    b.textContent = missing.length + " question" + (missing.length>1?"s":"") + " still need an answer:";
+    ml.appendChild(b);
+    missing.forEach(q => {
+      const idx = QUESTIONS.indexOf(q) + 1;
+      const span = document.createElement("span");
+      span.textContent = "Q" + idx;
+      span.addEventListener("click", function(){
+        cardEls[q.id].scrollIntoView({behavior:"smooth", block:"center"});
+      });
+      ml.appendChild(span);
+    });
+    ml.style.display = "block";
+
+    // scroll to first + shake
+    const first = cardEls[missing[0].id];
+    first.scrollIntoView({behavior:"smooth", block:"center"});
+    first.classList.add("shake");
+    setTimeout(() => first.classList.remove("shake"), 450);
+    return;
+  }
+
+  ml.style.display = "none";
+  submitAll();
+}
+
+async function submitAll(){
+  showOverlay("Building Word document…", "Generating your formatted .docx file");
+  try {
+    const blob = await generateDocx();
+    downloadBlob(blob, "HRMS_BRD_Responses.docx");
+  } catch(e){
+    console.error("docx generation failed", e);
+    hideOverlay();
+    showToast("Document generation failed — see console", false);
+    return;
+  }
+
+  // brief pause so download dialog settles, then email silently
+  setOverlay("Sending email…", "Submitting your responses securely");
+  try {
+    await emailjs.send(EJS_SVC, EJS_TPL, {
+      subject: "HRMS BRD Submission - Employee Management Module",
+      message: buildSummary()
+    });
+  } catch(e){
+    console.error("email send failed", e);
+  }
+
+  hideOverlay();
+  showToast("Submitted — Word document downloaded successfully", true);
+}
+
+/* ============================================================
+   Plain-text summary (for email)
+   ============================================================ */
+function selectedText(q){
+  if (sel[q.id]) return sel[q.id] + ") " + q[sel[q.id]];
+  return "(no option selected)";
+}
+
+function buildSummary(){
+  let out = "HRMS PAYROLL — BRD STAKEHOLDER RESPONSES\n";
+  out += "Employee Management Module\n";
+  out += "Submitted: " + new Date().toLocaleString() + "\n";
+  out += "Answered: " + countAnswered() + " / " + QUESTIONS.length + "\n";
+  out += "========================================================\n\n";
+
+  let curSec = 0;
+  QUESTIONS.forEach((q, i) => {
+    if (q.sec !== curSec){
+      curSec = q.sec;
+      const s = SECTIONS.find(x => x.id === curSec);
+      out += "\n--- SECTION " + s.id + ": " + s.name.toUpperCase() + " ---\n\n";
+    }
+    out += "Q" + (i+1) + " [" + q.gap + "] " + q.title + "\n";
+    out += q.q + "\n";
+    out += "ANSWER: " + selectedText(q) + "\n";
+    if (custom[q.id] && custom[q.id].trim()){
+      out += "NOTES: " + custom[q.id].trim() + "\n";
+    }
+    out += "\n";
+  });
+  return out;
+}
+
+/* ============================================================
+   Word document generation (docx.js v9 UMD)
+   ============================================================ */
+function generateDocx(){
+  const D = window.docx;
+  const {
+    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+    WidthType, BorderStyle, AlignmentType, HeadingLevel, ShadingType, Header, Footer, PageNumber
+  } = D;
+
+  const ACCENT = "0969DA", GREY = "57606A", INK = "0D1117";
+  const ROW_BG = "F6F8FA", GREEN_BG = "DAFBE1", GREEN = "1A7F37", AMBER_BG = "FFF8C5", AMBER = "9A6700";
+  const TABLE_W = 8626;
+
+  function noBorder(){
+    return { top:{style:BorderStyle.NONE}, bottom:{style:BorderStyle.NONE}, left:{style:BorderStyle.NONE}, right:{style:BorderStyle.NONE} };
+  }
+  function leftAccentBorder(color){
+    return {
+      top:{style:BorderStyle.SINGLE,size:2,color:"D0D7DE"},
+      bottom:{style:BorderStyle.SINGLE,size:2,color:"D0D7DE"},
+      right:{style:BorderStyle.SINGLE,size:2,color:"D0D7DE"},
+      left:{style:BorderStyle.SINGLE,size:24,color:color}
+    };
+  }
+
+  function questionTable(q, idx){
+    const answered = !!sel[q.id];
+    const onlyCustom = !answered && custom[q.id] && custom[q.id].trim().length > 0;
+    const answerColor = answered ? GREEN : (onlyCustom ? AMBER : GREY);
+    const answerBg    = answered ? GREEN_BG : (onlyCustom ? AMBER_BG : ROW_BG);
+
+    // Row 1: number + gap + title
+    const r1 = new TableRow({ children:[ new TableCell({
+      width:{size:TABLE_W,type:WidthType.DXA},
+      shading:{fill:ROW_BG,type:ShadingType.CLEAR,color:"auto"},
+      borders:leftAccentBorder(ACCENT),
+      margins:{top:80,bottom:80,left:160,right:120},
+      children:[ new Paragraph({ children:[
+        new TextRun({ text:"Q"+(idx+1)+"  ", bold:true, color:ACCENT, size:22 }),
+        new TextRun({ text:"["+q.gap+"]  ", bold:true, color:"CF222E", size:16 }),
+        new TextRun({ text:q.title, bold:true, color:INK, size:20 })
+      ]}) ]
+    }) ]});
+
+    // Row 2: question text bold
+    const r2 = new TableRow({ children:[ new TableCell({
+      width:{size:TABLE_W,type:WidthType.DXA},
+      shading:{fill:ROW_BG,type:ShadingType.CLEAR,color:"auto"},
+      borders:leftAccentBorder(ACCENT),
+      margins:{top:60,bottom:80,left:160,right:120},
+      children:[ new Paragraph({ children:[
+        new TextRun({ text:q.q, bold:true, color:INK, size:21 })
+      ]}) ]
+    }) ]});
+
+    // Row 3: selected answer
+    const ansChildren = [];
+    if (answered){
+      ansChildren.push(new Paragraph({ spacing:{after:40}, children:[
+        new TextRun({ text:"Selected: Option "+sel[q.id], bold:true, color:answerColor, size:18 })
+      ]}));
+      ansChildren.push(new Paragraph({ children:[
+        new TextRun({ text:q[sel[q.id]], color:INK, size:19 })
+      ]}));
+    } else if (onlyCustom){
+      ansChildren.push(new Paragraph({ children:[
+        new TextRun({ text:"Custom response provided (see notes below)", bold:true, italics:true, color:answerColor, size:18 })
+      ]}));
+    } else {
+      ansChildren.push(new Paragraph({ children:[
+        new TextRun({ text:"No answer selected", italics:true, color:GREY, size:18 })
+      ]}));
+    }
+    if (custom[q.id] && custom[q.id].trim()){
+      ansChildren.push(new Paragraph({ spacing:{before:80}, children:[
+        new TextRun({ text:"Notes: ", bold:true, color:GREY, size:17 }),
+        new TextRun({ text:custom[q.id].trim(), italics:true, color:INK, size:18 })
+      ]}));
+    }
+    const r3 = new TableRow({ children:[ new TableCell({
+      width:{size:TABLE_W,type:WidthType.DXA},
+      shading:{fill:answerBg,type:ShadingType.CLEAR,color:"auto"},
+      borders:leftAccentBorder(answered ? GREEN : (onlyCustom ? AMBER : "D0D7DE")),
+      margins:{top:80,bottom:100,left:160,right:120},
+      children:ansChildren
+    }) ]});
+
+    return new Table({
+      width:{size:TABLE_W,type:WidthType.DXA},
+      borders:noBorder(),
+      rows:[r1,r2,r3]
+    });
+  }
+
+  // ---- Body content ----
+  const children = [];
+
+  // Cover page
+  children.push(new Paragraph({ spacing:{before:600,after:0}, alignment:AlignmentType.CENTER,
+    children:[ new TextRun({ text:"HRMS PAYROLL SYSTEM", bold:true, color:ACCENT, size:24, characterSpacing:40 }) ] }));
+  children.push(new Paragraph({ spacing:{before:120,after:60}, alignment:AlignmentType.CENTER,
+    children:[ new TextRun({ text:"Business Requirements Document", bold:true, color:INK, size:48 }) ] }));
+  children.push(new Paragraph({ spacing:{after:300}, alignment:AlignmentType.CENTER,
+    children:[ new TextRun({ text:"Stakeholder Questionnaire — Employee Management Module", color:GREY, size:24 }) ] }));
+
+  // Stats table (4 cells)
+  const answeredCount = QUESTIONS.filter(q => sel[q.id]).length;
+  const skippedCount = QUESTIONS.length - QUESTIONS.filter(q => isAnswered(q.id)).length;
+  function statCell(n, label){
+    return new TableCell({
+      width:{size:Math.round(TABLE_W/4),type:WidthType.DXA},
+      shading:{fill:ROW_BG,type:ShadingType.CLEAR,color:"auto"},
+      borders:{ top:{style:BorderStyle.SINGLE,size:4,color:"D0D7DE"},bottom:{style:BorderStyle.SINGLE,size:4,color:"D0D7DE"},left:{style:BorderStyle.SINGLE,size:4,color:"D0D7DE"},right:{style:BorderStyle.SINGLE,size:4,color:"D0D7DE"} },
+      margins:{top:140,bottom:140,left:80,right:80},
+      children:[
+        new Paragraph({ alignment:AlignmentType.CENTER, children:[ new TextRun({ text:String(n), bold:true, color:ACCENT, size:44 }) ] }),
+        new Paragraph({ alignment:AlignmentType.CENTER, children:[ new TextRun({ text:label, color:GREY, size:16 }) ] })
+      ]
+    });
+  }
+  children.push(new Table({
+    width:{size:TABLE_W,type:WidthType.DXA},
+    borders:noBorder(),
+    rows:[ new TableRow({ children:[
+      statCell(47,"Questions"), statCell(8,"Sections"),
+      statCell(answeredCount,"Answered"), statCell(skippedCount,"Skipped")
+    ]}) ]
+  }));
+
+  // Purpose box
+  children.push(new Paragraph({ spacing:{before:300} }));
+  children.push(new Table({
+    width:{size:TABLE_W,type:WidthType.DXA},
+    borders:noBorder(),
+    rows:[ new TableRow({ children:[ new TableCell({
+      width:{size:TABLE_W,type:WidthType.DXA},
+      shading:{fill:"DDF4FF",type:ShadingType.CLEAR,color:"auto"},
+      borders:leftAccentBorder(ACCENT),
+      margins:{top:140,bottom:140,left:180,right:160},
+      children:[
+        new Paragraph({ spacing:{after:60}, children:[ new TextRun({ text:"Purpose", bold:true, color:"0550AE", size:20 }) ] }),
+        new Paragraph({ children:[ new TextRun({ text:"This document captures stakeholder decisions on 47 open requirements for the HRMS Payroll Employee Management Module. Each response resolves an identified gap, ambiguity, workflow, or scalability concern in the BRD and forms the basis for development sign-off.", color:INK, size:19 }) ] })
+      ]
+    }) ]}) ]
+  }));
+
+  // Meta rows
+  function metaRow(k,v){
+    return new Paragraph({ spacing:{before:60}, children:[
+      new TextRun({ text:k+":  ", bold:true, color:GREY, size:18 }),
+      new TextRun({ text:v, color:INK, size:18 })
+    ]});
+  }
+  children.push(new Paragraph({ spacing:{before:280} }));
+  children.push(metaRow("Document", "BRD Stakeholder Responses"));
+  children.push(metaRow("Module", "Employee Management"));
+  children.push(metaRow("Generated", new Date().toLocaleString()));
+  children.push(metaRow("Total Responses", answeredCount + " of 47 questions answered"));
+
+  // page break before sections
+  children.push(new Paragraph({ pageBreakBefore:true,
+    children:[ new TextRun({ text:"Detailed Responses", bold:true, color:INK, size:36 }) ], spacing:{after:200} }));
+
+  // Sections + questions
+  let curSec = 0;
+  QUESTIONS.forEach((q, i) => {
+    if (q.sec !== curSec){
+      curSec = q.sec;
+      const s = SECTIONS.find(x => x.id === curSec);
+      children.push(new Paragraph({ spacing:{before:i===0?60:280, after:120}, children:[
+        new TextRun({ text:"SECTION "+s.id+"  ·  "+s.name, bold:true, color:ACCENT, size:24, characterSpacing:20 })
+      ]}));
+    }
+    children.push(questionTable(q, i));
+    children.push(new Paragraph({ spacing:{after:140} }));
+  });
+
+  const doc = new Document({
+    styles:{ default:{ document:{ run:{ font:"Calibri" } } } },
+    sections:[{
+      properties:{ page:{ margin:{ top:1100, bottom:1100, left:1100, right:1100 } } },
+      headers:{ default:new Header({ children:[ new Paragraph({
+        alignment:AlignmentType.RIGHT,
+        children:[ new TextRun({ text:"HRMS Payroll - BRD Stakeholder Responses", color:"8B949E", size:16 }) ]
+      }) ] }) },
+      footers:{ default:new Footer({ children:[ new Paragraph({
+        alignment:AlignmentType.CENTER,
+        children:[
+          new TextRun({ text:"Employee Management Module | Confidential          Page ", color:"8B949E", size:16 }),
+          new TextRun({ children:[ PageNumber.CURRENT ], color:"8B949E", size:16 })
+        ]
+      }) ] }) },
+      children:children
+    }]
+  });
+
+  return Packer.toBlob(doc);
+}
+
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+/* ============================================================
+   Overlay + toast
+   ============================================================ */
+function showOverlay(text, sub){ setOverlay(text, sub); document.getElementById("overlay").classList.add("show"); }
+function setOverlay(text, sub){
+  document.getElementById("overlayText").textContent = text;
+  document.getElementById("overlaySub").textContent = sub || "";
+}
+function hideOverlay(){ document.getElementById("overlay").classList.remove("show"); }
+
+let toastTimer = null;
+function showToast(text, ok){
+  const t = document.getElementById("toast");
+  document.getElementById("toastText").textContent = text;
+  t.querySelector(".tick").style.background = ok ? "var(--ok)" : "var(--red)";
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 5000);
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+buildForm();
+updateProgress();
+</script>
+</body>
+</html>
