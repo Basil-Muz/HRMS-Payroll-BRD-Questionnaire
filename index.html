@@ -44,6 +44,15 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
 .hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
 /* MAIN */
 .main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
 .section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
 /* CARD */
 .q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
@@ -150,6 +159,11 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
 </div>
 
 <div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Your Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
   <div id="formContainer"></div>
   <div class="submit-zone">
     <h3>Ready to submit?</h3>
@@ -674,7 +688,31 @@ function updateProgress() {
 }
 
 // ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
 function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
   const missing = [];
   Q.forEach(function(q, i) {
     const custom = document.getElementById('custom-' + q.id);
@@ -684,22 +722,27 @@ function handleSubmit() {
       document.getElementById('err-' + q.id).classList.add('visible');
     }
   });
-  if (missing.length > 0) {
+
+  if (nameMissing || missing.length > 0) {
     const msgEl = document.getElementById('incompleteMsg');
-    const listEl = document.getElementById('missingList');
-    listEl.innerHTML = '';
-    missing.slice(0, 5).forEach(function(m) {
-      const li = document.createElement('li');
-      li.textContent = 'Q' + m.num + ': ' + m.title;
-      listEl.appendChild(li);
-    });
-    if (missing.length > 5) {
-      const li = document.createElement('li');
-      li.textContent = '...and ' + (missing.length - 5) + ' more';
-      listEl.appendChild(li);
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
     }
-    msgEl.classList.add('show');
-    const fc = document.getElementById('card-' + missing[0].id);
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
     fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
     fc.classList.add('shake');
     setTimeout(function() { fc.classList.remove('shake'); }, 400);
@@ -711,7 +754,9 @@ function handleSubmit() {
 
 // ── TEXT SUMMARY FOR EMAIL ─────────────────────────────────────────────────────
 function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
   var lines = ['HRMS BRD STAKEHOLDER RESPONSES', 'Employee Management Module',
+    'Submitted by: ' + (userName || '(not provided)'),
     '='.repeat(60), ''];
   var curSec = '';
   Q.forEach(function(q, i) {
@@ -779,6 +824,7 @@ async function generateAndSend() {
   var overlay = document.getElementById('genOverlay');
   var titleEl = document.getElementById('genTitle');
   var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
   overlay.classList.add('show');
 
   try {
@@ -909,7 +955,7 @@ async function generateAndSend() {
       sp(16)
     );
     // Meta
-    [['Module','Employee Management Module'],['Prepared for','Development Team - HRMS Payroll Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+    [['Submitted by', userName || '(not provided)'],['Module','Employee Management Module'],['Prepared for','Development Team - HRMS Payroll Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
       children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
         new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
         new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
@@ -969,8 +1015,11 @@ async function generateAndSend() {
       : '\n(Word file could not be auto-uploaded — ask the submitter to forward ' + FILENAME + '.)\n';
     try {
       await emailjs.send(EJS_SVC, EJS_TPL, {
-        subject: 'HRMS BRD Submission - Employee Management Module',
-        message: linkBlock + '\n' + buildSummary()
+        from_name: userName,
+        user_name: userName,
+        name: userName,
+        subject: 'HRMS BRD Submission - ' + userName + ' (Employee Management Module)',
+        message: 'Submitted by: ' + userName + '\n' + linkBlock + '\n' + buildSummary()
       });
       document.getElementById('toastMsg').textContent = fileLink
         ? 'Word file downloaded & emailed (with link)!'
