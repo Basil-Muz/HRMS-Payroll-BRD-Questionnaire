@@ -160,7 +160,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
 
 <div class="main-wrap">
   <div class="name-card" id="nameCard">
-    <label class="name-label" for="userName">Your Name <span class="req-star">*</span></label>
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
     <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
     <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
   </div>
@@ -1041,6 +1041,34 @@ function updateProgress() {
   document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
 }
 
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ── SUBMIT ─────────────────────────────────────────────────────────────────────
 function onNameInput() {
   const nameCard = document.getElementById('nameCard');
@@ -1393,6 +1421,9 @@ async function generateAndSend() {
     var toast = document.getElementById('toast');
     toast.classList.add('show');
     setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
 
   } catch(err) {
     overlay.classList.remove('show');
