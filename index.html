@@ -140,7 +140,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   </div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
-    <span class="progress-label" id="pLabel">0 / 88</span>
+    <span class="progress-label" id="pLabel">0 / 76</span>
   </div>
 </header>
 
@@ -152,7 +152,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <h1>Employee Management Module<br><em>BRD Requirements Form</em></h1>
   <p>Every question is required. Select the option matching your organisation's policy. Click a selected option again to deselect it.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="n">88</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">76</div><div class="l">Questions</div></div>
     <div class="hero-stat"><div class="n">13</div><div class="l">Sections</div></div>
     <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
   </div>
@@ -167,7 +167,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <div id="formContainer"></div>
   <div class="submit-zone">
     <h3>Ready to submit?</h3>
-    <p>All 88 questions must be answered. On submit, your answers download as a Word document.</p>
+    <p>All 76 questions must be answered. On submit, your answers download as a Word document.</p>
     <div class="incomplete-msg" id="incompleteMsg">
       <strong>Please answer all required questions before submitting:</strong>
       <ul id="missingList"></ul>
@@ -230,12 +230,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Super Admin only — one person controls all attribute definitions across the company"},
          {t:"B",c:"letter-b",l:"Any HR Admin at branch level can define attributes for their branch"},
          {t:"C",c:"letter-c",l:"Super Admin defines global attributes; branch HR can add branch-specific ones"}]},
-  {id:"q5",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Date of Birth — Statutory Calculations",
-   text:"Which date of birth should be used for statutory age-based calculations?",
-   why:"BRD p.2 · Sec 1.1 General — Date of Birth: the BRD records DOB as per Aadhar plus a separate Actual DOB used for birthday wishes, but does not say which is used for statutory age calculations.\nSingle decision affects PF exit reason, gratuity eligibility, and retirement date.",
-   opts:[{t:"A",c:"letter-a",l:"Aadhar DOB always — legal date governs all statutory calculations"},
-         {t:"B",c:"letter-b",l:"Actual DOB for all calculations; Aadhar DOB stored for reference only"},
-         {t:"C",c:"letter-c",l:"Aadhar DOB for statutory; Actual DOB for HR purposes like birthday wishes"}]},
   {id:"q6",gap:"MISSING RULE",gc:"badge-missing",title:"Photo Upload — Mandatory Before Verification?",
    text:"Is an employee photo mandatory before the record can be verified and activated?",
    why:"BRD p.2 · Sec 1.1 General — Photo: the BRD says the employee photo is uploaded for visual identification, but does not state whether it is mandatory before Verification.\nDetermines form validation logic — whether verification button is blocked without a photo.",
@@ -300,24 +294,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"System automatically includes the excess amount in PF gross — no HR intervention needed"},
          {t:"B",c:"letter-b",l:"System alerts HR with a compliance warning; HR manually adjusts before payroll is finalised"},
          {t:"C",c:"letter-c",l:"System shows a warning and suggests a correction, but allows HR to override if needed"}]},
-  {id:"q16",gap:"MISSING RULE",gc:"badge-missing",title:"TDS — Tax Regime Policy",
-   text:"How should the system handle old vs new income tax regime for TDS calculation?",
-   why:"BRD p.9 · TDS — Tax regime: the BRD notes HRA and LTA have TDS implications under the old regime and asks for TDS calculation in the new system, but does not fix the regime policy.\nSingle biggest driver of TDS engine complexity — employee-choice vs company-fixed.",
-   opts:[{t:"A",c:"letter-a",l:"Employee chooses their regime via self-service at start of year; system stores preference per employee"},
-         {t:"B",c:"letter-b",l:"Company-fixed policy — all employees under the same regime set by finance/HR"},
-         {t:"C",c:"letter-c",l:"System calculates TDS under both regimes and applies whichever gives lower tax for each employee"}]},
-  {id:"q17",gap:"MISSING RULE",gc:"badge-missing",title:"TDS — Investment Declaration Submission",
-   text:"How will employees submit investment declarations (80C, HRA, LTA) for TDS computation?",
-   why:"BRD p.9 · TDS — Declarations: the BRD requires TDS to be calculated in the new system but does not describe how investment declarations are collected.\nDetermines if an employee self-service declaration module needs to be built.",
-   opts:[{t:"A",c:"letter-a",l:"Employee submits via self-service portal with proof upload; HR reviews and approves"},
-         {t:"B",c:"letter-b",l:"Accounts/HR collects declarations manually and enters them in the payroll system"},
-         {t:"C",c:"letter-c",l:"Provisional declaration entered at start of year; actuals entered at year-end with proofs"}]},
-  {id:"q18",gap:"MISSING RULE",gc:"badge-missing",title:"TDS — Mid-Year Joiner (Form 12B)",
-   text:"For employees who join mid-year from another company, how should previous salary be handled for TDS?",
-   why:"BRD p.9 · TDS — Mid-year joiner: the BRD requires automated TDS calculation but is silent on previous-employer income (Form 12B) for mid-year joiners.\nIf Form 12B is used, the system needs an input screen for previous employer salary and tax deducted.",
-   opts:[{t:"A",c:"letter-a",l:"Employee provides Form 12B; HR enters previous employer salary and TDS paid into the system"},
-         {t:"B",c:"letter-b",l:"System ignores previous employer salary; TDS calculated only on current employer income"},
-         {t:"C",c:"letter-c",l:"HR manually adjusts the TDS projection for the year after reviewing Form 12B separately"}]},
   {id:"q19",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Profession Tax — Jurisdiction Assignment",
    text:"How should the system determine which PT period structure (Panchayat vs Municipality) applies?",
    why:"BRD p.9 · Profession Tax — Jurisdiction: the BRD defines separate Panchayat and Municipality/Corporation PT periods, but does not say how an employee's jurisdiction is assigned.\nThis is the branching logic for the PT scheduler — branch-level vs employee-level config.",
@@ -330,12 +306,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Yes — PT slabs must be configurable by admin to handle future government changes without code deployments"},
          {t:"B",c:"letter-b",l:"No — PT slabs are hardcoded; a developer makes changes if government revises slabs"},
          {t:"C",c:"letter-c",l:"Configurable per jurisdiction — each branch/location can have its own slab table"}]},
-  {id:"q21",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"ESI — Conflicting Status: Out of Coverage + Relieved",
-   text:"If an employee is both out-of-coverage and relieved in the same period, which status appears in the ESI report?",
-   why:"BRD p.8 · ESI — Conflicting status: the BRD's new requirement states an employee Out of Coverage in August but Relieved on Sept 30 must show only RELIEVED, not Out of Coverage, in October's ESI report.\nDetermines report generation priority logic — data-level rule vs reporting filter are different implementations.",
-   opts:[{t:"A",c:"letter-a",l:"Data-level rule — underlying record is marked RELIEVED; out-of-coverage is overridden at source"},
-         {t:"B",c:"letter-b",l:"Reporting-level filter — both statuses exist in data; ESI report displays RELIEVED"},
-         {t:"C",c:"letter-c",l:"System alerts HR to manually resolve the conflict before generating the ESI report"}]},
   {id:"q22",gap:"MISSING RULE",gc:"badge-missing",title:"Voluntary PF — Employer Contribution Basis",
    text:"If an employee voluntarily contributes on full PF salary above Rs.15,000 ceiling, does the employer also match?",
    why:"BRD p.9 · Employer PF — Voluntary basis: the BRD says employer PF is 12% of PF Gross with no liability to match voluntary PF, and adds new contribution-option modes; the employer basis on voluntary PF is not fixed.\nDetermines employer PF ledger computation — separate rates change payroll calculation significantly.",
@@ -382,12 +352,12 @@ const Q = [
          {t:"C",c:"letter-c",l:"HR decides per case — option to reactivate or create new with a linkage to old profile"}]},
 
   {sec:"Section 5: Leave & Attendance",scBg:"#cffafe",scFg:"#0e7490",
-   id:"q29",gap:"MISSING RULE",gc:"badge-missing",title:"Leave Auto-Allocation — First Month Pro-Ration",
-   text:"For monthly leave allocation, how should the first month be handled for a new joiner?",
-   why:"BRD p.11 · Sec 2.8 Leave — Auto-allocation: the BRD's new requirement is to auto-allocate leave monthly or yearly per the Leave Group rules without manual intervention, but does not define first-month pro-ration.\nDetermines pro-ration logic in the leave allocation scheduler.",
-   opts:[{t:"A",c:"letter-a",l:"Full month credit for the joining month regardless of joining date"},
-         {t:"B",c:"letter-b",l:"Pro-rated based on remaining working days in the joining month"},
-         {t:"C",c:"letter-c",l:"No credit for joining month; allocation starts from the next full month"}]},
+   id:"q29",gap:"MISSING RULE",gc:"badge-missing",title:"Leave Pro-Ration — Exact Mid-Month Joiner Rule",
+   text:"For an employee who joins mid-month, what is the exact rule for the first month's leave allocation — proportional to remaining working days, or a threshold cut-off (e.g. no leave if joined after the 5th)?",
+   why:"BRD: Section 1.5 (p.11) — Sec 2.8 Leave: Auto-allocation. The BRD requires automatic monthly/yearly leave allocation per Leave Group rules without manual intervention but does not define the mid-month joiner pro-ration rule.\nWhy this matters: This single rule is the conditional logic inside the monthly leave scheduler for all new joiners. An ambiguous rule produces different leave balances depending on when HR runs the allocation or which developer wrote the condition.",
+   opts:[{t:"A",c:"letter-a",l:"Proportional — joining on day 15 of a 25-working-day month = 0.5 days credit; same rule applies for all leave types"},
+         {t:"B",c:"letter-b",l:"Threshold rule — join on or before the 5th = full month credit; join after the 5th = no credit for that month; applies to Earned Leave only"},
+         {t:"C",c:"letter-c",l:"No leave for the joining month regardless of date; allocation starts from the first day of the next full month"}]},
   {id:"q30",gap:"MISSING RULE",gc:"badge-missing",title:"Leave Balance — Negative Balance Policy",
    text:"Can an employee take leave beyond their available balance?",
    why:"BRD p.11 · Sec 2.8 Leave — Balance: the BRD sets 24 earned leaves/year for confirmed and 12 for probationers, but does not state whether leave beyond balance is allowed.\nDetermines if a hard block or soft warning is implemented in leave request submission.",
@@ -496,13 +466,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"7 years — in line with statutory compliance requirements for labour and tax records"},
          {t:"B",c:"letter-b",l:"3 years — sufficient for internal HR and payroll audit purposes"},
          {t:"C",c:"letter-c",l:"Indefinitely — never purge; archive older records to cold storage after 3 years"}]},
-  {id:"q47",gap:"MISSING RULE",gc:"badge-missing",title:"Form 16 — Generation in System",
-   text:"Should the system generate Form 16 (TDS certificate) for employees?",
-   why:"BRD p.9 · TDS — Form 16: the BRD asks for TDS calculation in the new system but does not state whether Form 16 is generated.\nForm 16 Part B can be system-generated; Part A must come from TRACES — determines if a PDF merge pipeline needs to be built.",
-   opts:[{t:"A",c:"letter-a",l:"Yes — system generates Form 16 Part B; HR uploads Part A from TRACES and system merges them"},
-         {t:"B",c:"letter-b",l:"No — Form 16 generation is handled by the accounts team outside this system"},
-         {t:"C",c:"letter-c",l:"System generates structured data for Form 16; final PDF is produced by accounts team"}]}
-,
   // ── SECTION 9: Personal Information — Additional ─────────────────────────────
   {sec:"Section 9: Personal Information — Additional",scBg:"#e0f2fe",scFg:"#075985",
    id:"q48",gap:"MISSING RULE",gc:"badge-missing",
@@ -591,9 +554,8 @@ const Q = [
    title:"Apprentice — Record Strategy, Start Dates and Gratuity Counting",
    text:"On conversion from apprentice to employee, is a new record created or does the existing record get promoted? Which date applies for leave, PF/ESI, and seniority? Does apprenticeship tenure count toward gratuity?",
    why:"BRD p.4 · Sec 2.2 Promotion/Demotion — Apprentice: the BRD says apprentices are trainees (not employees) who may convert to employment, but does not define the record/date model or gratuity counting on conversion.\nWhy this matters: One-record promotion vs new record affects database design, statutory joining date in EPFO, leave opening balance, and gratuity calculation start. These are fundamentally different data models.",
-   opts:[{t:"A",c:"letter-a",l:"Promote existing record — same ID; PF/ESI joining date = conversion date; leave and seniority start from conversion date; apprenticeship tenure does NOT count for gratuity"},
-         {t:"B",c:"letter-b",l:"Create a new employee record linked to the apprentice record; all statutory and HR dates fresh from conversion date; apprenticeship tenure does NOT count for gratuity"},
-         {t:"C",c:"letter-c",l:"Promote existing record; PF/ESI joining date = conversion date; seniority may optionally count from apprenticeship start (HR decides per employee); gratuity also per HR decision"}]},
+   opts:[{t:"A",c:"letter-a",l:"All dates (PF/ESI joining, leave, seniority) start from the conversion date; apprenticeship tenure does NOT count toward gratuity eligibility"},
+         {t:"B",c:"letter-b",l:"All dates start from the conversion date; but whether apprenticeship tenure counts toward gratuity and seniority is decided by HR per employee at the time of conversion"}]},
 
   {id:"q59",gap:"MISSING RULE",gc:"badge-missing",
    title:"Apprentice — What Specifically Differs from a Regular Employee",
@@ -685,46 +647,6 @@ const Q = [
          {t:"B",c:"letter-b",l:"Employee chooses their mode via self-service; HR approves; fixed voluntary max = 100% of Basic+DA"},
          {t:"C",c:"letter-c",l:"HR sets the mode; employee can request a change which HR approves; no defined maximum beyond statutory rules"}]},
 
-  {id:"q70",gap:"MISSING RULE",gc:"badge-missing",
-   title:"PF Gross — Full Exclusion Rules and Mandatory Salary Components Confirmation",
-   text:"Are HRA and Bonus the only allowances that can be excluded from PF gross (within 20% of Basic+DA)? Please confirm that Basic, DA, and CCA are the only mandatory components and that Washing Allowance is ESI-covered-only while Position Allowance is ESI-exempt-only.",
-   why:"BRD p.7 · Employee PF — PF Gross: the BRD derives PF Gross up to Rs.15,000, lets HRA/Bonus be excluded if not above 20% of Basic+DA, makes Basic/DA/CCA mandatory, and gives washing (ESI-only)/position (ESI-exempt-only) allowances; it asks these be confirmed.\nWhy this matters: Any additional excludable allowance extends the PF gross exclusion engine. The mandatory component and allowance-eligibility rules drive salary validation on setup — an incomplete list means invalid salary structures will be accepted.",
-   opts:[{t:"A",c:"letter-a",l:"Only HRA and Bonus can be excluded (within 20% rule); Basic/DA/CCA are the only mandatory components; Washing=ESI-only, Position=ESI-exempt-only — confirmed correct"},
-         {t:"B",c:"letter-b",l:"HRA, Bonus, and LTA can be excluded (within 20% rule each); all other rules confirmed"},
-         {t:"C",c:"letter-c",l:"The rules need verification with accounts — admin configures which allowances are PF-gross-excludable; eligibility rules are configurable per salary head group"}]},
-
-  {id:"q71",gap:"MISSING RULE",gc:"badge-missing",
-   title:"ESI — Eligibility Rule Completeness and Mid-Period Increment Handling",
-   text:"Is ESI eligibility solely based on gross not exceeding Rs.21,000, or are there additional conditions? If gross crosses Rs.21,000 mid-contribution-period, coverage must continue to period end — is this the complete rule?",
-   why:"BRD p.7 · Employee ESI — Eligibility: the BRD sets ESI at 0.75% of gross (less washing allowance), eligible when gross is at most Rs.21,000, with two contribution periods and continuation to period-end if gross crosses mid-period.\nWhy this matters: The ESI eligibility engine must implement exactly this threshold and period-continuation rule. Any additional conditions (e.g. excluding Washing Allowance from gross for ESI ceiling check) must be known before building the auto-enrollment logic.",
-   opts:[{t:"A",c:"letter-a",l:"ESI eligibility = gross not exceeding Rs.21,000; Washing Allowance excluded from gross for this check; mid-period continuation rule confirmed"},
-         {t:"B",c:"letter-b",l:"ESI eligibility = gross (including all allowances) not exceeding Rs.21,000; mid-period continuation rule confirmed"},
-         {t:"C",c:"letter-c",l:"ESI eligibility rules need verification with accounts — threshold and exclusions should be configurable in admin settings"}]},
-
-  {id:"q72",gap:"MISSING RULE",gc:"badge-missing",
-   title:"ESI Ceiling Reminder — Wording, Recipient and Payroll Block Decision",
-   text:"When an employee's gross crosses Rs.21,000 and they are still enrolled in ESI, should payroll be blocked until HR acts, or is it only a warning? Who receives the notification?",
-   why:"BRD p.7 · ESI — Ceiling reminder: the BRD's new requirement is a reminder when an employee's gross is above Rs.21,000 and they are not made out of ESI coverage during April & October payroll, but block-vs-warn is unspecified.\nWhy this matters: Block vs warning is a core payroll run gating decision. If payroll is blocked, a resolution workflow must be built. If only a warning, payroll proceeds but an acknowledgement audit trail of the warning is needed.",
-   opts:[{t:"A",c:"letter-a",l:"Warning only — payroll proceeds; HR Admin receives a notification; no block on payroll run"},
-         {t:"B",c:"letter-b",l:"Payroll blocked for that employee until HR marks them out of ESI coverage for the new period; HR Admin receives the alert"},
-         {t:"C",c:"letter-c",l:"Warning sent to HR Admin; payroll proceeds but the ESI deduction is flagged in the payslip; HR must resolve before next month"}]},
-
-  {id:"q73",gap:"MISSING RULE",gc:"badge-missing",
-   title:"Profession Tax — Correct Slab Figures and Monthly vs Half-Yearly Default",
-   text:"Please confirm the correct per-annum PT figures for every slab (two rows in the BRD both show Rs.900 Per Annum for different half-yearly income bands), and should PT deduction be monthly or half-yearly by default?",
-   why:"BRD p.8-9 · Profession Tax — Slabs: the BRD gives the half-yearly PT slab table (two bands both print Rs.900 Per Annum) and adds monthly PT deduction split equally over 6 months with a 6th-month rounding adjustment.\nWhy this matters: The BRD has a confirmed typo in the PT slab table — the system cannot correctly calculate PT without the confirmed figures. Monthly vs half-yearly default changes the entire deduction scheduling logic and the 6th-month rounding adjustment.",
-   opts:[{t:"A",c:"letter-a",l:"Slabs: up to Rs.11,999=Nil; Rs.12k-18k=Rs.640pa; Rs.18k-30k=Rs.900pa; Rs.30k-45k=Rs.1200pa; Rs.45k-1L=Rs.1500pa; Rs.1L-1.25L=Rs.2000pa; Rs.1.25L+=Rs.2500pa; default is monthly"},
-         {t:"B",c:"letter-b",l:"Slabs: up to Rs.11,999=Nil; Rs.12k-18k=Rs.640pa; Rs.18k-30k=Rs.900pa; Rs.30k-45k=Rs.1500pa; Rs.45k-1L=Rs.1500pa; Rs.1L-1.25L=Rs.2000pa; Rs.1.25L+=Rs.2500pa; default is half-yearly"},
-         {t:"C",c:"letter-c",l:"Slab figures must be confirmed by accounts and entered into admin settings; default deduction frequency is configurable per company"}]},
-
-  {id:"q74",gap:"MISSING RULE",gc:"badge-missing",
-   title:"TDS — First Release Scope: Manual Feed or Automated Calculation",
-   text:"For the first release, should TDS remain manual (accounts department feeds the amount monthly) or should automated TDS calculation be fully in scope?",
-   why:"BRD p.9 · TDS — Scope: the BRD says TDS is currently fed manually from accounts via the Monthly Allowances & Deductions screen and asks for TDS calculation in the new system, but does not fix the first-release scope.\nWhy this matters: Fully automated TDS requires a tax engine with regime selection, investment declarations, Form 12B, and projection recalculation — several months of build effort. Manual feed is a simple data entry field. This scoping decision alone determines the size of the TDS module.",
-   opts:[{t:"A",c:"letter-a",l:"First release: TDS stays manual — accounts enters the TDS amount in the Monthly Allowances & Deductions screen; automated calculation is a later phase"},
-         {t:"B",c:"letter-b",l:"Automated TDS calculation is fully in scope for the first release — regime, declarations, projection, and Form 12B all included"},
-         {t:"C",c:"letter-c",l:"Hybrid: automated projection in the system, but accounts can override the monthly TDS amount if needed"}]},
-
   {id:"q75",gap:"MISSING RULE",gc:"badge-missing",
    title:"WPS — Which Employees Must Be Covered and What Data Is Required",
    text:"Which employees does the WPS (Wage Protection System) apply to, and what data must be present on the employee record before WPS can be enabled?",
@@ -782,14 +704,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Fully automatic with no HR confirmation; existing employees back-allocated for the current leave year on go-live"},
          {t:"B",c:"letter-b",l:"Fully automatic; only new employees going forward — existing employee balances migrated from old system as opening balances"},
          {t:"C",c:"letter-c",l:"System runs allocation and generates a pending task for HR to confirm before balances are credited; existing employees migrated as opening balances"}]},
-
-  {id:"q82",gap:"MISSING RULE",gc:"badge-missing",
-   title:"Leave Pro-Ration — Exact Mid-Month Joiner Rule",
-   text:"For an employee who joins mid-month, what is the exact rule for the first month's leave allocation — proportional to remaining working days, or a threshold cut-off (e.g. no leave if joined after the 5th)?",
-   why:"BRD p.11 · Sec 2.8 Leave — Auto-allocation: the BRD asks for automatic monthly/yearly leave allocation but does not define the exact mid-month joiner pro-ration rule.\nWhy this matters: This single rule is the conditional logic inside the monthly leave scheduler for all new joiners. An ambiguous rule produces different balances depending on when HR runs the allocation or which developer wrote the condition.",
-   opts:[{t:"A",c:"letter-a",l:"Proportional — joining on day 15 of a 25-working-day month = 0.5 days leave credit for that month"},
-         {t:"B",c:"letter-b",l:"Threshold rule — join on or before the 5th = full month credit; join after the 5th = no credit for that month"},
-         {t:"C",c:"letter-c",l:"No leave for the joining month regardless of date; allocation starts from first day of next full month"}]},
 
   {id:"q83",gap:"MISSING RULE",gc:"badge-missing",
    title:"Negative Leave — LOP Auto-Conversion in Payroll",
@@ -1307,7 +1221,7 @@ async function generateAndSend() {
     children.push(
       new D.Table({
         width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
-        rows: [new D.TableRow({ children: [['88','Total Questions'],['13','Sections'],['88','Answered'],['0','Skipped']].map(function(pair) {
+        rows: [new D.TableRow({ children: [['76','Total Questions'],['13','Sections'],['76','Answered'],['0','Skipped']].map(function(pair) {
           return new D.TableCell({
             width: { size: 2156, type: D.WidthType.DXA },
             borders: { top: tb, bottom: tb, left: tb, right: tb },
