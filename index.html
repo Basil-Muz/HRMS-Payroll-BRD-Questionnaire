@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRMS Payroll &mdash; BRD Questionnaires</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto;line-height:1.7}
+
+/* MENU */
+.main-wrap{max-width:880px;margin:-32px auto 64px;padding:0 32px;position:relative;z-index:1}
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.module-card{display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:28px;text-decoration:none;color:inherit;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.module-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--accent)}
+.module-icon{width:44px;height:44px;background:var(--accent-light);color:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:16px}
+.module-card h2{font-size:18px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.module-card p{color:var(--ink3);font-size:13.5px;margin-bottom:18px;flex-grow:1}
+.module-meta{display:flex;gap:14px;font-size:12px;color:var(--ink4);font-weight:500;margin-bottom:16px}
+.module-cta{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:13.5px;font-weight:600}
+.module-card:hover .module-cta{gap:9px}
+.module-cta svg{transition:transform .15s ease}
+
+/* MORE COMING */
+.more-note{text-align:center;color:var(--ink4);font-size:13px;margin-top:32px}
+
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .hero{padding:44px 16px 56px}
+  .main-wrap{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">H</div>
+    <span class="brand-name">HRMS Payroll &mdash; BRD Questionnaire</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Business Requirements Documentation
+  </div>
+  <h1>Select a <em>Module</em><br>to Begin</h1>
+  <p>Each module has its own stakeholder questionnaire. Pick the one you're reviewing &mdash; your answers download as a Word document on submission.</p>
+</div>
+
+<div class="main-wrap">
+  <div class="module-grid">
+    <a class="module-card" href="EmployeeManagement_BRD_Questionnaire.html">
+      <div class="module-icon">H</div>
+      <h2>Employee Management</h2>
+      <p>Core HRMS stakeholder questionnaire covering employee lifecycle, records, and policies.</p>
+      <div class="module-meta"><span>76 Questions</span><span>13 Sections</span></div>
+      <span class="module-cta">Open questionnaire
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+    <a class="module-card" href="Masters_BRD_Questionnaire.html">
+      <div class="module-icon">M</div>
+      <h2>Masters</h2>
+      <p>MUZPAYROLL masters questionnaire covering configuration and reference data setup.</p>
+      <div class="module-meta"><span>26 Questions</span><span>10 Sections</span></div>
+      <span class="module-cta">Open questionnaire
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+  </div>
+  <p class="more-note">More modules will appear here as they're added.</p>
+</div>
+
+</body>
+</html>
