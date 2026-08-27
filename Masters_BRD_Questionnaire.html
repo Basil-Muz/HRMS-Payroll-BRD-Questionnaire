@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUZPAYROLL Masters — BRD Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --amber:#9a6700;--amber-bg:#fff8c5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:200px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3fb950;border-radius:4px;transition:width .35s}
+.progress-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;white-space:nowrap}
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.hero-stat{padding:14px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .n{font-size:22px;font-weight:600;color:#fff;line-height:1}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+/* MAIN */
+.main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
+.section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
+/* CARD */
+.q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.q-card.answered{border-color:#3fb950}
+.q-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.q-card-top{padding:20px 24px 0}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.q-number.answered-num{background:#3fb950}
+.gap-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px;flex-shrink:0}
+.badge-missing{background:var(--red-bg);color:var(--red)}
+.badge-ambiguous{background:var(--amber-bg);color:var(--amber)}
+.badge-workflow{background:#dbeafe;color:#1e40af}
+.badge-scalability{background:var(--purple-bg);color:var(--purple)}
+.q-title-text{font-size:13px;font-weight:500;color:var(--ink3)}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.45}
+.req-star{color:var(--red);margin-left:2px}
+.q-why{background:var(--paper2);border-left:3px solid var(--accent);padding:9px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px}
+.q-why b{color:var(--accent);font-weight:600}
+/* OPTIONS */
+.options-wrap{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:all .15s;user-select:none}
+.opt-label:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt-label.selected{border-color:var(--accent);background:var(--accent-light)}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;margin-top:1px;background:#fff;transition:all .15s;position:relative}
+.opt-indicator::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .15s}
+.opt-label.selected .opt-indicator{border-color:var(--accent)}
+.opt-label.selected .opt-indicator::after{opacity:1}
+.opt-letter{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.3px}
+.letter-a{background:var(--green-bg);color:var(--green)}
+.letter-b{background:var(--amber-bg);color:var(--amber)}
+.letter-c{background:var(--red-bg);color:var(--red)}
+.opt-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+/* CUSTOM */
+.custom-wrap{padding:0 24px 20px}
+.custom-lbl{font-size:12px;font-weight:600;color:var(--ink4);margin-bottom:6px;display:block;letter-spacing:.3px}
+.custom-ta{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);resize:vertical;min-height:64px;background:var(--paper2);transition:border-color .15s,background .15s;line-height:1.55}
+.custom-ta:focus{outline:none;border-color:var(--accent);background:#fff}
+.custom-ta::placeholder{color:var(--ink4)}
+/* ERROR */
+.err-msg{padding:0 24px 14px;font-size:12px;color:var(--red);font-weight:500;display:none}
+.err-msg.visible{display:block}
+/* SUBMIT */
+.submit-zone{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:32px;margin-top:36px;text-align:center;box-shadow:var(--shadow-lg)}
+.submit-zone h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+.submit-zone p{font-size:13px;color:var(--ink3);margin-bottom:24px}
+.submit-btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(13,17,23,.18)}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn.all-good{background:#1a7f37}
+.submit-btn.all-good:hover{background:#116329}
+.incomplete-msg{background:var(--red-bg);border:1px solid #ffc1c0;border-radius:var(--radius);padding:12px 16px;color:var(--red);font-size:13px;font-weight:500;margin-bottom:16px;display:none;text-align:left}
+.incomplete-msg.show{display:block}
+.incomplete-msg ul{margin-top:6px;padding-left:18px}
+.incomplete-msg li{font-size:12px;margin-top:3px;font-weight:400}
+/* OVERLAY */
+.gen-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.65);align-items:center;justify-content:center}
+.gen-overlay.show{display:flex}
+.gen-box{background:#fff;border-radius:var(--radius-lg);padding:36px 52px;text-align:center;box-shadow:var(--shadow-lg);min-width:260px}
+.spinner{width:40px;height:40px;border:3px solid #eaeef2;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.gen-sub{font-size:12px;color:var(--ink3)}
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.175,.885,.32,1.275),opacity .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-check{width:20px;height:20px;background:#3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .progress-track{width:100px}
+  .hero{padding:36px 16px 44px}
+  .q-card-top,.options-wrap,.custom-wrap{padding-left:16px;padding-right:16px}
+  .submit-zone{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">M</div>
+    <span class="brand-name">MUZPAYROLL &mdash; Masters BRD Questionnaire</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-label" id="pLabel">0 / 26</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Stakeholder Review Required
+  </div>
+  <h1>Masters Module<br><em>BRD Requirements Form</em></h1>
+  <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">26</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">10</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
+  <div id="formContainer"></div>
+  <div class="submit-zone">
+    <h3>Ready to submit?</h3>
+    <p>All 26 questions must be answered. On submit, your answers download as a Word document.</p>
+    <div class="incomplete-msg" id="incompleteMsg">
+      <strong>Please answer all required questions before submitting:</strong>
+      <ul id="missingList"></ul>
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Submit &amp; Download Word File
+    </button>
+  </div>
+</div>
+
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-box">
+    <div class="spinner"></div>
+    <div class="gen-title" id="genTitle">Building Word document...</div>
+    <div class="gen-sub" id="genSub">Please wait a moment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-check">
+    <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <span id="toastMsg">Word file downloaded!</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@9.0.0/build/index.umd.js"></script>
+<script>
+// ── CREDENTIALS ────────────────────────────────────────────
+const EJS_SVC = "service_810fwvr";
+const EJS_TPL = "template_r5dzues";
+const EJS_KEY = "qUhHhbd3LDMq4AcQB";
+emailjs.init({ publicKey: EJS_KEY });
+
+// ── QUESTION DATA ──────────────────────────────────────────────────
+const Q = [
+  {sec:"Section 2: Designation & Department",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q1",gap:"MISSING RULE",gc:"badge-missing",title:"Designation — Fields on a Record",
+   text:"When HR Admin creates a Designation, which fields are captured?",
+   why:"BRD Masters p.1 \u00b7 Designation: the BRD says designations define various designations within the company across all levels and hierarchy, but lists no fields beyond a name.\nDetermines the columns in the designations table and the form fields on the master screen.",
+   opts:[{t:"A",c:"letter-a",l:"Name only \u2014 just the designation title (e.g. Software Engineer)"},
+         {t:"B",c:"letter-b",l:"Name + Code \u2014 a short identifier used in reports (e.g. SE-01)"},
+         {t:"C",c:"letter-c",l:"Name + Code + Level number \u2014 for hierarchy ranking (Level 1 = junior, Level 10 = senior)"}]},
+  {id:"q2",gap:"MISSING RULE",gc:"badge-missing",title:"Department \u2014 Parent Department for Hierarchy",
+   text:"Can a Department have a parent department (e.g. Mobile Dev sits under Engineering)?",
+   why:"BRD Masters p.1 \u00b7 Department: the BRD says departments define all departments currently existing in the company, but does not state whether nesting or hierarchy is required.\nDetermines whether the departments table needs a self-referential parent_department_id foreign key.",
+   opts:[{t:"A",c:"letter-a",l:"No \u2014 departments are a flat list; no nesting; all departments are at the same level"},
+         {t:"B",c:"letter-b",l:"Yes \u2014 unlimited nesting allowed; a department can have sub-departments at any depth"},
+         {t:"C",c:"letter-c",l:"Yes \u2014 but only one level deep; sub-departments cannot have their own children"}]},
+  {id:"q3",gap:"MISSING RULE",gc:"badge-missing",title:"Designation \u2014 Linked to a Specific Department?",
+   text:"Is a Designation linked to a specific Department, or are Designations company-wide and can appear in any Department?",
+   why:"BRD Masters p.1 \u00b7 Designation + Department: both masters are listed separately with no relationship defined between them.\nDetermines whether a department_id foreign key belongs on the designations table.",
+   opts:[{t:"A",c:"letter-a",l:"Company-wide \u2014 any designation can be assigned to employees in any department; no department link"},
+         {t:"B",c:"letter-b",l:"Department-specific \u2014 Senior Engineer only exists under Engineering; one designation belongs to one department"},
+         {t:"C",c:"letter-c",l:"Flexible \u2014 a designation can be linked to one or more specific departments but not necessarily all"}]},
+
+  {sec:"Section 3: Job Grade & Government Job Grade",scBg:"#ede9fe",scFg:"#5b21b6",
+   id:"q4",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Job Grade vs Designation \u2014 Are They Different Things?",
+   text:"The BRD shows Job Grade and Designation as separate masters. What is the difference between them in your organisation?",
+   why:"BRD Masters p.1 \u00b7 Job Grade + Designation: both masters are listed separately; the BRD says Job Grade represents job grades across all departments, but the relationship to Designation is not defined.\nDetermines whether Job Grade and Designation are one table or two distinct tables with a relationship.",
+   opts:[{t:"A",c:"letter-a",l:"Different things \u2014 Grade is a level/band (Grade 1, Grade 2) and Designation is the job title (Manager, Analyst); an employee has both independently"},
+         {t:"B",c:"letter-b",l:"Effectively the same \u2014 Job Grade IS the Designation; one of these masters can be removed"},
+         {t:"C",c:"letter-c",l:"Different purpose \u2014 Job Grade is used only for salary banding and minimum wage; Designation is the display title on payslips and org charts"}]},
+  {id:"q5",gap:"MISSING RULE",gc:"badge-missing",title:"Job Grade \u2014 Salary Band Attached?",
+   text:"Does a Job Grade record have a Minimum Salary and Maximum Salary attached to it for salary banding?",
+   why:"BRD Masters p.1 \u00b7 Job Grade: the BRD says Job Grade represents job grades in the organisation across all departments but lists no fields beyond a name.\nDetermines whether min_salary and max_salary columns are needed on the job_grades table.",
+   opts:[{t:"A",c:"letter-a",l:"Yes \u2014 each Job Grade has a Minimum and Maximum Salary; payroll warns if an employee's salary falls outside the band"},
+         {t:"B",c:"letter-b",l:"No salary band \u2014 Job Grade is a classification only (name and code); no salary range attached"},
+         {t:"C",c:"letter-c",l:"Optional \u2014 salary band fields exist but are not mandatory; HR fills them in or leaves them blank"}]},
+  {id:"q6",gap:"MISSING RULE",gc:"badge-missing",title:"Government Job Grade \u2014 Fixed List or HR-Maintained?",
+   text:"Is the Government Job Grade list fixed (set by a government body, updated only by a developer), or does HR Admin maintain and add to it in the Masters screen?",
+   why:"BRD Masters p.1 \u00b7 Government Job Grade: the BRD says it defines job grades assigned by the government to different industry sectors, but does not say who can add entries.\nDetermines whether this is a seeded ENUM or a configurable master table with an admin screen.",
+   opts:[{t:"A",c:"letter-a",l:"Fixed government list \u2014 seeded at setup; HR Admin can only assign grades to employees; a code change is needed to add new grades"},
+         {t:"B",c:"letter-b",l:"HR-maintained \u2014 HR Admin can create and edit Government Job Grades in the Masters screen just like any other master"},
+         {t:"C",c:"letter-c",l:"Fixed default list with Super Admin override \u2014 standard government list but Super Admin can add custom entries for company-specific situations"}]},
+
+  {sec:"Section 4: Employee Type",scBg:"#fff8c5",scFg:"#92400e",
+   id:"q7",gap:"MISSING RULE",gc:"badge-missing",title:"Employee Type \u2014 Classification or Lifecycle Status?",
+   text:"The BRD lists Employee Type as: Permanent, Probationer, Trainee. Does this describe the type of contract an employee is on (fixed classification), or where they are in their employment journey (lifecycle status that changes over time)?",
+   why:"BRD Masters p.2 \u00b7 Employee Type: the BRD says Employee Type specifies the categories of employees with three types listed, but does not say whether this is a fixed classification or a changing lifecycle status.\nThis is the most critical question \u2014 classification vs lifecycle changes the core data model.",
+   opts:[{t:"A",c:"letter-a",l:"Contract type \u2014 fixed at joining; Permanent = standard employment; Trainee = training contract; Probationer = probation-period contract; changes only if the contract type changes"},
+         {t:"B",c:"letter-b",l:"Lifecycle status \u2014 changes over time; Probationer becomes Permanent after confirmation; Trainee becomes Permanent after training ends"},
+         {t:"C",c:"letter-c",l:"Both \u2014 Permanent and Trainee are fixed contract types; Probationer is a lifecycle phase that Permanent employees pass through initially"}]},
+  {id:"q8",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Employee Type \u2014 Permanent vs Regular",
+   text:"The current system uses Regular as the standard employee category. The BRD uses Permanent. Are these the same concept, or are they different?",
+   why:"BRD Masters p.2 \u00b7 Employee Type: Permanent is listed as a type but the Data Spec v1.1 uses Regular as the equivalent category label.\nDetermines whether to rename Regular to Permanent in the Data Spec, or to add Permanent as a separate value with a distinct meaning.",
+   opts:[{t:"A",c:"letter-a",l:"Same concept \u2014 Permanent and Regular mean the same thing; use Permanent as the display label going forward"},
+         {t:"B",c:"letter-b",l:"Different \u2014 Permanent means confirmed employee on a permanent contract; Regular is broader and includes fixed-term and contract staff"},
+         {t:"C",c:"letter-c",l:"Permanent is a sub-type of Regular \u2014 there are also regular employees on fixed-term contracts who are not permanent"}]},
+  {id:"q9",gap:"SCALABILITY",gc:"badge-scalability",title:"Employee Type \u2014 Can HR Admin Add New Types?",
+   text:"Can HR Admin create new Employee Types in the Masters screen (e.g. Contract Staff, Part-Time), or is the list fixed in the system?",
+   why:"BRD Masters p.2 \u00b7 Employee Type: the BRD lists three types but does not state whether HR Admin can add more.\nIf configurable, this becomes a database master table. If fixed, it is a hardcoded ENUM requiring a code change to update.",
+   opts:[{t:"A",c:"letter-a",l:"Fixed list only \u2014 Permanent, Probationer, Trainee; HR Admin cannot add types; a developer must make code changes to add new ones"},
+         {t:"B",c:"letter-b",l:"Configurable \u2014 HR Admin can create new Employee Types in the Masters screen just like creating a new Designation"},
+         {t:"C",c:"letter-c",l:"Super Admin configurable only \u2014 Super Admin can add types; HR Admin can only assign existing types to employees"}]},
+
+  {sec:"Section 5: Salary Head",scBg:"#dafbe1",scFg:"#14532d",
+   id:"q10",gap:"MISSING RULE",gc:"badge-missing",title:"Salary Head \u2014 Group or Individual Component?",
+   text:"When HR Admin goes to Masters \u2192 Salary Head, what do they create \u2014 a named bundle of salary components (like a salary template), or individual component definitions (Basic Salary, HRA, CCA separately)?",
+   why:"BRD Masters p.2 \u00b7 Salary Head: the BRD says Salary Head defines various components of the salary structure including allowances, deductions and company contributions, but does not say how it is structured.\nThis is the most important salary question \u2014 it determines whether one or two tables are needed in the database.",
+   opts:[{t:"A",c:"letter-a",l:"Individual components \u2014 HR creates each component (Basic, HRA, CCA) one by one; separately a Salary Structure screen groups them into packages assigned to employees"},
+         {t:"B",c:"letter-b",l:"The Salary Head IS the group \u2014 HR creates a named group (e.g. Grade A Package) and adds all components inside it in the same screen; no separate structure screen"},
+         {t:"C",c:"letter-c",l:"Both in one screen \u2014 HR creates the group, adds components to it, and sets formulas all in one place; the group is then assigned to an employee"}]},
+  {id:"q11",gap:"MISSING RULE",gc:"badge-missing",title:"Salary Head \u2014 Formula or Fixed Amount?",
+   text:"For each salary component (e.g. HRA), is the amount calculated as a percentage or formula of gross salary, as a fixed rupee amount, or can it be either?",
+   why:"BRD Masters p.2 \u00b7 Salary Head: the BRD lists components including Basic, Bonus, HRA, ESI, PF but does not state whether they are formula-driven or fixed amounts.\nDetermines whether the salary_components table stores a formula expression or a fixed value \u2014 different data types and different validation logic.",
+   opts:[{t:"A",c:"letter-a",l:"Formula only \u2014 all components derived from Gross using a percentage formula (e.g. HRA = 40% of Gross); HR enters the percentage"},
+         {t:"B",c:"letter-b",l:"Fixed only \u2014 all components are fixed rupee amounts (e.g. HRA = Rs.5,000); HR enters the amount"},
+         {t:"C",c:"letter-c",l:"Either \u2014 HR chooses per component: formula (percentage of Gross or Basic) or fixed rupee amount; both types can exist in the same structure"}]},
+  {id:"q12",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Salary Head \u2014 Who Can Create and Edit?",
+   text:"Who has permission to create, edit, or delete Salary Head components and groups?",
+   why:"BRD Masters p.2 \u00b7 Salary Head: the BRD does not state who can configure salary heads; salary heads drive every payroll calculation.\nDetermines the access control rule for salary configuration \u2014 incorrect permissions here could allow unauthorised salary changes.",
+   opts:[{t:"A",c:"letter-a",l:"Super Admin only \u2014 HR Admin can view and assign salary structures to employees, but cannot create or edit them"},
+         {t:"B",c:"letter-b",l:"HR Admin can create and edit salary heads; Super Admin can do everything HR Admin can"},
+         {t:"C",c:"letter-c",l:"HR Admin creates; only Super Admin can delete; editing existing components requires Super Admin approval"}]},
+
+  {sec:"Section 6: Attendance & Leave Attributes",scBg:"#ccfbf1",scFg:"#0d5b52",
+   id:"q13",gap:"MISSING RULE",gc:"badge-missing",title:"Attendance & Leave \u2014 Complete List of All Codes",
+   text:"The BRD lists P (Present), CO (Compensatory Off), LOP (Loss of Pay), H (Holiday) and says other attributes as defined in the system. What is the full list of all attendance and leave codes used?",
+   why:"BRD Masters p.2 \u00b7 Attendance and Leave: the BRD defines four codes but says other attributes as defined in the system \u2014 this is not buildable without the complete list.\nThe full list is needed to seed the database at setup. Missing codes cannot be added after go-live without a schema change.",
+   opts:[{t:"A",c:"letter-a",l:"Standard set \u2014 P, A (Absent), HD (Half Day), H (Holiday), WO (Week Off), EL (Earned Leave), SL (Sick Leave), CL (Casual Leave), ML (Maternity Leave), CO (Comp Off), LOP (Loss of Pay), OD (On Duty); no other codes needed"},
+         {t:"B",c:"letter-b",l:"Standard set plus additional codes \u2014 the list above plus more codes; please write the additional codes in the notes field below"},
+         {t:"C",c:"letter-c",l:"Leave types (EL, SL, CL, ML) are defined in a separate Leave Types master, not here; attendance codes (P, A, HD, H, WO, LOP, OD) are defined here"}]},
+  {id:"q14",gap:"SCALABILITY",gc:"badge-scalability",title:"Attendance & Leave \u2014 Can HR Admin Add Custom Codes?",
+   text:"Can HR Admin create new attendance or leave codes in the Masters screen, or is the list fixed?",
+   why:"BRD Masters p.2 \u00b7 Attendance and Leave: the BRD does not state whether new codes can be added by HR Admin.\nIf configurable, attendance attributes become a master table. If fixed, they are seeded constants \u2014 two different architectural decisions.",
+   opts:[{t:"A",c:"letter-a",l:"Fixed \u2014 only the system-defined codes exist; HR Admin cannot add new codes; the list is the same for all companies"},
+         {t:"B",c:"letter-b",l:"Configurable \u2014 HR Admin can add new leave types (e.g. Paternity Leave) in the Masters screen; new types appear automatically in leave applications"},
+         {t:"C",c:"letter-c",l:"Configurable by Super Admin only \u2014 HR Admin assigns existing types but cannot create new ones"}]},
+
+  {sec:"Section 7: DA Centre",scBg:"#fef3c7",scFg:"#92400e",
+   id:"q15",gap:"MISSING RULE",gc:"badge-missing",title:"DA Centre \u2014 How Does It Connect to Salary?",
+   text:"DA Centre is listed as a Masters entry. How does an employee's DA Centre affect their salary calculation?",
+   why:"BRD Masters p.3 \u00b7 DA Centre: the BRD says DA Centre refers to the dearness allowance centre allocated by the Kerala government, but does not explain how it connects to salary computation. DA Centre has no table in the current Data Spec v1.1.\nWithout this answer, DA Centre cannot be added to the salary calculation engine or the Data Spec.",
+   opts:[{t:"A",c:"letter-a",l:"DA is a separate salary component with a rate that varies by DA Centre; each centre has its own DA rate defined in the master; the system uses the employee's assigned centre to look up the amount"},
+         {t:"B",c:"letter-b",l:"DA is already inside the Basic+DA component \u2014 it is not a separate line item; DA Centre is informational only and does not drive any calculation"},
+         {t:"C",c:"letter-c",l:"DA Centre determines whether DA applies at all; only employees in certain centres (e.g. Ernakulam) are eligible; employees not in a DA centre receive zero DA"}]},
+
+  {sec:"Section 8: Advance Type & Projects",scBg:"#ffebe9",scFg:"#7f1d1d",
+   id:"q16",gap:"MISSING RULE",gc:"badge-missing",title:"Advance Type \u2014 What Rules Apply?",
+   text:"For Salary Advance and Loans, what rules does the system need to enforce for each type?",
+   why:"BRD Masters p.3 \u00b7 Advance Type: the BRD lists Salary Advance and Loans as advance types but gives no fields, limits, or rules.\nWithout knowing the rules, neither the advance_types table nor the advance request and repayment workflow can be designed.",
+   opts:[{t:"A",c:"letter-a",l:"Simple \u2014 max amount (fixed cap or number of months of salary) and max repayment installments; no interest rate; HR Admin approves manually"},
+         {t:"B",c:"letter-b",l:"Detailed \u2014 max amount, max installments, interest rate (0% for salary advance, configurable for loans), and eligibility criteria (e.g. confirmed employees only)"},
+         {t:"C",c:"letter-c",l:"No system rules \u2014 Advance Type is just a name or category; actual amounts and repayment are entered manually per advance request by HR Admin"}]},
+  {id:"q17",gap:"MISSING RULE",gc:"badge-missing",title:"Projects \u2014 What Fields Does a Project Record Have?",
+   text:"When HR Admin creates a Project in the Masters screen, what information is stored for it?",
+   why:"BRD Masters p.3 \u00b7 Projects: the BRD says Projects is used to create the project teams currently available in the company, but lists no fields.\nDetermines whether Projects needs a full master table with dates and manager links, or if it is just a name label assigned to employees.",
+   opts:[{t:"A",c:"letter-a",l:"Name and Code only \u2014 Project is just a label assigned to employees; no dates, no manager link"},
+         {t:"B",c:"letter-b",l:"Name, Code, Start Date, End Date, and Project Manager linked to an employee record"},
+         {t:"C",c:"letter-c",l:"Name, Code, Client Name, Status (Active/Completed), with the ability to create sub-projects or Teams under a Project"}]},
+
+  {sec:"Section 9: Organisation Masters",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q18",gap:"MISSING RULE",gc:"badge-missing",title:"Company \u2014 What Fields Are Captured?",
+   text:"When HR Admin creates a Company record in the system, what information is entered?",
+   why:"BRD Masters p.3 \u00b7 Company: the BRD says Company can be created using this master screen but lists no fields.\nConfirms the companies table field list in Data Spec v1.1 and identifies any missing fields.",
+   opts:[{t:"A",c:"letter-a",l:"Basic fields only \u2014 Company Name, Company Code, Registered Address, GSTIN, Company PAN"},
+         {t:"B",c:"letter-b",l:"Basic fields plus payroll settings \u2014 the above plus Payroll Cycle Day (which day of month payroll opens) and Employee Code Format (prefix, starting number, pad length)"},
+         {t:"C",c:"letter-c",l:"All of the above plus branding \u2014 Company Logo for payslip header and company letterhead template"}]},
+  {id:"q19",gap:"MISSING RULE",gc:"badge-missing",title:"Branch \u2014 What Fields Are Captured?",
+   text:"When HR Admin creates a Branch under a Company, what information is entered for that branch?",
+   why:"BRD Masters p.3 \u00b7 Branch: the BRD says different branches of the company can be created but lists no fields.\nConfirms whether the current Data Spec branch fields (name, code, address, PT jurisdiction, Saturday pair, WPS flag) are complete.",
+   opts:[{t:"A",c:"letter-a",l:"Name, Code, Address, PT Jurisdiction (Panchayat / Municipality / Corporation) \u2014 that is all"},
+         {t:"B",c:"letter-b",l:"Name, Code, Address, PT Jurisdiction, plus Saturday working pattern (All / 1st and 3rd / 2nd and 4th / No Saturdays)"},
+         {t:"C",c:"letter-c",l:"All of the above plus WPS Enabled flag (for Wage Protection System compliance)"}]},
+  {id:"q20",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Location \u2014 Must It Belong to a Branch?",
+   text:"The BRD says if a branch has different locations, that can be created here. This implies Location always belongs to a Branch. Is that correct, or can a Location exist without a Branch?",
+   why:"BRD Masters p.3 \u00b7 Location: the BRD describes Location as being under Branch, but the Data Spec v1.1 (CR-19) allows a Location without a Branch (branch_id is nullable).\nThis directly changes the Data Spec \u2014 branch_id is either NOT NULL (mandatory) or nullable.",
+   opts:[{t:"A",c:"letter-a",l:"Must belong to a Branch \u2014 a Location cannot be created without selecting a Branch first; branch_id is mandatory"},
+         {t:"B",c:"letter-b",l:"Optional \u2014 a Location can exist without a Branch; some locations are company-wide; branch_id is optional"},
+         {t:"C",c:"letter-c",l:"Depends on the company \u2014 some companies have locations under branches, others have standalone locations; both should be supported"}]},
+  {id:"q21",gap:"MISSING RULE",gc:"badge-missing",title:"License Agreement \u2014 What Does This Screen Do?",
+   text:"The BRD lists License Agreement under Organisation Masters but gives no description. What is this screen for?",
+   why:"BRD Masters p.3 \u00b7 License Agreement: listed as a menu item with no description at all.\nWithout understanding this screen, we cannot write requirements or decide whether a database table is needed.",
+   opts:[{t:"A",c:"letter-a",l:"Read-only display \u2014 HR Admin or Super Admin can view the MUZPAYROLL software licence terms; no data entry; no database table needed"},
+         {t:"B",c:"letter-b",l:"Module licensing \u2014 shows which MUZPAYROLL modules are licensed to this company (Payroll active, Attendance not licensed); determines which screens are visible"},
+         {t:"C",c:"letter-c",l:"Document upload \u2014 HR Admin uploads or acknowledges a company-specific licence document as part of company setup"}]},
+
+  {sec:"Section 10: Status Update & User Rights",scBg:"#fbefff",scFg:"#6639ba",
+   id:"q22",gap:"MISSING RULE",gc:"badge-missing",title:"Status Update \u2014 What Happens When a Master Is Deactivated?",
+   text:"If a Designation is deactivated, what happens to employees currently assigned to that designation?",
+   why:"BRD Masters p.3 \u00b7 Status Update: the BRD says masters can be deactivated if they become redundant, but does not define what happens to existing employee records that reference the deactivated master.\nDetermines the service layer logic \u2014 a block, a warning, or a silent keep \u2014 each requires different implementation.",
+   opts:[{t:"A",c:"letter-a",l:"Employees keep the deactivated designation \u2014 it still shows on their profile but HR Admin cannot assign it to new employees; deactivation is always permitted"},
+         {t:"B",c:"letter-b",l:"Block deactivation \u2014 the system prevents deactivation if any employee is currently assigned; HR Admin must reassign all affected employees first"},
+         {t:"C",c:"letter-c",l:"Warn and proceed \u2014 system warns HR Admin how many employees are affected but allows deactivation; those employees are flagged for reassignment"}]},
+  {id:"q23",gap:"MISSING RULE",gc:"badge-missing",title:"User Rights \u2014 What Roles Exist in the System?",
+   text:"What are all the roles in MUZPAYROLL? Please confirm which of the following are correct.",
+   why:"BRD Masters p.3 \u00b7 User Rights: the BRD lists users as a master item but does not enumerate the roles.\nRole definitions must be finalised before access control rules can be written in the PRD \u2014 every screen, API endpoint, and field-level visibility rule is tied to a role.",
+   opts:[{t:"A",c:"letter-a",l:"5 roles \u2014 Super Admin, HR Admin, Finance / Accounts, Manager (Reporting Head), Employee (Self-Service); no separate Payroll Officer role; Finance handles payroll"},
+         {t:"B",c:"letter-b",l:"6 roles \u2014 Super Admin, HR Admin, Payroll Officer, Finance / Accounts, Manager, Employee; Payroll Officer and Finance are separate roles with different permissions"},
+         {t:"C",c:"letter-c",l:"More than 6 roles \u2014 the above plus additional roles; please list them in the notes field below"}]},
+  {id:"q24",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"User Creation \u2014 Automatic or Manual?",
+   text:"The BRD says new employee users can be created manually if not generated automatically. When does automatic user creation happen?",
+   why:"BRD Masters p.3 \u00b7 User: the BRD says a user is auto-generated when the employee is created, but the exact trigger is not confirmed.\nDetermines whether verification in the Employee module triggers automatic user creation \u2014 a direct cross-module dependency.",
+   opts:[{t:"A",c:"letter-a",l:"Automatic on verification \u2014 when HR Admin verifies an employee record, the system automatically creates a login and emails credentials to the employee's personal email"},
+         {t:"B",c:"letter-b",l:"Always manual \u2014 there is no automatic user creation; HR Admin must go to User Rights and create a user separately after verifying an employee"},
+         {t:"C",c:"letter-c",l:"Automatic on Date of Joining \u2014 a login is created when the employee's DOJ is reached, not at verification time"}]},
+
+  {sec:"Section 11: Items in Data Spec Not Mentioned in BRD",scBg:"#fff7ed",scFg:"#7c2d12",
+   id:"q25",gap:"MISSING RULE",gc:"badge-missing",title:"PT Slabs and Leave Types \u2014 Where Are They Configured?",
+   text:"The BRD Masters section does not mention where PT (Profession Tax) Slabs or Leave Types are set up. Where should HR Admin configure these?",
+   why:"BRD Masters \u2014 PT Slabs and Leave Types: both are defined in the Data Spec v1.1 (pt_slabs and leave_types tables) but the BRD does not place them under any Masters screen.\nWithout knowing which screen they live in, the correct PRD requirements cannot be written for those screens.",
+   opts:[{t:"A",c:"letter-a",l:"Both are under Masters \u2014 PT Slabs is under Masters \u2192 Payroll, and Leave Types is under Masters \u2192 Attendance and Leave; they are just missing from the BRD document"},
+         {t:"B",c:"letter-b",l:"Both are under Settings (not Masters) \u2014 PT Slabs and Leave Types are company or branch configuration, not master data; they belong in a separate Settings section"},
+         {t:"C",c:"letter-c",l:"Different locations \u2014 PT Slabs is configured under Branch Settings; Leave Types is under Masters \u2192 Attendance and Leave"}]},
+  {id:"q26",gap:"MISSING RULE",gc:"badge-missing",title:"Employee Reminders \u2014 What Does This Feature Do?",
+   text:"The BRD lists Employee Reminders under Payroll Masters but gives no description at all. What does this feature do?",
+   why:"BRD Masters p.2 \u00b7 Employee Reminders: listed with no description \u2014 no trigger, no recipient, no channel, no event type.\nRequired before the notification system or reminder scheduler can be designed. Without this, the feature cannot be scoped or built.",
+   opts:[{t:"A",c:"letter-a",l:"Automated system reminders \u2014 HR Admin can see and configure which automatic reminders the system sends (birthday, probation end, document expiry, work anniversary)"},
+         {t:"B",c:"letter-b",l:"Manual HR reminders \u2014 HR Admin can create custom one-off reminders for specific employees (e.g. remind me to review John's performance on 15th March)"},
+         {t:"C",c:"letter-c",l:"Both \u2014 automated event-based reminders from a predefined list, plus ad-hoc manual reminders that HR Admin can add for any employee"}]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const sel = {};
+Q.forEach(q => { sel[q.id] = null; });
+
+// ── BUILD FORM (pure DOM — no innerHTML with template literals) ───────────────
+function buildForm() {
+  const container = document.getElementById('formContainer');
+
+  Q.forEach(function(q, idx) {
+    const num = idx + 1;
+
+    // Section pill
+    if (q.sec) {
+      const pill = document.createElement('div');
+      pill.className = 'section-pill';
+      pill.style.background = q.scBg;
+      pill.style.color = q.scFg;
+      pill.style.border = '1px solid ' + q.scFg + '30';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      dot.setAttribute('width','8'); dot.setAttribute('height','8'); dot.setAttribute('viewBox','0 0 8 8');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','4'); circle.setAttribute('cy','4'); circle.setAttribute('r','4'); circle.setAttribute('fill', q.scFg);
+      dot.appendChild(circle);
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(' ' + q.sec));
+      container.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Top section
+    const top = document.createElement('div');
+    top.className = 'q-card-top';
+
+    // Meta row
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+
+    const numBadge = document.createElement('div');
+    numBadge.className = 'q-number';
+    numBadge.id = 'num-' + q.id;
+    numBadge.textContent = num;
+    meta.appendChild(numBadge);
+
+    const gapBadge = document.createElement('span');
+    gapBadge.className = 'gap-badge ' + q.gc;
+    gapBadge.textContent = q.gap;
+    meta.appendChild(gapBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'q-title-text';
+    titleSpan.textContent = q.title;
+    meta.appendChild(titleSpan);
+    top.appendChild(meta);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.text;
+    const star = document.createElement('span');
+    star.className = 'req-star';
+    star.textContent = ' *';
+    qtext.appendChild(star);
+    top.appendChild(qtext);
+
+    // Why box
+    const why = document.createElement('div');
+    why.className = 'q-why';
+    const parts = q.why.split('\n');
+    if (parts.length >= 2) {
+      // Line 1: BRD reference
+      const brdRef = document.createElement('div');
+      brdRef.style.cssText = 'font-size:11px;color:#0969da;font-weight:600;margin-bottom:4px;';
+      brdRef.textContent = parts[0];
+      why.appendChild(brdRef);
+      // Line 2: Why this matters
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      const whyText = document.createElement('span');
+      whyText.textContent = parts[1];
+      why.appendChild(whyB);
+      why.appendChild(whyText);
+    } else {
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      why.appendChild(whyB);
+      why.appendChild(document.createTextNode(q.why));
+    }
+    top.appendChild(why);
+
+    card.appendChild(top);
+
+    // Options
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'options-wrap';
+
+    q.opts.forEach(function(o) {
+      const lbl = document.createElement('div');
+      lbl.className = 'opt-label';
+      lbl.id = 'lbl-' + q.id + '-' + o.t;
+
+      const ind = document.createElement('div');
+      ind.className = 'opt-indicator';
+      lbl.appendChild(ind);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter ' + o.c;
+      letter.textContent = o.t;
+      lbl.appendChild(letter);
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = o.l;
+      lbl.appendChild(optText);
+
+      lbl.addEventListener('click', function() { toggleOpt(q.id, o.t); });
+      optsWrap.appendChild(lbl);
+    });
+
+    card.appendChild(optsWrap);
+
+    // Custom textarea
+    const customWrap = document.createElement('div');
+    customWrap.className = 'custom-wrap';
+
+    const customLbl = document.createElement('span');
+    customLbl.className = 'custom-lbl';
+    customLbl.textContent = 'D \u2014 Custom answer or additional notes (optional):';
+    customWrap.appendChild(customLbl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'custom-ta';
+    ta.id = 'custom-' + q.id;
+    ta.placeholder = 'Add your own answer or clarify your selection...';
+    ta.addEventListener('input', function() { onCustomInput(q.id); });
+    customWrap.appendChild(ta);
+    card.appendChild(customWrap);
+
+    // Error message
+    const err = document.createElement('div');
+    err.className = 'err-msg';
+    err.id = 'err-' + q.id;
+    err.textContent = 'This question is required \u2014 please select an option or provide a custom answer.';
+    card.appendChild(err);
+
+    container.appendChild(card);
+  });
+}
+
+buildForm();
+
+// ── TOGGLE: click to select, click same to deselect ───────────────────────────
+function toggleOpt(qid, tag) {
+  const current = sel[qid];
+  if (current === tag) {
+    sel[qid] = null;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.remove('selected');
+    const custom = document.getElementById('custom-' + qid).value.trim();
+    if (!custom) unmark(qid);
+  } else {
+    if (current) document.getElementById('lbl-' + qid + '-' + current).classList.remove('selected');
+    sel[qid] = tag;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.add('selected');
+    mark(qid);
+  }
+}
+
+function onCustomInput(qid) {
+  const custom = document.getElementById('custom-' + qid).value.trim();
+  if (custom || sel[qid]) mark(qid); else unmark(qid);
+}
+
+function mark(qid) {
+  const card = document.getElementById('card-' + qid);
+  card.classList.add('answered'); card.classList.remove('has-error');
+  document.getElementById('num-' + qid).classList.add('answered-num');
+  document.getElementById('err-' + qid).classList.remove('visible');
+  updateProgress();
+}
+function unmark(qid) {
+  document.getElementById('card-' + qid).classList.remove('answered');
+  document.getElementById('num-' + qid).classList.remove('answered-num');
+  updateProgress();
+}
+function updateProgress() {
+  let answered = 0;
+  Q.forEach(function(q) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (sel[q.id] || (custom && custom.value.trim())) answered++;
+  });
+  const pct = Math.round((answered / Q.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = answered + ' / ' + Q.length;
+  document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
+}
+
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
+function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
+  const missing = [];
+  Q.forEach(function(q, i) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (!sel[q.id] && !(custom && custom.value.trim())) {
+      missing.push({ id: q.id, num: i + 1, title: q.title });
+      document.getElementById('card-' + q.id).classList.add('has-error');
+      document.getElementById('err-' + q.id).classList.add('visible');
+    }
+  });
+
+  if (nameMissing || missing.length > 0) {
+    const msgEl = document.getElementById('incompleteMsg');
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
+    }
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
+    fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fc.classList.add('shake');
+    setTimeout(function() { fc.classList.remove('shake'); }, 400);
+    return;
+  }
+  document.getElementById('incompleteMsg').classList.remove('show');
+  generateAndSend();
+}
+
+// ── TEXT SUMMARY FOR EMAIL ─────────────────────────────────────────────────────
+function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
+  var lines = ['MUZPAYROLL MASTERS MODULE — BRD STAKEHOLDER RESPONSES',
+    'Submitted by: ' + (userName || '(not provided)'),
+    '='.repeat(60), ''];
+  var curSec = '';
+  Q.forEach(function(q, i) {
+    if (q.sec && q.sec !== curSec) {
+      curSec = q.sec;
+      lines.push('', '-'.repeat(60), curSec.toUpperCase(), '-'.repeat(60), '');
+    }
+    var s = sel[q.id];
+    var custom = document.getElementById('custom-' + q.id).value.trim();
+    var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+    lines.push('Q' + (i+1) + '. [' + q.gap + '] ' + q.title);
+    lines.push('Question : ' + q.text);
+    lines.push('ANSWER   : ' + (opt ? '(' + opt.t + ') ' + opt.l : '(Custom)'));
+    if (custom) lines.push('NOTES    : ' + custom);
+    lines.push('');
+  });
+  lines.push('='.repeat(60), 'End of BRD Responses');
+  return lines.join('\n');
+}
+
+// ── UPLOAD WORD FILE TO A FREE HOST → RETURN DOWNLOAD LINK ─────────────────────
+// Tried in order; first success wins. All run cross-origin, so each host must
+// return Access-Control-Allow-Origin (these do). Returns a URL string or null.
+async function uploadToHost(blob, filename) {
+  // 1) catbox.moe — permanent hosting, returns a plain-text direct URL
+  try {
+    var fd = new FormData();
+    fd.append('reqtype', 'fileupload');
+    fd.append('fileToUpload', blob, filename);
+    var r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd });
+    if (r.ok) {
+      var txt = (await r.text()).trim();
+      if (/^https?:\/\//.test(txt)) return txt;
+    }
+  } catch (e) { console.warn('catbox upload failed:', e); }
+
+  // 2) tmpfiles.org — kept ~60 min, returns JSON { data: { url } }
+  try {
+    var fd2 = new FormData();
+    fd2.append('file', blob, filename);
+    var r2 = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd2 });
+    if (r2.ok) {
+      var j = await r2.json();
+      var u = j && j.data && j.data.url;
+      if (u) return u.replace('tmpfiles.org/', 'tmpfiles.org/dl/'); // direct-download form
+    }
+  } catch (e) { console.warn('tmpfiles upload failed:', e); }
+
+  // 3) file.io — kept 14 days (single download), returns JSON { link }
+  try {
+    var fd3 = new FormData();
+    fd3.append('file', blob, filename);
+    var r3 = await fetch('https://file.io/?expires=14d', { method: 'POST', body: fd3 });
+    if (r3.ok) {
+      var j3 = await r3.json();
+      if (j3 && j3.link) return j3.link;
+    }
+  } catch (e) { console.warn('file.io upload failed:', e); }
+
+  return null;
+}
+
+// ── GENERATE DOCX + SEND EMAIL ─────────────────────────────────────────────────
+async function generateAndSend() {
+  var overlay = document.getElementById('genOverlay');
+  var titleEl = document.getElementById('genTitle');
+  var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
+  overlay.classList.add('show');
+
+  try {
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    await new Promise(function(r) { setTimeout(r, 80); });
+
+    var D = docx;
+    var nb = { style: D.BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    var tb = { style: D.BorderStyle.SINGLE, size: 4,  color: 'D0D7DE' };
+    function al(col) { return { style: D.BorderStyle.SINGLE, size: 12, color: col }; }
+    function sp(pt) {
+      return new D.Paragraph({ spacing: { before: 0, after: pt*20 }, children: [new D.TextRun('')] });
+    }
+    var secCols = {
+      'Section 2: Designation & Department':'0550AE',
+      'Section 3: Job Grade & Government Job Grade':'5B21B6',
+      'Section 4: Employee Type':'92400E',
+      'Section 5: Salary Head':'14532D',
+      'Section 6: Attendance & Leave Attributes':'0D5B52',
+      'Section 7: DA Centre':'92400E',
+      'Section 8: Advance Type & Projects':'7F1D1D',
+      'Section 9: Organisation Masters':'0550AE',
+      'Section 10: Status Update & User Rights':'6639BA',
+      'Section 11: Items in Data Spec Not Mentioned in BRD':'7C2D12'
+    };
+    function secHead(text) {
+      var col = secCols[text] || '0969DA';
+      return new D.Paragraph({
+        spacing: { before: 480, after: 120 },
+        border: { bottom: { style: D.BorderStyle.SINGLE, size: 10, color: col, space: 4 } },
+        children: [new D.TextRun({ text: text, font: 'Arial', size: 28, bold: true, color: col })]
+      });
+    }
+    function qRow(num, q) {
+      var s = sel[q.id];
+      var custom = document.getElementById('custom-' + q.id).value.trim();
+      var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+      var tagColMap = { 'badge-missing':'CF222E','badge-ambiguous':'9A6700','badge-workflow':'0969DA','badge-scalability':'6639BA' };
+      var tc = tagColMap[q.gc] || 'CF222E';
+      var ansText = opt ? 'ANSWER (' + opt.t + '):  ' + opt.l : 'ANSWER (Custom)';
+      var ansBg   = opt ? 'EAF5EA' : 'FFF8C5';
+      var ansCol  = opt ? '1A7F37' : '9A6700';
+      var ansLeft = al(ansCol);
+      var rows = [
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 80, bottom: 40, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: 'Q' + num + '  ', font: 'Arial', size: 18, bold: true, color: '0D1117' }),
+            new D.TextRun({ text: '[' + q.gap + ']  ', font: 'Arial', size: 17, bold: true, color: tc }),
+            new D.TextRun({ text: q.title, font: 'Arial', size: 18, color: '57606A' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 20, bottom: 80, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: q.text, font: 'Arial', size: 22, bold: true, color: '0D1117' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: tb, bottom: tb, left: ansLeft, right: nb },
+          shading: { fill: ansBg, type: D.ShadingType.CLEAR },
+          margins: { top: 100, bottom: 100, left: 160, right: 120 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+              new D.TextRun({ text: ansText, font: 'Arial', size: 21, bold: true, color: ansCol })
+            ]}),
+            ...(custom ? [new D.Paragraph({ spacing: { before: 60, after: 0 }, children: [
+              new D.TextRun({ text: 'Notes:  ' + custom, font: 'Arial', size: 20, italics: true, color: '57606A' })
+            ]})] : [])
+          ]
+        })]
+        })
+      ];
+      return [
+        new D.Table({ width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626], rows: rows }),
+        sp(8)
+      ];
+    }
+
+    var children = [];
+    // Cover
+    children.push(
+      new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY', font: 'Arial', size: 17, color: '999999', bold: true })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 100 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA', space: 8 } }, children: [new D.TextRun({ text: 'MUZPAYROLL', font: 'Arial', size: 48, bold: true, color: '0969DA' })] }),
+      new D.Paragraph({ spacing: { before: 100, after: 40 }, children: [new D.TextRun({ text: 'BRD Stakeholder Responses', font: 'Arial', size: 32, color: '0D1117' })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 40 }, children: [new D.TextRun({ text: 'Masters Module — System Management / Masters', font: 'Arial', size: 26, color: '57606A' })] }),
+      new D.Paragraph({ spacing: { before: 60, after: 40 }, children: [
+        new D.TextRun({ text: 'Submitted by: ', font: 'Arial', size: 24, bold: true, color: '0D1117' }),
+        new D.TextRun({ text: userName || '(not provided)', font: 'Arial', size: 24, color: '0969DA', bold: true })
+      ]}),
+      sp(8)
+    );
+    // Stats table
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
+        rows: [new D.TableRow({ children: [['26','Total Questions'],['10','Sections'],['26','Answered'],['0','Skipped']].map(function(pair) {
+          return new D.TableCell({
+            width: { size: 2156, type: D.WidthType.DXA },
+            borders: { top: tb, bottom: tb, left: tb, right: tb },
+            shading: { fill: 'E8F4FD', type: D.ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            children: [
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[0], font: 'Arial', size: 44, bold: true, color: '0969DA' })] }),
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[1], font: 'Arial', size: 18, color: '57606A' })] })
+            ]
+          });
+        })})]
+      }),
+      sp(12)
+    );
+    // Purpose box
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626],
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA' }, right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 140, bottom: 140, left: 180, right: 180 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'Instructions for Development Team', font: 'Arial', size: 21, bold: true, color: '0969DA' })] }),
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.TextRun({ text: 'These are confirmed business decisions from HR and payroll stakeholders. Use these answers directly to build the production HRMS system. Each answer maps to a specific code or configuration decision. Do not make assumptions where an answer is provided.', font: 'Arial', size: 20, color: '57606A' })] })
+          ]
+        })]
+        })]
+      }),
+      sp(16)
+    );
+    // Meta
+    [['Submitted by', userName || '(not provided)'],['Module','Masters Module — System Management / Masters'],['Prepared for','Development Team - MUZPAYROLL Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+      children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
+        new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
+        new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
+      ]}));
+    });
+    children.push(sp(14));
+
+    // Questions
+    var qi = 0; var curSec = '';
+    Q.forEach(function(q) {
+      qi++;
+      if (q.sec && q.sec !== curSec) {
+        curSec = q.sec;
+        children.push(secHead(curSec));
+        children.push(sp(6));
+      }
+      qRow(qi, q).forEach(function(b) { children.push(b); });
+    });
+
+    children.push(sp(16));
+    children.push(new D.Paragraph({
+      border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 6 } },
+      spacing: { before: 120, after: 0 },
+      children: [new D.TextRun({ text: 'End of BRD Responses - Do not modify above this line', font: 'Arial', size: 17, color: '999999', italics: true })]
+    }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } } },
+        headers: { default: new D.Header({ children: [new D.Paragraph({ border: { bottom: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 0, after: 80 }, children: [new D.TextRun({ text: 'MUZPAYROLL Masters Module - BRD Stakeholder Responses', font: 'Arial', size: 17, color: '888888' })] })] }) },
+        footers: { default: new D.Footer({ children: [new D.Paragraph({ border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 80, after: 0 }, children: [new D.TextRun({ text: 'Masters Module  |  Confidential', font: 'Arial', size: 17, color: '999999' })] })] }) },
+        children: children
+      }]
+    });
+
+    var FILENAME = 'MUZPAYROLL_Masters_BRD_Answers.docx';
+    var blob = await D.Packer.toBlob(doc);
+
+    // Trigger local download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    // Upload to a free host so the email can carry a download link
+    titleEl.textContent = 'Uploading Word file...';
+    subEl.textContent   = 'Preparing a download link';
+    var fileLink = await uploadToHost(blob, FILENAME);
+
+    // Send email — link embedded in the message body (no template change needed)
+    titleEl.textContent = 'Sending email...';
+    subEl.textContent   = 'Notifying development team';
+    var linkBlock = fileLink
+      ? '\nDOWNLOAD WORD FILE:\n' + fileLink + '\n'
+      : '\n(Word file could not be auto-uploaded — ask the submitter to forward ' + FILENAME + '.)\n';
+    try {
+      await emailjs.send(EJS_SVC, EJS_TPL, {
+        from_name: userName,
+        user_name: userName,
+        name: userName,
+        subject: 'MUZPAYROLL Masters BRD Submission - ' + userName,
+        message: 'Submitted by: ' + userName + '\n' + linkBlock + '\n' + buildSummary()
+      });
+      document.getElementById('toastMsg').textContent = fileLink
+        ? 'Word file downloaded & emailed (with link)!'
+        : 'Downloaded & emailed (link upload failed)';
+    } catch(e) {
+      console.warn('Email failed:', e);
+      document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
+    }
+
+    overlay.classList.remove('show');
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error(err);
+    alert('Error: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>
