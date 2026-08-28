@@ -140,7 +140,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   </div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
-    <span class="progress-label" id="pLabel">0 / 26</span>
+    <span class="progress-label" id="pLabel">0 / 36</span>
   </div>
 </header>
 
@@ -152,8 +152,8 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <h1>Masters Module<br><em>BRD Requirements Form</em></h1>
   <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="n">26</div><div class="l">Questions</div></div>
-    <div class="hero-stat"><div class="n">10</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">36</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">13</div><div class="l">Sections</div></div>
     <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
   </div>
 </div>
@@ -167,7 +167,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <div id="formContainer"></div>
   <div class="submit-zone">
     <h3>Ready to submit?</h3>
-    <p>All 26 questions must be answered. On submit, your answers download as a Word document.</p>
+    <p>All 36 questions must be answered. On submit, your answers download as a Word document.</p>
     <div class="incomplete-msg" id="incompleteMsg">
       <strong>Please answer all required questions before submitting:</strong>
       <ul id="missingList"></ul>
@@ -365,6 +365,12 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Automatic on verification \u2014 when HR Admin verifies an employee record, the system automatically creates a login and emails credentials to the employee's personal email"},
          {t:"B",c:"letter-b",l:"Always manual \u2014 there is no automatic user creation; HR Admin must go to User Rights and create a user separately after verifying an employee"},
          {t:"C",c:"letter-c",l:"Automatic on Date of Joining \u2014 a login is created when the employee's DOJ is reached, not at verification time"}]},
+  {id:"q27",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Reset Password \u2014 Who Can Reset a User's Password?",
+   text:"The BRD lists Reset Password as its own master under User Rights, separate from the User master. Who can reset a user's password, and how does the affected user learn their new password?",
+   why:"BRD Masters p.3 \u00b7 User Rights \u2192 Reset Password: the BRD says user password can be reset and new password can be assigned using this master, but does not say who has access or how the new password reaches the user.\nDetermines the access-control rule for this screen and whether a notification/email step is required \u2014 a wrongly-scoped reset screen could let any HR Admin take over a Super Admin account.",
+   opts:[{t:"A",c:"letter-a",l:"HR Admin and Super Admin can both reset any user's password; the new password is emailed automatically to the user's registered email; the user must change it on next login"},
+         {t:"B",c:"letter-b",l:"Super Admin only \u2014 HR Admin can view the User Rights list but cannot reset passwords; resets are logged for audit"},
+         {t:"C",c:"letter-c",l:"Self-service plus admin override \u2014 users can request a reset link themselves (forgot password), and HR Admin/Super Admin can also force a reset from this screen"}]},
 
   {sec:"Section 11: Items in Data Spec Not Mentioned in BRD",scBg:"#fff7ed",scFg:"#7c2d12",
    id:"q25",gap:"MISSING RULE",gc:"badge-missing",title:"PT Slabs and Leave Types \u2014 Where Are They Configured?",
@@ -378,7 +384,67 @@ const Q = [
    why:"BRD Masters p.2 \u00b7 Employee Reminders: listed with no description \u2014 no trigger, no recipient, no channel, no event type.\nRequired before the notification system or reminder scheduler can be designed. Without this, the feature cannot be scoped or built.",
    opts:[{t:"A",c:"letter-a",l:"Automated system reminders \u2014 HR Admin can see and configure which automatic reminders the system sends (birthday, probation end, document expiry, work anniversary)"},
          {t:"B",c:"letter-b",l:"Manual HR reminders \u2014 HR Admin can create custom one-off reminders for specific employees (e.g. remind me to review John's performance on 15th March)"},
-         {t:"C",c:"letter-c",l:"Both \u2014 automated event-based reminders from a predefined list, plus ad-hoc manual reminders that HR Admin can add for any employee"}]}
+         {t:"C",c:"letter-c",l:"Both \u2014 automated event-based reminders from a predefined list, plus ad-hoc manual reminders that HR Admin can add for any employee"}]},
+
+  {sec:"Section 12: Payroll Masters Screenshot Tiles With No BRD Description",scBg:"#f0f9ff",scFg:"#0c4a6e",
+   id:"q28",gap:"MISSING RULE",gc:"badge-missing",title:"Reports & Letters \u2014 What Fields and File Types Does This Master Store?",
+   text:"When HR Admin uploads a report or letter to this master, what information is captured, and who can retrieve it later?",
+   why:"BRD Masters p.2 \u00b7 Reports & Letters: the BRD says any statutory or important reports and letters can be uploaded to the system and can be retrieved for future reference, but gives no fields, file-type limits, or access rules.\nDetermines whether this needs a full document master (name, category, upload date, file, uploaded-by, visibility) or a simple generic file-attachment table, and which roles can see which documents.",
+   opts:[{t:"A",c:"letter-a",l:"Simple attachment list \u2014 Name, File, Upload Date, Uploaded By; visible to HR Admin and Super Admin only; no categorisation"},
+         {t:"B",c:"letter-b",l:"Categorised document master \u2014 Name, Category (e.g. Statutory Notice, Government Circular, Internal Letter), File, Effective Date, Uploaded By; category drives who can view it"},
+         {t:"C",c:"letter-c",l:"Company/Branch-scoped repository \u2014 the above, plus the document can be tagged to a specific Company or Branch, so multi-branch companies only see their own documents"}]},
+  {id:"q29",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Employee Attribute & Employee Attribute Value \u2014 Same as the Already-Built Dynamic Attributes Feature?",
+   text:"The BRD's Payroll Masters screenshot lists Employee Attribute and Employee Attribute Value as two separate masters, with no description in the BRD text. The Employee module already has a Super-Admin-only dynamic attribute type/value feature. Are these the same feature described from the Masters side, or something different?",
+   why:"BRD Masters p.2 \u00b7 Employee Attribute / Employee Attribute Value: both appear only in the Payroll Masters screenshot; the BRD body text never defines either one.\nIf they are the same feature, this Masters screen is already built and just needs to be referenced, not re-specified. If they are different, a new master and data model must be designed from scratch.",
+   opts:[{t:"A",c:"letter-a",l:"Same feature \u2014 Employee Attribute is the attribute-type definition screen (Super Admin only) and Employee Attribute Value is where the value is captured on the employee record; this is the existing dynamic-attributes feature, no new build needed"},
+         {t:"B",c:"letter-b",l:"Different feature \u2014 this Masters entry is for a separate, more general key-value configuration unrelated to employee profile data (e.g. system-wide lookup values); please describe its purpose in the notes field below"},
+         {t:"C",c:"letter-c",l:"Overlapping but not identical \u2014 Employee Attribute Value here refers to bulk-assigning attribute values across many employees at once (a Masters-level bulk tool), distinct from the one-employee-at-a-time editing already built on the Profile tab"}]},
+  {id:"q30",gap:"MISSING RULE",gc:"badge-missing",title:"Activity \u2014 What Is This Master For?",
+   text:"The BRD's Payroll Masters screenshot lists Activity as a master, with no description anywhere in the BRD text. What does HR Admin configure here, and where is it used?",
+   why:"BRD Masters p.2 \u00b7 Activity: appears only as a tile in the screenshot; zero description, fields, or usage context anywhere in the BRD.\nWithout a definition this master cannot be scoped for the PRD at all \u2014 it could be a timesheet/attendance concept, a project sub-task list, or something unrelated to payroll.",
+   opts:[{t:"A",c:"letter-a",l:"Timesheet activity \u2014 defines the list of billable/non-billable work activities employees log time against in Time Sheet Management (Employee Portal); linked to Projects"},
+         {t:"B",c:"letter-b",l:"HR activity log \u2014 a read-only audit list of actions taken in the system (who created/edited/deactivated which master); not something HR Admin configures, just views"},
+         {t:"C",c:"letter-c",l:"Not needed for this phase \u2014 Activity is out of scope for now; please describe its intended purpose in the notes field below if known"}]},
+  {id:"q31",gap:"MISSING RULE",gc:"badge-missing",title:"Evaluation Factor \u2014 What Is This Master For?",
+   text:"The BRD's Payroll Masters screenshot lists Evaluation Factor as a master, with no description anywhere in the BRD text. What does HR Admin configure here, and how is it used?",
+   why:"BRD Masters p.2 \u00b7 Evaluation Factor: appears only as a tile in the screenshot; zero description, fields, or usage context anywhere in the BRD.\nThis looks like it belongs to a performance-appraisal capability not otherwise described in the PRD or BRD \u2014 needs a definition before it can be scoped, or an explicit decision to defer it.",
+   opts:[{t:"A",c:"letter-a",l:"Appraisal criteria \u2014 defines the factors (e.g. Punctuality, Quality of Work, Teamwork) used to score employees during a performance review cycle, feeding the Appraisal Month field already captured on Promotion/Job Profile"},
+         {t:"B",c:"letter-b",l:"Salary-revision factor \u2014 a weighting used only to calculate annual increment/bonus percentages, not a general performance-review concept"},
+         {t:"C",c:"letter-c",l:"Not needed for this phase \u2014 Evaluation Factor is out of scope for now; please describe its intended purpose in the notes field below if known"}]},
+
+  {sec:"Section 13: Already-Built Masters \u2014 Confirm Against Current Code",scBg:"#fce7f3",scFg:"#9d174d",
+   id:"q32",gap:"MISSING RULE",gc:"badge-missing",title:"Designation \u2014 Add a Code Field, or Keep Title + Level Only?",
+   text:"The Designation master is already built and live in the database with exactly two fields: Title and Level (1=junior\u202610=senior). It has no Code field. Q1 above asked what fields a Designation record should have \u2014 given the master already exists with this shape, should a Code field be added now, or is Title + Level sufficient?",
+   why:"backend/.../catalog/entity/Designation.java: the shipped entity has designation_title and designation_level only \u2014 no code column exists in the database today, unlike Department (which already has department_code).\nAnswering Q1 with an option that includes a Code field means an ALTER TABLE migration and a new required field on the admin screen and every report that lists designations \u2014 this is not free to add after the fact.",
+   opts:[{t:"A",c:"letter-a",l:"Keep as built \u2014 Title + Level only, no Code; reports and payslips reference designations by name, not a short code"},
+         {t:"B",c:"letter-b",l:"Add a Code field now \u2014 a short identifier (e.g. SE-01) used in payslips/reports/imports; requires a database migration and backfilling codes for all existing designations before go-live"},
+         {t:"C",c:"letter-c",l:"Add Code but make it optional \u2014 new designations can have a code, existing ones are left blank and can be filled in later"}]},
+  {id:"q33",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Department \u2014 Unlimited Nesting Already Built; Confirm Depth Policy",
+   text:"The Department master already supports unlimited nested sub-departments via a self-referencing parent link (any department can have a parent, which can itself have a parent, and so on). Q2 above asked whether nesting should exist at all \u2014 given it is already built as unlimited-depth, does that match what the business actually needs, or should depth be restricted?",
+   why:"backend/.../catalog/entity/Department.java: parent_department_id is a self-referencing foreign key with no depth limit enforced anywhere in the entity or service layer.\nIf the business only ever needs one level (e.g. Engineering \u2192 Mobile Dev, never deeper), the existing unlimited model is over-built and the admin UI/reports should actively prevent deeper nesting rather than silently allow it.",
+   opts:[{t:"A",c:"letter-a",l:"Confirm unlimited nesting as built \u2014 no change needed; the PRD documents the existing behaviour"},
+         {t:"B",c:"letter-b",l:"Restrict to exactly one level \u2014 a validation rule must be added so a sub-department cannot itself have children; existing data must be checked for violations before enforcing this"},
+         {t:"C",c:"letter-c",l:"Restrict to a specific fixed number of levels (please state how many in the notes field below) \u2014 a validation rule must be added"}]},
+  {id:"q34",gap:"MISSING RULE",gc:"badge-missing",title:"Job Grade \u2014 Currently Free Text on the Employee Record, Not a Master Table",
+   text:"Unlike Designation and Department (which are real, admin-managed master tables today), Government Job Grade and Organisation Job Grade are currently stored as plain free-text fields directly on the employee record \u2014 there is no Job Grade master table at all yet. Should this BRD's Job Grade and Govt. Job Grade masters be built as new lookup tables that the employee record is migrated to reference, or should the free-text fields stay as they are?",
+   why:"backend/.../employee/entity/Employee.java: govt_job_grade and org_job_grade are VARCHAR(100) columns with no foreign key \u2014 any text can be typed in, with no central list to manage, edit, or deactivate values from. No JobGrade entity/repository/controller exists anywhere in the codebase, unlike Designation/Department which are fully built.\nThis is the single largest build gap in the whole Masters BRD: everything else asked about here is either enhancing an existing master or building a genuinely new one, but Job Grade requires both a new master table AND a data migration of every existing employee's free-text value onto the new structured lookup.",
+   opts:[{t:"A",c:"letter-a",l:"Build the master now and migrate \u2014 create JobGrade/GovtJobGrade tables per Q4\u2013Q6's answers, add designation-style foreign keys to Employee, and run a one-time migration mapping today's free-text values onto new master rows (unmatched text flagged for HR Admin cleanup)"},
+         {t:"B",c:"letter-b",l:"Build the master, but only for new data \u2014 add the FK columns and new master tables, leave existing employees' free-text values untouched/unmigrated, and surface a warning on their profile until HR Admin manually re-selects a master value"},
+         {t:"C",c:"letter-c",l:"Defer \u2014 keep Job Grade and Govt. Job Grade as free text for now; this BRD's Job Grade/Govt. Job Grade masters are out of scope for the current phase"}]},
+  {id:"q35",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Salary Head \u2014 Extend, Replace, or Sit Alongside the Existing Salary Head Group Stub?",
+   text:"The Employee module already has a minimal Salary Head Group master \u2014 just a name and a TDS-applicable flag \u2014 used today to gate PAN verification and to record Gross Salary/Salary Type/PF/ESI details at employee creation. Does this BRD's fuller Salary Head master (individual components, formulas, allowances/deductions/contributions) replace that stub, extend it, or sit alongside it as a separate, more detailed structure?",
+   why:"data-model-p2.md / research-p2.md (research R10): salary_head_groups was deliberately built as a minimal stub \u2014 id, company_id, group_name, is_tds_applicable, is_deleted \u2014 explicitly described as not owning the full compensation structure, which the notes defer to 'the eventual Salary module'. This BRD's Salary Head master, with real components/allowances/deductions, appears to be that eventual Salary module arriving now.\nDetermines whether building this Masters PRD means migrating/extending the existing salary_head_groups table (employees keep the same salary_head_group_id), or stands up an entirely separate set of tables that existing employee records will need to be linked to later.",
+   opts:[{t:"A",c:"letter-a",l:"Extend it \u2014 the existing salary_head_groups table gains the new component/formula structure this BRD describes; every employee's existing salary_head_group_id keeps working unchanged"},
+         {t:"B",c:"letter-b",l:"Replace it \u2014 a new Salary Head/Salary Structure master is built from scratch; the old stub table is migrated or deprecated once the new one is live"},
+         {t:"C",c:"letter-c",l:"Sits alongside it \u2014 Salary Head Group stays exactly as the simple TDS-flag classification it is today; the new Salary Head master is a separate, lower-level component library that Salary Head Groups will eventually be assembled from"}]},
+
+  {sec:"Section 14: Constitution Compliance Gate",scBg:"#ecfccb",scFg:"#3f6212",
+   id:"q36",gap:"MISSING RULE",gc:"badge-missing",title:"Masters Screen UI \u2014 What Is the Reference Design Artifact?",
+   text:"The project constitution requires every colour, font, spacing, radius, and component dimension used in code to trace to a specific reference design artifact (a UI-SDD document, Figma file, or HTML prototype) \u2014 a default or a guess is explicitly prohibited, and any gap must pause work and prompt the business rather than be invented. The BRD's screenshots show the existing legacy Masters UI. Should the new Masters screens pixel-match these legacy screenshots, or follow the same mockup-driven pipeline already used for the Employee screen?",
+   why:"Constitution \u00a7IV \u2014 UI Governance Rules: \u2018Every colour, font family/size/weight, spacing, radius, elevation/shadow, and component-dimension value used in code MUST trace to a reference design artifact the user has provided... If that reference is silent on a value implementation needs, work MUST pause and the user MUST be prompted for a ruling.\u2019 The Masters BRD's screenshots are low-resolution legacy admin-grid screenshots, not a UI-SDD or component-level design spec of the kind the Employee screen's own reference artifacts provide.\nWithout a nominated reference artifact, no Masters screen can legally be styled under the constitution \u2014 every individual colour/spacing/radius decision would otherwise have to separately pause and prompt during implementation, stalling the build one value at a time instead of once, up front.",
+   opts:[{t:"A",c:"letter-a",l:"Pixel-match the legacy screenshots already in this BRD \u2014 treat them as the reference artifact and recreate that admin-grid look with Tailwind utilities"},
+         {t:"B",c:"letter-b",l:"Follow the same reference/mockup pipeline already used for the Employee screen (the mockup.css literal-class re-skin approach) \u2014 a new Masters-specific mockup/UI-SDD will be supplied separately before implementation begins"},
+         {t:"C",c:"letter-c",l:"No reference artifact exists yet for Masters screens \u2014 one must be produced and approved before implementation starts; this PRD can still describe functional requirements now, with UI styling explicitly held back until that artifact exists"}]}
 ];
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
