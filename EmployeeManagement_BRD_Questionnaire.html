@@ -194,14 +194,13 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <span id="toastMsg">Word file downloaded!</span>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/docx@9.0.0/build/index.umd.js"></script>
+<script src="docx.umd.js"></script>
 <script>
-// ── CREDENTIALS ──────────────────────────────────────────────────────────────
-const EJS_SVC = "service_810fwvr";
-const EJS_TPL = "template_r5dzues";
-const EJS_KEY = "qUhHhbd3LDMq4AcQB";
-emailjs.init({ publicKey: EJS_KEY });
+// ── EMAIL DELIVERY (Cloudflare Worker + Resend — sends to basilareeckal06@gmail.com) ──
+// Deploy email-worker.js as a Cloudflare Worker (see repo instructions) and
+// paste its *.workers.dev URL below. Safe to leave visible — the Worker itself
+// holds the real secret (the Resend API key) and only ever emails one fixed address.
+const EMAIL_WORKER_URL = "https://muzpayroll.basilareeckal06.workers.dev";
 
 // ── QUESTION DATA ─────────────────────────────────────────────────────────────
 const Q = [
@@ -1048,7 +1047,7 @@ function handleSubmit() {
   generateAndSend();
 }
 
-// ── TEXT SUMMARY FOR EMAIL ─────────────────────────────────────────────────────
+// ── TEXT SUMMARY FOR EMAIL BODY ─────────────────────────────────────────────────
 function buildSummary() {
   var userName = (document.getElementById('userName').value || '').trim();
   var lines = ['HRMS BRD STAKEHOLDER RESPONSES', 'Employee Management Module',
@@ -1073,49 +1072,7 @@ function buildSummary() {
   return lines.join('\n');
 }
 
-// ── UPLOAD WORD FILE TO A FREE HOST → RETURN DOWNLOAD LINK ─────────────────────
-// Tried in order; first success wins. All run cross-origin, so each host must
-// return Access-Control-Allow-Origin (these do). Returns a URL string or null.
-async function uploadToHost(blob, filename) {
-  // 1) catbox.moe — permanent hosting, returns a plain-text direct URL
-  try {
-    var fd = new FormData();
-    fd.append('reqtype', 'fileupload');
-    fd.append('fileToUpload', blob, filename);
-    var r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd });
-    if (r.ok) {
-      var txt = (await r.text()).trim();
-      if (/^https?:\/\//.test(txt)) return txt;
-    }
-  } catch (e) { console.warn('catbox upload failed:', e); }
-
-  // 2) tmpfiles.org — kept ~60 min, returns JSON { data: { url } }
-  try {
-    var fd2 = new FormData();
-    fd2.append('file', blob, filename);
-    var r2 = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd2 });
-    if (r2.ok) {
-      var j = await r2.json();
-      var u = j && j.data && j.data.url;
-      if (u) return u.replace('tmpfiles.org/', 'tmpfiles.org/dl/'); // direct-download form
-    }
-  } catch (e) { console.warn('tmpfiles upload failed:', e); }
-
-  // 3) file.io — kept 14 days (single download), returns JSON { link }
-  try {
-    var fd3 = new FormData();
-    fd3.append('file', blob, filename);
-    var r3 = await fetch('https://file.io/?expires=14d', { method: 'POST', body: fd3 });
-    if (r3.ok) {
-      var j3 = await r3.json();
-      if (j3 && j3.link) return j3.link;
-    }
-  } catch (e) { console.warn('file.io upload failed:', e); }
-
-  return null;
-}
-
-// ── GENERATE DOCX + SEND EMAIL ─────────────────────────────────────────────────
+// ── GENERATE DOCX + OPEN EMAIL ─────────────────────────────────────────────────
 async function generateAndSend() {
   var overlay = document.getElementById('genOverlay');
   var titleEl = document.getElementById('genTitle');
@@ -1302,29 +1259,23 @@ async function generateAndSend() {
     document.body.appendChild(a); a.click();
     document.body.removeChild(a); URL.revokeObjectURL(url);
 
-    // Upload to a free host so the email can carry a download link
-    titleEl.textContent = 'Uploading Word file...';
-    subEl.textContent   = 'Preparing a download link';
-    var fileLink = await uploadToHost(blob, FILENAME);
-
-    // Send email — link embedded in the message body (no template change needed)
+    // Email the actual Word document as a real attachment via a small
+    // Cloudflare Worker (see email-worker.js) that relays it through Resend.
+    // The Resend API key lives only on the Worker, never in this page.
     titleEl.textContent = 'Sending email...';
-    subEl.textContent   = 'Notifying development team';
-    var linkBlock = fileLink
-      ? '\nDOWNLOAD WORD FILE:\n' + fileLink + '\n'
-      : '\n(Word file could not be auto-uploaded — ask the submitter to forward ' + FILENAME + '.)\n';
+    subEl.textContent   = 'Attaching the Word file';
     try {
-      await emailjs.send(EJS_SVC, EJS_TPL, {
-        from_name: userName,
-        user_name: userName,
-        name: userName,
-        subject: 'HRMS BRD Submission - ' + userName + ' (Employee Management Module)',
-        message: 'Submitted by: ' + userName + '\n' + linkBlock + '\n' + buildSummary()
-      });
-      document.getElementById('toastMsg').textContent = fileLink
-        ? 'Word file downloaded & emailed (with link)!'
-        : 'Downloaded & emailed (link upload failed)';
-    } catch(e) {
+      var fd = new FormData();
+      fd.append('subject', 'HRMS BRD Submission - ' + userName + ' (Employee Management Module)');
+      fd.append('message', buildSummary());
+      fd.append('filename', FILENAME);
+      fd.append('attachment', blob, FILENAME);
+      var resp = await fetch(EMAIL_WORKER_URL, { method: 'POST', body: fd });
+      var result = await resp.json();
+      document.getElementById('toastMsg').textContent = result.success
+        ? 'Word file downloaded & emailed!'
+        : 'Word file downloaded! (Email failed: ' + (result.error || (result.result && result.result.message) || 'unknown error') + ')';
+    } catch (e) {
       console.warn('Email failed:', e);
       document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
     }
