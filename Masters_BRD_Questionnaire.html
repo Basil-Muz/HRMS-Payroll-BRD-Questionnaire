@@ -140,7 +140,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   </div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
-    <span class="progress-label" id="pLabel">0 / 24</span>
+    <span class="progress-label" id="pLabel">0 / 22</span>
   </div>
 </header>
 
@@ -152,7 +152,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <h1>Masters Module<br><em>BRD Requirements Form</em></h1>
   <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="n">24</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">22</div><div class="l">Questions</div></div>
     <div class="hero-stat"><div class="n">12</div><div class="l">Sections</div></div>
     <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
   </div>
@@ -167,7 +167,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <div id="formContainer"></div>
   <div class="submit-zone">
     <h3>Ready to submit?</h3>
-    <p>All 24 questions must be answered. On submit, your answers download as a Word document.</p>
+    <p>All 22 questions must be answered. On submit, your answers download as a Word document.</p>
     <div class="incomplete-msg" id="incompleteMsg">
       <strong>Please answer all required questions before submitting:</strong>
       <ul id="missingList"></ul>
@@ -279,19 +279,7 @@ const Q = [
          {t:"C",c:"letter-c",l:"No system rules — Advance Type is just a name/category plus its Recovery Head link; actual amounts and repayment are entered manually per advance request by HR Admin"}]},
 
   {sec:"Section 8: Organisation Masters",scBg:"#e0e7ff",scFg:"#3730a3",
-   id:"q11",gap:"MISSING RULE",gc:"badge-missing",title:"Company — What Fields Are Captured?",
-   text:"When HR Admin creates a Company record in the system, what information is entered?",
-   why:"BRD Masters · Company: the BRD says Company can be created using this master screen but lists no fields anywhere — the only Company-related detail found is company-level payroll configuration (Leave Year Start Month, Minimum Wages Group, etc.), not this master's own create/edit fields.\nConfirms the companies table field list in Data Spec v1.1 and identifies any missing fields.",
-   opts:[{t:"A",c:"letter-a",l:"Basic fields only — Company Name, Company Code, Registered Address, GSTIN, Company PAN"},
-         {t:"B",c:"letter-b",l:"Basic fields plus payroll settings — the above plus Payroll Cycle Day (which day of month payroll opens) and Employee Code Format (prefix, starting number, pad length)"},
-         {t:"C",c:"letter-c",l:"All of the above plus branding — Company Logo for payslip header and company letterhead template"}]},
-  {id:"q12",gap:"MISSING RULE",gc:"badge-missing",title:"Branch — What Fields Are Captured?",
-   text:"When HR Admin creates a Branch under a Company, what information is entered for that branch? (Branch's own configuration Settings — PF/ESI/Bonus/Wage parameters — are out of scope here; this is only the Branch master's own Code/Name/etc. fields.)",
-   why:"BRD Masters · Branch: the BRD says different branches of the company can be created but lists no fields for the Branch master's own screen anywhere — only its downstream usage as a dropdown and its (separately-scoped) Settings surface are documented.\nConfirms whether the current Data Spec branch fields (name, code, address, PT jurisdiction, Saturday pair, WPS flag) are complete.",
-   opts:[{t:"A",c:"letter-a",l:"Name, Code, Address, PT Jurisdiction (Panchayat / Municipality / Corporation) — that is all"},
-         {t:"B",c:"letter-b",l:"Name, Code, Address, PT Jurisdiction, plus Saturday working pattern (All / 1st and 3rd / 2nd and 4th / No Saturdays)"},
-         {t:"C",c:"letter-c",l:"All of the above plus WPS Enabled flag (for Wage Protection System compliance)"}]},
-  {id:"q13",gap:"MISSING RULE",gc:"badge-missing",title:"License Agreement — What Does This Screen Do?",
+   id:"q11",gap:"MISSING RULE",gc:"badge-missing",title:"License Agreement — What Does This Screen Do?",
    text:"The BRD lists License Agreement under Organisation Masters but gives no description at all — the only one of the Organisation Masters with zero purpose text of any kind. What is this screen for?",
    why:"BRD Masters · License Agreement: listed as a menu item with no description at all anywhere in the source material; a same-named \"License Agreement Details\" grid appears inside an unrelated, explicitly-unused settings screen, with no confirmation the two are related.\nWithout understanding this screen, we cannot write requirements or decide whether a database table is needed — this is the thinnest, least certain item in the entire Masters BRD.",
    opts:[{t:"A",c:"letter-a",l:"Read-only display — HR Admin or Super Admin can view the MUZPAYROLL software licence terms; no data entry; no database table needed"},
@@ -299,19 +287,19 @@ const Q = [
          {t:"C",c:"letter-c",l:"Document upload — HR Admin uploads or acknowledges a company-specific licence document as part of company setup"}]},
 
   {sec:"Section 9: Status Update & User Rights",scBg:"#fbefff",scFg:"#6639ba",
-   id:"q14",gap:"MISSING RULE",gc:"badge-missing",title:"Status Update — What Happens When a Master Is Deactivated?",
+   id:"q12",gap:"MISSING RULE",gc:"badge-missing",title:"Status Update — What Happens When a Master Is Deactivated?",
    text:"If a Designation is deactivated, what happens to employees currently assigned to that designation?",
    why:"BRD Masters p.3 · Status Update: the BRD says masters can be deactivated if they become redundant, but does not define what happens to existing employee records that reference the deactivated master.\nDetermines the service layer logic — a block, a warning, or a silent keep — each requires different implementation.",
    opts:[{t:"A",c:"letter-a",l:"Employees keep the deactivated designation — it still shows on their profile but HR Admin cannot assign it to new employees; deactivation is always permitted"},
          {t:"B",c:"letter-b",l:"Block deactivation — the system prevents deactivation if any employee is currently assigned; HR Admin must reassign all affected employees first"},
          {t:"C",c:"letter-c",l:"Warn and proceed — system warns HR Admin how many employees are affected but allows deactivation; those employees are flagged for reassignment"}]},
-  {id:"q15",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"User Creation — Automatic or Manual?",
+  {id:"q13",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"User Creation — Automatic or Manual?",
    text:"The BRD says new employee users can be created manually if not generated automatically, and separately describes a \"Generate user\" checkbox on the Employee screen and Verification \"triggering creation of official login credentials\" — without confirming these are the same mechanism. When does automatic user creation actually happen, and is it the same User record documented under Masters?",
    why:"BRD Masters · User: the BRD says a user is auto-generated when the employee is created, but the exact trigger is not confirmed, and the BRD itself flags this as a probable-but-unconfirmed cross-reference between the Employee screen's Verification action and this User master.\nDetermines whether verification in the Employee module triggers automatic user creation — a direct cross-module dependency that needs an explicit yes/no, not an inference.",
    opts:[{t:"A",c:"letter-a",l:"Automatic on verification — when HR Admin verifies an employee record, the system automatically creates a login and emails credentials to the employee's personal email; this is the same User record as the Masters/User Rights screen"},
          {t:"B",c:"letter-b",l:"Always manual — there is no automatic user creation; HR Admin must go to User Rights and create a user separately after verifying an employee"},
          {t:"C",c:"letter-c",l:"Automatic on Date of Joining — a login is created when the employee's DOJ is reached, not at verification time"}]},
-  {id:"q16",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Reset Password — Who Can Reset a User's Password?",
+  {id:"q14",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Reset Password — Who Can Reset a User's Password?",
    text:"The BRD lists Reset Password as its own master under User Rights, separate from the User master. Who can reset a user's password, and how does the affected user learn their new password?",
    why:"BRD Masters p.3 · User Rights → Reset Password: the BRD says user password can be reset and new password can be assigned using this master, but does not say who has access or how the new password reaches the user.\nDetermines the access-control rule for this screen and whether a notification/email step is required — a wrongly-scoped reset screen could let any HR Admin take over a Super Admin account.",
    opts:[{t:"A",c:"letter-a",l:"HR Admin and Super Admin can both reset any user's password; the new password is emailed automatically to the user's registered email; the user must change it on next login"},
@@ -319,13 +307,13 @@ const Q = [
          {t:"C",c:"letter-c",l:"Self-service plus admin override — users can request a reset link themselves (forgot password), and HR Admin/Super Admin can also force a reset from this screen"}]},
 
   {sec:"Section 10: Items in Data Spec Not Mentioned in BRD",scBg:"#fff7ed",scFg:"#7c2d12",
-   id:"q17",gap:"MISSING RULE",gc:"badge-missing",title:"PT Slabs and Leave Types — Where Are They Configured?",
+   id:"q15",gap:"MISSING RULE",gc:"badge-missing",title:"PT Slabs and Leave Types — Where Are They Configured?",
    text:"The BRD Masters section does not mention where PT (Profession Tax) Slabs or Leave Types are set up. Where should HR Admin configure these?",
    why:"BRD Masters — PT Slabs and Leave Types: both are defined in the Data Spec v1.1 (pt_slabs and leave_types tables) but the BRD does not place them under any Masters screen.\nWithout knowing which screen they live in, the correct PRD requirements cannot be written for those screens.",
    opts:[{t:"A",c:"letter-a",l:"Both are under Masters — PT Slabs is under Masters → Payroll, and Leave Types is under Masters → Attendance and Leave; they are just missing from the BRD document"},
          {t:"B",c:"letter-b",l:"Both are under Settings (not Masters) — PT Slabs and Leave Types are company or branch configuration, not master data; they belong in a separate Settings section"},
          {t:"C",c:"letter-c",l:"Different locations — PT Slabs is configured under Branch Settings; Leave Types is under Masters → Attendance and Leave"}]},
-  {id:"q18",gap:"MISSING RULE",gc:"badge-missing",title:"Employee Reminders — What Does This Feature Do?",
+  {id:"q16",gap:"MISSING RULE",gc:"badge-missing",title:"Employee Reminders — What Does This Feature Do?",
    text:"The BRD lists Employee Reminders / Reminder Item under Payroll Masters but gives no description at all — the sparsest item in the whole document, appearing only as a bare tile and a bare list heading. What does this feature do?",
    why:"BRD Masters · Employee Reminders (aka Reminder Item): listed with no description anywhere — no trigger, no recipient, no channel, no event type — and even its own name is inconsistent between the tile grid and the list text.\nRequired before the notification system or reminder scheduler can be designed. Without this, the feature cannot be scoped or built.",
    opts:[{t:"A",c:"letter-a",l:"Automated system reminders — HR Admin can see and configure which automatic reminders the system sends (birthday, probation end, document expiry, work anniversary)"},
@@ -333,13 +321,13 @@ const Q = [
          {t:"C",c:"letter-c",l:"Both — automated event-based reminders from a predefined list, plus ad-hoc manual reminders that HR Admin can add for any employee"}]},
 
   {sec:"Section 11: Payroll Masters Screenshot Tiles With No BRD Description",scBg:"#f0f9ff",scFg:"#0c4a6e",
-   id:"q19",gap:"MISSING RULE",gc:"badge-missing",title:"Reports & Letters — What Fields and File Types Does This Master Store?",
+   id:"q17",gap:"MISSING RULE",gc:"badge-missing",title:"Reports & Letters — What Fields and File Types Does This Master Store?",
    text:"When HR Admin uploads a report or letter to this master, what information is captured, and who can retrieve it later?",
    why:"BRD Masters · Reports & Letters: the BRD says any statutory or important reports and letters can be uploaded to the system and can be retrieved for future reference, but gives no fields, file-type limits, or access rules — it is only otherwise referenced as an approvable \"Master\" option in a separate authorization-user-allocation screen.\nDetermines whether this needs a full document master (name, category, upload date, file, uploaded-by, visibility) or a simple generic file-attachment table, and which roles can see which documents.",
    opts:[{t:"A",c:"letter-a",l:"Simple attachment list — Name, File, Upload Date, Uploaded By; visible to HR Admin and Super Admin only; no categorisation"},
          {t:"B",c:"letter-b",l:"Categorised document master — Name, Category (e.g. Statutory Notice, Government Circular, Internal Letter), File, Effective Date, Uploaded By; category drives who can view it"},
          {t:"C",c:"letter-c",l:"Company/Branch-scoped repository — the above, plus the document can be tagged to a specific Company or Branch, so multi-branch companies only see their own documents"}]},
-  {id:"q20",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Employee Attribute & Employee Attribute Value — Same as the Already-Built Dynamic Attributes Feature?",
+  {id:"q18",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Employee Attribute & Employee Attribute Value — Same as the Already-Built Dynamic Attributes Feature?",
    text:"The BRD's Payroll Masters screenshot lists Employee Attribute and Employee Attribute Value as two separate masters, with no description in the BRD text. The Employee module already has a Super-Admin-only dynamic attribute type/value feature. Are these the same feature described from the Masters side, or something different?",
    why:"BRD Masters p.2 · Employee Attribute / Employee Attribute Value: both appear only in the Payroll Masters screenshot; the BRD body text never defines either one.\nIf they are the same feature, this Masters screen is already built and just needs to be referenced, not re-specified. If they are different, a new master and data model must be designed from scratch.",
    opts:[{t:"A",c:"letter-a",l:"Same feature — Employee Attribute is the attribute-type definition screen (Super Admin only) and Employee Attribute Value is where the value is captured on the employee record; this is the existing dynamic-attributes feature, no new build needed"},
@@ -347,25 +335,25 @@ const Q = [
          {t:"C",c:"letter-c",l:"Overlapping but not identical — Employee Attribute Value here refers to bulk-assigning attribute values across many employees at once (a Masters-level bulk tool), distinct from the one-employee-at-a-time editing already built on the Profile tab"}]},
 
   {sec:"Section 12: Cross-Cutting Systemic Rules",scBg:"#fae8ff",scFg:"#86198f",
-   id:"q21",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Short Name & Description — Auto-Derived or Independently Entered?",
+   id:"q19",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Short Name & Description — Auto-Derived or Independently Entered?",
    text:"Across the ten screenshot-confirmed masters, Short Name and Description don't follow one consistent rule: on most masters Short Name duplicates Code and Description duplicates Name, but on Job Grade and Govt. Job Grade the pattern inverts — Name duplicates Code, and Description carries the actual meaningful text (e.g. Job Grade E1's Description is \"JUNIOR EXECUTIVES - LEVEL 1\", not its Name). Should the new system enforce one consistent rule across every master, or preserve each master's own current, inconsistent pattern?",
    why:"BRD Masters · Masters confirmed from screenshots (Designation, Job Grade, Govt. Job Grade, Project): the sourced data shows at least three different Short Name/Description population patterns across masters, never flagged or reconciled anywhere in the source material.\nDetermines whether Short Name/Description are real, independently-editable fields on the new Masters screens, or should be auto-populated (removing a source of inconsistent data entry) — a decision that changes the admin form design for every single master.",
    opts:[{t:"A",c:"letter-a",l:"Auto-derive consistently going forward — Short Name always mirrors Code, Description always mirrors Name, on every master; the admin form removes these as separate inputs"},
          {t:"B",c:"letter-b",l:"Keep them independently editable, per master — preserve the current inconsistency; Job Grade/Govt. Job Grade continue putting meaningful text in Description, everything else continues mirroring Code/Name"},
          {t:"C",c:"letter-c",l:"Independently editable everywhere, but redefine their purpose — Short Name becomes a true abbreviation (not necessarily = Code) and Description becomes a true explanatory note (not necessarily = Name) on every master, requiring existing legacy data to be reviewed/cleaned up"}]},
-  {id:"q22",gap:"MISSING RULE",gc:"badge-missing",title:"Master Data Rules — Code Uniqueness, Edit-After-Verify, and Hard Delete vs Deactivate",
+  {id:"q20",gap:"MISSING RULE",gc:"badge-missing",title:"Master Data Rules — Code Uniqueness, Edit-After-Verify, and Hard Delete vs Deactivate",
    text:"None of the ten confirmed masters document any data rules: is Code unique (per master, company-wide)? Can Code or Name be edited after a record is Verified? Does the action rail's trash icon perform a real, permanent delete, separate from the Status Update screen's deactivate/reactivate toggle?",
    why:"BRD Masters · Common pattern across every master: describes the field shell and the Authorization state, but states no uniqueness constraint, no post-verification edit rule, and no delete-vs-deactivate distinction for any master.\nThese rules are foundational to every master's data model and validation logic — without them, the same open question would otherwise need to be answered separately, master by master, 16+ times over.",
    opts:[{t:"A",c:"letter-a",l:"Uniform rules for every master: Code is unique per master and immutable once Verified; Name/Description remain editable; the trash icon is disabled/hidden for any record currently referenced elsewhere (e.g. assigned to an employee), leaving Status Update's deactivate toggle as the only removal path for in-use records"},
          {t:"B",c:"letter-b",l:"Uniform rules, but stricter: Code and Name are both immutable once Verified (any change requires deactivating the old record and creating a new one); no master record can ever be hard-deleted, only deactivated — the trash icon is for records still in ENTRY (unverified) state only"},
          {t:"C",c:"letter-c",l:"Rules vary per master and must be captured individually — there is no single system-wide rule; each master's specific constraints will be described master-by-master in the notes field below or in a follow-up review"}]},
-  {id:"q23",gap:"SCALABILITY",gc:"badge-scalability",title:"Fixed List or Extensible — Can HR Admin Add New Records to Every Master, or Only Some?",
+  {id:"q21",gap:"SCALABILITY",gc:"badge-scalability",title:"Fixed List or Extensible — Can HR Admin Add New Records to Every Master, or Only Some?",
    text:"Across all 16 Payroll masters plus the 7 Organisation masters, is HR Admin able to freely add new records to every one of them, or are some masters — such as Employee Type (currently missing an \"Apprentice\" record the main BRD requires), Government Job Grade (a government-defined list), or Attendance & Leave codes — locked to a fixed, system-defined list (comparable to Salary Head's \"System Defined\" flag on Basic Salary) that only a developer or Super Admin can extend?",
    why:"BRD Masters · Employee Type + Govt. Job Grade + Attendance and Leave + Salary Head: several masters raise this same underlying question independently — Employee Type is missing a required record, Govt. Job Grade maps to an external government definition, Attendance & Leave's codes seed the whole leave/payroll engine, and Salary Head's \"System Defined\" flag shows at least some records on at least one master are already protected from ordinary editing.\nDetermines whether every master needs the same open \"HR Admin can create/edit\" access control, or whether a smaller subset of masters (and even specific records within a master) need a distinct, more restrictive \"system-defined, Super-Admin-only\" tier — this changes the permission model for the whole Masters module, not just Employee Type.",
    opts:[{t:"A",c:"letter-a",l:"Fully open — HR Admin can add/edit any record on any of the 16+ masters, including Employee Type, Govt. Job Grade, and Attendance & Leave codes; only Salary Head's individual System Defined records (Basic Salary etc.) are protected"},
          {t:"B",c:"letter-b",l:"Mixed — most masters are fully open to HR Admin, but a specific set (please confirm/adjust in the notes field below — the working assumption is Govt. Job Grade and Attendance & Leave codes) are Super-Admin-only or entirely fixed/seeded, since they map to external government/statutory definitions or seed core payroll logic that shouldn't drift"},
          {t:"C",c:"letter-c",l:"System Defined applies more broadly than just Salary Head — every master can have a mix of system-defined (locked) and user-created (fully editable) records, following the same flag-based pattern Salary Head already shows"}]},
-  {id:"q24",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Branch-Level Settings — Confirm This Belongs in the Deferred Settings BRD, Not Here",
+  {id:"q22",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Branch-Level Settings — Confirm This Belongs in the Deferred Settings BRD, Not Here",
    text:"This BRD states Settings (Payroll Groups, Payroll Settings, User Rights Management) is being handled in a separate BRD pass. But the Branch section of this same document then documents, in full, six sections of Branch-level Settings (General, Wage — 20 parameters, PF, ESI, WF, Bonus). Should this content be removed from the Masters PRD and left entirely to the separate Settings BRD, or is Branch-level Settings intentionally part of Masters scope after all?",
    why:"BRD Masters · About this document + Branch: the scope statement explicitly defers Payroll Settings to a separate BRD, yet the Branch section reproduces the full Branch-level Settings detail (General/Wage/PF/ESI/WF/Bonus) inside this same document.\nIf this detail stays in scope here, the Masters PRD balloons to include ~30 additional wage/statutory parameters that were meant to be handled separately — duplicating effort with the future Settings BRD and risking the two documents drifting out of sync. If it's removed, the Branch section loses most of its only concrete field-level evidence, since Branch's own Code/Name/etc. fields were never documented at all.",
    opts:[{t:"A",c:"letter-a",l:"Remove it — Branch-level Settings content moves entirely to the separate Settings BRD; this document keeps only Branch's own master fields once they're confirmed, with a cross-reference note instead of the full detail"},
