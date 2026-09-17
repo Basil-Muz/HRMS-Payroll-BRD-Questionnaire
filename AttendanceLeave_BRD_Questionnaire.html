@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUZPAYROLL Attendance &amp; Leave — BRD Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --amber:#9a6700;--amber-bg:#fff8c5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:200px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3fb950;border-radius:4px;transition:width .35s}
+.progress-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;white-space:nowrap}
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.hero-stat{padding:14px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .n{font-size:22px;font-weight:600;color:#fff;line-height:1}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+/* MAIN */
+.main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
+.section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
+/* CARD */
+.q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.q-card.answered{border-color:#3fb950}
+.q-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.q-card-top{padding:20px 24px 0}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.q-number.answered-num{background:#3fb950}
+.gap-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px;flex-shrink:0}
+.badge-missing{background:var(--red-bg);color:var(--red)}
+.badge-ambiguous{background:var(--amber-bg);color:var(--amber)}
+.badge-workflow{background:#dbeafe;color:#1e40af}
+.badge-scalability{background:var(--purple-bg);color:var(--purple)}
+.q-title-text{font-size:13px;font-weight:500;color:var(--ink3)}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.45}
+.req-star{color:var(--red);margin-left:2px}
+.q-why{background:var(--paper2);border-left:3px solid var(--accent);padding:9px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px}
+.q-why b{color:var(--accent);font-weight:600}
+/* OPTIONS */
+.options-wrap{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:all .15s;user-select:none}
+.opt-label:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt-label.selected{border-color:var(--accent);background:var(--accent-light)}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;margin-top:1px;background:#fff;transition:all .15s;position:relative}
+.opt-indicator::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .15s}
+.opt-label.selected .opt-indicator{border-color:var(--accent)}
+.opt-label.selected .opt-indicator::after{opacity:1}
+.opt-letter{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.3px}
+.letter-a{background:var(--green-bg);color:var(--green)}
+.letter-b{background:var(--amber-bg);color:var(--amber)}
+.letter-c{background:var(--red-bg);color:var(--red)}
+.opt-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+/* CUSTOM */
+.custom-wrap{padding:0 24px 20px}
+.custom-lbl{font-size:12px;font-weight:600;color:var(--ink4);margin-bottom:6px;display:block;letter-spacing:.3px}
+.custom-ta{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);resize:vertical;min-height:64px;background:var(--paper2);transition:border-color .15s,background .15s;line-height:1.55}
+.custom-ta:focus{outline:none;border-color:var(--accent);background:#fff}
+.custom-ta::placeholder{color:var(--ink4)}
+/* ERROR */
+.err-msg{padding:0 24px 14px;font-size:12px;color:var(--red);font-weight:500;display:none}
+.err-msg.visible{display:block}
+/* SUBMIT */
+.submit-zone{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:32px;margin-top:36px;text-align:center;box-shadow:var(--shadow-lg)}
+.submit-zone h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+.submit-zone p{font-size:13px;color:var(--ink3);margin-bottom:24px}
+.submit-btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(13,17,23,.18)}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn.all-good{background:#1a7f37}
+.submit-btn.all-good:hover{background:#116329}
+.incomplete-msg{background:var(--red-bg);border:1px solid #ffc1c0;border-radius:var(--radius);padding:12px 16px;color:var(--red);font-size:13px;font-weight:500;margin-bottom:16px;display:none;text-align:left}
+.incomplete-msg.show{display:block}
+.incomplete-msg ul{margin-top:6px;padding-left:18px}
+.incomplete-msg li{font-size:12px;margin-top:3px;font-weight:400}
+/* OVERLAY */
+.gen-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.65);align-items:center;justify-content:center}
+.gen-overlay.show{display:flex}
+.gen-box{background:#fff;border-radius:var(--radius-lg);padding:36px 52px;text-align:center;box-shadow:var(--shadow-lg);min-width:260px}
+.spinner{width:40px;height:40px;border:3px solid #eaeef2;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.gen-sub{font-size:12px;color:var(--ink3)}
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.175,.885,.32,1.275),opacity .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-check{width:20px;height:20px;background:#3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .progress-track{width:100px}
+  .hero{padding:36px 16px 44px}
+  .q-card-top,.options-wrap,.custom-wrap{padding-left:16px;padding-right:16px}
+  .submit-zone{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">A</div>
+    <span class="brand-name">MUZPAYROLL &mdash; Attendance &amp; Leave BRD Questionnaire</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-label" id="pLabel">0 / 20</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Stakeholder Review Required
+  </div>
+  <h1>Attendance &amp; Leave Module<br><em>BRD Requirements Form</em></h1>
+  <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">20</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">9</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
+  <div id="formContainer"></div>
+  <div class="submit-zone">
+    <h3>Ready to submit?</h3>
+    <p>All 20 questions must be answered. On submit, your answers download as a Word document.</p>
+    <div class="incomplete-msg" id="incompleteMsg">
+      <strong>Please answer all required questions before submitting:</strong>
+      <ul id="missingList"></ul>
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Submit &amp; Download Word File
+    </button>
+  </div>
+</div>
+
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-box">
+    <div class="spinner"></div>
+    <div class="gen-title" id="genTitle">Building Word document...</div>
+    <div class="gen-sub" id="genSub">Please wait a moment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-check">
+    <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <span id="toastMsg">Word file downloaded!</span>
+</div>
+
+<script src="docx.umd.js"></script>
+<script>
+// ── EMAIL DELIVERY (Cloudflare Worker + Resend — sends to basilareeckal06@gmail.com) ──
+// Deploy email-worker.js as a Cloudflare Worker (see repo instructions) and
+// paste its *.workers.dev URL below. Safe to leave visible — the Worker itself
+// holds the real secret (the Resend API key) and only ever emails one fixed address.
+const EMAIL_WORKER_URL = "https://muzpayroll.basilareeckal06.workers.dev";
+
+// ── QUESTION DATA ──────────────────────────────────────────────────
+const Q = [
+  {sec:"Section 1: Data Sources & Time Sheet Upload",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q1",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Biometric / Mobile-Punch Integration — Already Built, or Still a New Requirement?",
+   text:"Employee Time Sheet Upload's own flagged open item states data is \"not fetched from any other tools like biometric punching or some login tools.\" But Muster Roll's own §2.4 (Short Time) describes, in confirmed/declarative language with no open-item flag, \"Multiple Attendance Input Sources: Supports: Biometric, Mobile App Punch (In/Out). Punching data processed using custom rules.\" Which statement is correct?",
+   why:"BRD Attendance & Leave · Employee Time Sheet Upload (open item) vs Muster Roll §2.4: the two passages directly contradict each other on whether biometric/mobile-punch data sources exist in the current system.\nDetermines whether this is core scope already built (just needs to be confirmed and documented) or a substantial new integration (device/API support, custom punch-processing rules) that has never been built at all — these are very different sizes of work.",
+   opts:[{t:"A",c:"letter-a",l:"Not built — the Employee Time Sheet Upload passage is correct; employees only ever self-enter hours; the Muster Roll passage describing biometric/mobile support is aspirational text that was never flagged as such"},
+         {t:"B",c:"letter-b",l:"Already built — the Muster Roll passage is correct; biometric and mobile-app punch data sources already exist and feed into the time sheet; the Employee Time Sheet Upload open item is stale/outdated"},
+         {t:"C",c:"letter-c",l:"Partially built — one data source exists (e.g. mobile app punch) but not the other (e.g. biometric hardware integration); specify which in the notes field below"}]},
+  {id:"q2",gap:"MISSING RULE",gc:"badge-missing",title:"Level 1 / Level 2 Employee Classification — What Determines It?",
+   text:"Employee Time Sheet Upload splits handling by \"Level 1 (Senior Management)\" — time sheets automatically populated — versus \"Level 2 (Other Employees)\" — manually entered by the employee. What field or rule determines whether a given employee is Level 1 or Level 2, and where does Level 1's auto-populated data actually come from?",
+   why:"BRD Attendance & Leave · Employee Time Sheet Upload: \"Level 1 (Senior Management): Time sheets are automatically populated when Level 1 is pressed\" — but no field, master, or data source is named anywhere for this classification or the auto-population source.\nThis may or may not be the same concept as Designation's numeric Level field (1=junior…10=senior) from the Masters BRD — if it is, the threshold (e.g. Level 8+) needs to be defined; if it isn't, a new employee-level classification needs its own field and source of truth.",
+   opts:[{t:"A",c:"letter-a",l:"Same as Designation's Level field — Level 1 = Designation Level above a threshold (state the threshold in the notes field below); Level 1 employees' timesheets auto-populate as fixed full-day hours every working day, requiring no data source beyond the calendar"},
+         {t:"B",c:"letter-b",l:"A separate, new classification — not tied to Designation's Level field at all; a new field (e.g. an Employee Type/Category flag) needs to be added to distinguish Level 1 from Level 2 employees"},
+         {t:"C",c:"letter-c",l:"Role-based, not a stored field — Level 1 is determined dynamically from reporting hierarchy or job grade at the time the screen is used, not a persisted classification on the employee record"}]},
+
+  {sec:"Section 2: Muster Roll — Attendance Status Codes",scBg:"#ccfbf1",scFg:"#0d5b52",
+   id:"q3",gap:"MISSING RULE",gc:"badge-missing",title:"NFH — What Does This Status Mean, and How Does It Differ From Holiday?",
+   text:"Muster Roll references \"NFH\" twice (in the colour-coded cell list, and in a known defect: \"the system does not reflect NFH status correctly\" when a holiday is declared after the muster roll is already saved) but never defines what NFH stands for or how it differs from the plain \"H – Holiday\" status.",
+   why:"BRD Attendance & Leave · Muster Roll §2.2/§2.4: NFH appears only as an unexplained acronym in a colour-coding list and in a bug description; no expansion or definition exists anywhere in the source material.\nWithout knowing what NFH means, the described defect (holidays declared after muster roll save not reflecting NFH correctly) cannot be scoped or fixed, and the status can't be added to the confirmed attendance code list.",
+   opts:[{t:"A",c:"letter-a",l:"NFH = No Formal Holiday — a distinct status from H (Holiday) for a day the company declares a holiday informally/after the fact (e.g. a sudden Hartal/strike declared post-hoc), which needs its own payroll treatment separate from a pre-planned Holiday"},
+         {t:"B",c:"letter-b",l:"NFH = Non-working Full Holiday or similar — effectively a synonym/display variant of H, not a functionally distinct status; the defect is purely a display timing bug, not a missing status"},
+         {t:"C",c:"letter-c",l:"Different meaning — please describe what NFH actually stands for and how it should be treated in the notes field below"}]},
+  {id:"q4",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Muster Roll's \"L\" Status Code — How Does It Map to the Confirmed Attendance & Leave Codes?",
+   text:"Muster Roll's Attendance/Leave tab lists its final status codes as P, L, LOP, H, OD, \"etc.\" But the Masters BRD's own confirmed Attendance and Leave master code list (from live screenshots) is P, LOP, EL, H, OH, CO, OD, ML, RD, COH, SCO, T — it has no plain \"L\" code at all. What does Muster Roll's \"L\" actually represent?",
+   why:"BRD Attendance & Leave · Muster Roll §2.2 vs BRD Masters · Attendance and Leave: the two documents' code lists don't match — Muster Roll shows a generic \"L\" where Masters shows specific leave-type codes (EL, ML) and comp-off variants (CO, COH, SCO).\nDetermines whether Muster Roll needs to display each specific leave type separately (matching Masters' real codes) or whether a genuine aggregate \"L\" (any-leave-type) status is a real, additional requirement not yet in the Masters code list.",
+   opts:[{t:"A",c:"letter-a",l:"\"L\" is shorthand for whichever specific leave code applies — Muster Roll should display the actual Masters code (EL, ML, OH, etc.) for each cell, not a generic \"L\"; the BRD text is loose paraphrasing, not a real separate status"},
+         {t:"B",c:"letter-b",l:"\"L\" is a genuine aggregate status — Muster Roll intentionally shows a single generic \"Leave\" indicator regardless of leave type, with the specific type available only in the popup/detail view; this is correct as described"},
+         {t:"C",c:"letter-c",l:"\"etc.\" hides other codes not yet enumerated — the full status list for Muster Roll needs a live walkthrough to confirm every code it actually shows, since this listing appears incomplete regardless of the \"L\" question"}]},
+  {id:"q5",gap:"MISSING RULE",gc:"badge-missing",title:"7:30 Hrs Standard Workday — Fixed System-Wide, or Does It Vary by Shift?",
+   text:"Muster Roll marks entries of \"7:30 hrs/day\" as Present and classifies anything above/below that as Overtime/Short Time, applied as one single fixed standard. Separately, Settings' Shift Group allows multiple shift timings (e.g. general staff vs. housekeeping staff have different hours). Does the 7:30 hrs Present/OT/Short-Time threshold vary by an employee's assigned shift, or is it one fixed value for every employee regardless of shift?",
+   why:"BRD Attendance & Leave · Muster Roll §2.2–2.4 vs BRD System Management · Shift Group: Muster Roll states 7:30 hrs as a single, unqualified standard; Shift Group confirms different shifts can have different timings, with no stated link between the two.\nIf 7:30 hrs is meant to vary by shift, every OT/Short-Time calculation needs to read the employee's assigned shift's expected hours instead of a hardcoded constant — a materially different calculation engine than a single fixed threshold.",
+   opts:[{t:"A",c:"letter-a",l:"Fixed system-wide — 7:30 hrs is the one standard for every employee regardless of shift; Shift Group's differing timings are informational/scheduling only and don't feed into the Present/OT/Short-Time calculation"},
+         {t:"B",c:"letter-b",l:"Varies by shift — each Shift Group record needs its own expected-hours field, and Muster Roll's Present/OT/Short-Time logic must read the employee's assigned shift instead of a hardcoded 7:30; this field is currently missing from Shift Group and needs to be added"},
+         {t:"C",c:"letter-c",l:"Fixed today, but should vary by shift going forward — 7:30 hrs is correctly the current fixed behaviour, and shift-based variation is a new requirement, not a correction to existing behaviour"}]},
+
+  {sec:"Section 3: Shift & Off-Day Allocation",scBg:"#fff8c5",scFg:"#92400e",
+   id:"q6",gap:"SCALABILITY",gc:"badge-scalability",title:"Varying Shift Allocation — Confirmed as Functionally Dead; Is Real Integration In Scope Now?",
+   text:"Varying Shift Allocation's own text states: \"Currently, this has no implications elsewhere in the payroll system which means it's not connected to the attendance management process.\" Settings' own Shift Group section independently says almost the same thing (\"doesn't seem to have any implications elsewhere in the system\"). Four substantial new-requirement clusters follow immediately (Auto Shift Reallocation, Bulk Shift Upload via Excel, Colour-coded Shift Screen, Punch-based shift validation) — are these genuinely in scope to build now, given they require connecting a currently-disconnected feature to the rest of the system for the first time?",
+   why:"BRD Attendance & Leave · Varying Shift Allocation, corroborated independently by BRD System Management · Shift Group: two separate documents both confirm Shift configuration has no current downstream effect.\nThis changes the nature of the work from \"enhance an existing integration\" to \"build a new integration from nothing\" — a much larger, higher-risk scope than the bullet-point framing suggests, and worth an explicit go/no-go and priority decision before estimating it.",
+   opts:[{t:"A",c:"letter-a",l:"Yes, build the full integration now — all four requirement clusters (auto-reallocation, bulk upload, colour-coding, punch validation) are in scope for this phase; Shift needs to become a first-class driver of attendance/payroll calculation"},
+         {t:"B",c:"letter-b",l:"Defer entirely — Shift stays a standalone, disconnected setting for this phase; none of the four requirement clusters are built now; revisit in a later phase"},
+         {t:"C",c:"letter-c",l:"Partial — only some of the four clusters are in scope now (specify which in the notes field below); the rest are deferred"}]},
+  {id:"q7",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Varying Weekly Off Allocation Bug — Confirm as a Defect, and Its Fix Priority",
+   text:"The flagged open item under Varying Weekly Off Allocation describes an actual defect, not a feature request: \"Fix conflict when employee master is fixed off, but leave group is varying off. System must correctly apply off day status instead of showing LOP.\" Should this be tracked and prioritized as a bug fix against current behaviour, separately from the other \"new requirement\" items in this module?",
+   why:"BRD Attendance & Leave · Varying Weekly Off Allocation: this is the only item in the whole document phrased as \"fix conflict\"/\"must correctly apply\" rather than as a new capability — it describes existing behaviour producing a wrong result (incorrect LOP) in a specific configuration conflict.\nMixing a correctness bug into a backlog of \"new requirements\" risks it being scheduled at feature-request priority instead of defect priority, even though it silently produces incorrect payroll deductions (LOP) today.",
+   opts:[{t:"A",c:"letter-a",l:"Yes — track as a standalone defect, high priority, independent of any other new-requirement work in this module; incorrect LOP directly affects employee pay"},
+         {t:"B",c:"letter-b",l:"No — bundle it with the rest of the Varying Weekly Off/Shift Allocation new-requirement work; it isn't urgent enough to fix in isolation"},
+         {t:"C",c:"letter-c",l:"Needs more investigation first — the exact trigger condition (fixed-off employee master + varying-off leave group) needs to be reproduced and confirmed before committing to a fix approach"}]},
+
+  {sec:"Section 4: Compensatory Off",scBg:"#dafbe1",scFg:"#14532d",
+   id:"q8",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Compensatory Off Entry — Is There a Rejection Path, or Approval Only?",
+   text:"Compensatory Off Entry is described as \"view and approval\" only for HR, after a supervisor has already recommended/sanctioned the overtime. No rejection path is mentioned anywhere. Can HR reject a comp-off entry at this stage, and if so what happens to the underlying overtime record?",
+   why:"BRD Attendance & Leave · Compensatory Off Entry: the description only ever uses the word \"approval\"; no rejection, return-for-correction, or decline path is described at any stage of the OT → supervisor → HR approval chain.\nWithout a rejection path, either HR truly cannot decline a supervisor-sanctioned comp-off (meaning supervisor sanction is effectively final), or the rejection mechanism exists but was simply never documented — these have very different UI/workflow implications.",
+   opts:[{t:"A",c:"letter-a",l:"No rejection at HR stage — supervisor sanction is effectively final; HR's role really is view-and-approve only, with any correction handled by the supervisor reversing their own sanction upstream"},
+         {t:"B",c:"letter-b",l:"HR can reject — a reject action exists (or is needed) at the Comp Off Entry screen, which either returns the entry to the supervisor or cancels the overtime/comp-off record entirely; specify which in the notes field below"},
+         {t:"C",c:"letter-c",l:"Rejection happens even further upstream — HR never sees an entry unless it's already fully approved at both supervisor and a prior gate; this screen's approval is a formality, not a real gate"}]},
+  {id:"q9",gap:"MISSING RULE",gc:"badge-missing",title:"Holiday Compensatory Off — What Happens If Not Used Within the Leave Year?",
+   text:"Holiday Compensatory Off has no carry-forward or encashment and must be used within the same leave year it was credited. The document doesn't say what happens if an employee simply never uses it — does it silently lapse, or does the system warn/notify before it expires?",
+   why:"BRD Attendance & Leave · Holiday Compensatory Off Entry: \"has to be availed in that leave year itself. It has no encashment or carry forward to next year\" — the forfeiture rule itself is clear, but the notification/warning behaviour around it is not addressed at all.\nA silent forfeiture with no warning is a common source of employee grievance for a statutory-adjacent benefit; determines whether a notification/reminder mechanism needs to be built alongside the Leave Year End Process.",
+   opts:[{t:"A",c:"letter-a",l:"Silent lapse — unused Holiday Comp Off simply disappears at Leave Year End with no warning to the employee or HR; no notification mechanism needed"},
+         {t:"B",c:"letter-b",l:"Warned before expiry — the system (or Employee Reminders, if that feature exists per the Masters BRD) notifies the employee and/or HR as the leave year end approaches with unused Holiday Comp Off balance"},
+         {t:"C",c:"letter-c",l:"Shown but not actively warned — the balance is visible in the employee's leave balance popup at all times, so no separate proactive notification is needed beyond normal visibility"}]},
+
+  {sec:"Section 5: Leave Allocation — Joining & Promotion",scBg:"#ede9fe",scFg:"#5b21b6",
+   id:"q10",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Leave Count Auto-Population for Employee Joining — Build Now, or Keep Manual?",
+   text:"Employee Joining's EL/OH quantum rules are fully deterministic (2 EL/month confirmed, 1 EL/month probationer, adjusted for the 5th-of-month cutoff; 2/1/0 OH by join date) — yet \"Leave Count is [to] be entered manually\" today, with auto-population from Employee Type + Joining Date explicitly requested as a new requirement. Given the rule is fully computable, should this be built as an automatic calculation now, or does manual entry stay for this phase?",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation → Employee Joining: the rule set given is complete and unambiguous enough to automate directly, unlike most other open items in this module which lack enough detail to build against.\nThis is a low-risk, high-value automation candidate specifically because the formula is already fully specified — worth flagging as a build-now candidate distinct from the module's other, genuinely underspecified asks.",
+   opts:[{t:"A",c:"letter-a",l:"Automate now — auto-populate the leave count from Employee Type and Joining Date using the documented formula; HR can still override the value manually before saving"},
+         {t:"B",c:"letter-b",l:"Automate now, no override — auto-populate and lock the value; any exception must go through a separate correction/adjustment process, not inline editing on this screen"},
+         {t:"C",c:"letter-c",l:"Keep manual for this phase — automation is deferred; HR continues entering the leave count by hand even though the formula is known"}]},
+  {id:"q11",gap:"MISSING RULE",gc:"badge-missing",title:"Promotion Leave — What Is the Exact Formula for the \"Additional Leave Count\"?",
+   text:"When a Probationer is promoted to Confirmed, Promotion Leave allocates the \"additional leave count\" — entered manually today, with auto-population from Employee Type + Joining Date requested as a new requirement, same as Employee Joining. But unlike Employee Joining, no formula is given for what \"additional\" actually means numerically here.",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation → Promotion Leave: states confirmed employees get 24 EL/year but never states the calculation for the incremental amount owed on promotion (e.g. the gap between what a Probationer had already accrued at 1/month and what a Confirmed employee should have from the promotion's effective date forward).\nWithout this formula, this transaction type cannot be automated even though it's requested to be, unlike Employee Joining where the full rule is already given.",
+   opts:[{t:"A",c:"letter-a",l:"Additional = (Confirmed monthly rate − Probationer monthly rate) × months remaining in the current leave year from the promotion's effective date — i.e. the promotion only affects future accrual, not a retroactive top-up of months already accrued as a Probationer"},
+         {t:"B",c:"letter-b",l:"Additional = full retroactive top-up — recalculate the entire current leave year as if the employee had been Confirmed from day one, crediting the difference for all months already elapsed, not just months remaining"},
+         {t:"C",c:"letter-c",l:"A different formula — please describe the correct calculation in the notes field below"}]},
+
+  {sec:"Section 6: Leave Allocation — Yearly Opening & Special Leave",scBg:"#ffebe9",scFg:"#7f1d1d",
+   id:"q12",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Yearly Opening's \"1st January\" — Fixed Date, or Tied to the Configurable Leave Year Start Month?",
+   text:"Yearly Opening's Applicable Date is stated as the literal date \"1st January.\" Settings separately exposes a configurable \"Leave Year Start Month\" company setting (currently set to January for Muziris, but described as configurable). If that setting were ever changed to a different month, does Yearly Opening's applicable date move with it, or does this transaction type only ever work correctly for a January-start leave year?",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation → Yearly Opening vs BRD System Management · Payroll Settings: Yearly Opening's date is written as a literal calendar date, not as \"the first day of the configured leave year\" — the two documents never explicitly connect the two concepts.\nIf Yearly Opening is meant to be driven by the Leave Year Start Month setting, its logic needs to read that setting rather than a hardcoded January 1st; if it's genuinely fixed, that's an implicit assumption the system may only ever support a January-start leave year in practice, regardless of what the setting claims to allow.",
+   opts:[{t:"A",c:"letter-a",l:"Tied to the setting — Yearly Opening's applicable date SHALL always be the first day of whatever month Leave Year Start Month is configured to; the \"1st January\" in the BRD text simply reflects Muziris's own current setting, not a hardcoded value"},
+         {t:"B",c:"letter-b",l:"Fixed at January 1st regardless of the setting — Yearly Opening is hardcoded and only works correctly when Leave Year Start Month is January; changing that setting for a different company would require separate rework of this transaction type"},
+         {t:"C",c:"letter-c",l:"The Leave Year Start Month setting doesn't actually drive anything yet — it's informational/descriptive only; every leave-year-dependent calculation in the system (Yearly Opening included) is currently hardcoded to a calendar-year (Jan–Dec) assumption"}]},
+  {id:"q13",gap:"MISSING RULE",gc:"badge-missing",title:"Maternity Leave's 6-Month Assumption — Fixed, or Statutorily/Company Configurable?",
+   text:"Yearly Opening's deallocation rule states an employee on Maternity Leave is \"eligible for maternity leave only... Earned Leave will not be credited for those 6 months.\" India's Maternity Benefit Act entitlement varies by circumstance (26 weeks for the first two children, 12 weeks from the third child onward, and other adoption/commissioning-mother variants) — not a flat 6 months in every case. Is 6 months a fixed system assumption, or does it need to vary by the specific maternity circumstance?",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation → Yearly Opening: the 6-month figure is written directly into the deallocation rule as a fixed constant, with no reference to the statutory variation by child count or to any company-level override.\nGiven the system elsewhere claims to be \"statutorily compliant,\" a hardcoded 6-month assumption that doesn't match the Maternity Benefit Act's actual variation is a compliance risk worth resolving explicitly before building the deallocation logic literally as written.",
+   opts:[{t:"A",c:"letter-a",l:"Fixed 6 months for all cases — Muziris's own policy currently treats every maternity leave as exactly 6 months regardless of child count; this is a deliberate, confirmed simplification, not a statutory compliance gap"},
+         {t:"B",c:"letter-b",l:"Must vary by statutory entitlement — the deallocation period needs to read the actual maternity leave duration granted per the Special Leave transaction type, not a hardcoded 6 months, so it correctly handles the 12-week case for a 3rd child"},
+         {t:"C",c:"letter-c",l:"Company-configurable, not statutory-driven — the duration should be a Settings-level parameter HR can adjust, independent of both the hardcoded 6 months and automatic statutory-variation logic"}]},
+  {id:"q14",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Notice-Period EL Rule's 3-Month Assumption — Consistent With the Employee's Own Configurable Notice Period?",
+   text:"Yearly Opening's deallocation rule also states: \"Employees on notice period will have only 1 EL per month during the 3-month period.\" But an employee's actual notice period is otherwise a configurable field on the employee record (not fixed at 3 months for everyone). Does this leave-deallocation rule apply for the employee's own actual notice period length, or is 3 months a separate, fixed assumption specific to this leave rule regardless of what notice period that employee actually has?",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation → Yearly Opening: \"3-month period\" is stated as a flat constant in the leave rule, while notice period elsewhere in the system is a per-employee configurable value, not a fixed 3 months for every employee.\nIf an employee's actual notice period is (for example) 1 month or 2 months, applying a flat 3-month reduced-EL window regardless would either over- or under-deallocate their leave — a direct payroll/leave-balance accuracy issue.",
+   opts:[{t:"A",c:"letter-a",l:"Use the employee's actual notice period — the reduced-EL window SHALL match whatever notice period is recorded on that specific employee's record, not a flat 3 months; \"3-month period\" in the BRD text just reflects the typical/example case"},
+         {t:"B",c:"letter-b",l:"Fixed 3 months regardless of the employee's actual notice period field — this leave rule intentionally uses a flat assumption distinct from the employee record's own notice period value"},
+         {t:"C",c:"letter-c",l:"3 months is the standard/default notice period for most employees at Muziris, and the employee record's notice period field is rarely different in practice — but confirm whether the rule should still read the actual field value for the rare cases where it differs"}]},
+  {id:"q15",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"\"CL\" (Casual Leave) — A Real Leave Type, or a Documentation Error?",
+   text:"The single bullet \"Auto Monthly Leave Allocation: Auto-allocate leaves (e.g., CL) at the start of each month\" is the only place Casual Leave (CL) is mentioned anywhere across this document, the Masters BRD's Attendance and Leave code list, or Settings' Attendance & Leave Group leave-type list. Is Casual Leave a genuine leave type that needs its own full specification, or was this example meant to reference an existing leave type (e.g. EL) and \"CL\" is a documentation slip?",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation §8 (final bullet): CL appears exactly once, in a parenthetical example, with no quantum, eligibility, carry-forward, or encashment rule given anywhere — and it doesn't appear in either other source document's leave-type lists.\nIf Casual Leave is real, it needs the same full specification every other leave type in this module has (quantum, credit timing, carry-forward, expiry); if it's a documentation error, the \"Auto Monthly Leave Allocation\" bullet needs to be corrected to name the actual leave type intended.",
+   opts:[{t:"A",c:"letter-a",l:"Casual Leave is real and new — it needs its own quantum, eligibility, and carry-forward rules defined from scratch (please provide these in the notes field below), separate from Earned Leave"},
+         {t:"B",c:"letter-b",l:"Documentation error — the bullet meant Earned Leave (EL) or another already-defined leave type, not a genuinely separate Casual Leave; correct the BRD text rather than building a new leave type"},
+         {t:"C",c:"letter-c",l:"Not needed for this phase — leave CL out of scope entirely; \"Auto Monthly Leave Allocation\" as a whole is deferred, regardless of which leave type it was meant to reference"}]},
+  {id:"q16",gap:"SCALABILITY",gc:"badge-scalability",title:"Special Leave — Extensible Category, or Maternity Leave Only?",
+   text:"Special Leave is introduced as a category (\"To allocate special leave type, currently the available leave is maternity leave\") implying other types could be added later, but nothing confirms whether Special Leave is actually designed to be extensible or whether Maternity Leave is effectively hardcoded as its only member.",
+   why:"BRD Attendance & Leave · Leave Allocation/Deallocation → Special Leave: the word \"currently\" implies extensibility, but every field and rule described (Date From/To, leave-year-boundary handling) is written specifically in maternity-leave terms, with no generic \"Special Leave Type\" selector or master mentioned anywhere.\nDetermines whether the Special Leave screen needs a Leave-Type dropdown/master from day one (to genuinely support future additions like Bereavement or Sabbatical leave), or whether it can be built as a maternity-leave-specific screen now and generalized later if needed.",
+   opts:[{t:"A",c:"letter-a",l:"Build it extensible now — add a Special Leave Type field/master from the start, even though Maternity is the only value populated today, so future types don't require rebuilding the screen"},
+         {t:"B",c:"letter-b",l:"Maternity-only for now — build this screen specifically for maternity leave; treat genuine extensibility as a future, separate request if/when a second Special Leave type is actually needed"},
+         {t:"C",c:"letter-c",l:"Already effectively extensible via existing mechanisms — Special Leave should just be a manual entry against any Leave Type already defined in Settings' Attendance & Leave Group, not a purpose-built screen of its own"}]},
+
+  {sec:"Section 7: Leave Encashment",scBg:"#e0e7ff",scFg:"#3730a3",
+   id:"q17",gap:"MISSING RULE",gc:"badge-missing",title:"Leave Encashment's \"Salary (CTC)\" — Which Exact Figure Does the Formula Use?",
+   text:"The Leave Encashment formula is precise — (Salary(CTC) in the relevant month ÷ days in that month) × comp offs encashed — but \"Salary (CTC)\" itself is never defined exactly. Does this mean Gross Salary, Basic + DA only, or the full CTC including employer PF/ESI contributions?",
+   why:"BRD Attendance & Leave · Leave Encashment: the calculation formula is otherwise fully specified and unambiguous, but its one input variable — \"Salary (CTC)\" — is a term used loosely enough in payroll contexts that it needs an exact definition to produce a correct, dispute-proof payout figure.\nGetting this wrong directly over- or under-pays the employee for every comp-off encashment processed, since the formula is otherwise ready to automate as-is.",
+   opts:[{t:"A",c:"letter-a",l:"Gross Salary — the sum of all earning-side Salary Head components (Basic, HRA, all allowances) excluding employer-side PF/ESI contributions"},
+         {t:"B",c:"letter-b",l:"Basic + DA only — the narrower statutory wage base often used for leave/comp-off encashment calculations specifically, not the full gross"},
+         {t:"C",c:"letter-c",l:"Full CTC — includes employer PF/ESI/other contributions on top of gross earnings, i.e. the complete cost-to-company figure"}]},
+  {id:"q18",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"LENCASH / ELENCASH Salary Heads — What Business Process Actually Triggers Them?",
+   text:"The Masters BRD's Salary Head master lists three separate encashment-related components: COENCASH (CompOff Encashment), LENCASH (Leave Encashment), and ELENCASH (Leaves Encashment). This Attendance & Leave document states encashment is available only for comp offs, matching COENCASH — but describes no business process for LENCASH or ELENCASH at all. What are these two codes actually for?",
+   why:"BRD Masters · Salary Head sample data vs BRD Attendance & Leave · Leave Encashment: \"encashment is allowed only for comp offs\" directly conflicts with two Salary Head codes that exist specifically to represent leave (not comp-off) encashment, with no described trigger, screen, or eligibility rule for either.\nEither these two codes are vestigial/unused salary heads left over from a broader original design, or Earned Leave encashment is a genuine capability that exists but was never described in this module — these have very different implications for what needs to be built.",
+   opts:[{t:"A",c:"letter-a",l:"Vestigial — LENCASH and ELENCASH are unused legacy Salary Head codes; comp-off encashment (COENCASH) is the only encashment process that actually exists or is needed; the other two can be retired from the Salary Head list"},
+         {t:"B",c:"letter-b",l:"Real, undocumented capability — Earned Leave (and/or Optional Holiday) encashment is a genuine, separate process from comp-off encashment that needs its own screen, eligibility rule, and formula, none of which exist in this document yet"},
+         {t:"C",c:"letter-c",l:"Different purpose entirely — LENCASH/ELENCASH represent something other than an employee-initiated encashment process (e.g. a one-time full-and-final-settlement calculation); describe the actual intended use in the notes field below"}]},
+
+  {sec:"Section 8: Leave Year End Process",scBg:"#fff7ed",scFg:"#7c2d12",
+   id:"q19",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Comp-Off Carry-Forward — Resolve the Self-Contradiction: Which Types Actually Carry Forward?",
+   text:"Leave Year End Process states, in consecutive sentences: \"all compensatory offs are carry forward to next year\" and then \"No carry forward for Sunday comp off, holiday comp off, rest day etc.\" Since Sunday Comp Off (SCO), Holiday Comp Off (COH), and Rest Day (RD) are three of the four comp-off-family codes in the Masters BRD's confirmed code list, these two sentences can't both be true as written. What is the actual intended rule?",
+   why:"BRD Attendance & Leave · Leave Year End Process: the two sentences directly contradict each other within the same paragraph — by elimination, only the plain \"CO\" (regular overtime-based Compensatory Off) code would carry forward if the second sentence's exclusion list is authoritative, but that reading isn't stated explicitly anywhere.\nThis directly affects the Leave Year End batch process's carry-forward logic — building against the wrong reading either wrongly forfeits employees' comp-off balances or wrongly carries forward ones that should lapse.",
+   opts:[{t:"A",c:"letter-a",l:"Only plain CO (regular Compensatory Off) carries forward — Sunday Comp Off, Holiday Comp Off, and Rest Day all lapse at year end with no carry forward; \"all compensatory offs\" in the first sentence was loosely worded and the exclusion list in the second sentence is the authoritative rule"},
+         {t:"B",c:"letter-b",l:"All comp-off types actually do carry forward — the exclusion list (\"No carry forward for Sunday comp off, holiday comp off, rest day\") is the error and should be removed; the first sentence is authoritative"},
+         {t:"C",c:"letter-c",l:"A different split entirely — please state exactly which comp-off codes carry forward and which lapse in the notes field below"}]},
+
+  {sec:"Section 9: Documentation Consistency",scBg:"#fae8ff",scFg:"#86198f",
+   id:"q20",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Un-Flagged \"New Requirement\"-Style Bullets — In Scope for This Phase, or Deferred Like the Flagged Ones?",
+   text:"Several bullet clusters throughout this document read exactly like the explicitly-flagged \"New requirement\" items (imperative language: \"Allow OT marking on OD/Leave days\", \"Include color in OT and ST\", \"Need sorting for projects and comp off types\") but are not wrapped in the document's own \"Open item flagged in BRD\" convention. Should every un-flagged item that reads as a new capability be treated the same as the explicitly flagged ones (i.e. deferred/separately scoped), or does the absence of a flag mean it's actually confirmed, current-phase scope?",
+   why:"BRD Attendance & Leave · multiple sections (Muster Roll §2.4 OT/ST Enhancements, Compensatory Off Entry's sorting ask, and others): the document's own flagging convention is applied inconsistently, creating real risk that unflagged aspirational content gets silently built as if agreed, or that genuinely-agreed content gets silently dropped because it lacks the expected flag.\nA single, consistent answer here changes how every other open item and every future BRD in this set should be read — worth resolving once, system-wide, rather than re-litigating for every individual bullet.",
+   opts:[{t:"A",c:"letter-a",l:"Treat every imperative/aspirational bullet the same regardless of flagging — anything phrased as \"allow/include/need/enable X\" is a new requirement to be scoped and prioritized separately, whether or not it has the blockquote flag; the flag's absence is a documentation gap, not a signal of current scope"},
+         {t:"B",c:"letter-b",l:"Trust the flag literally — only blockquote-flagged items are new requirements; everything else, flagged or not, describes current confirmed behaviour exactly as written, even where the language sounds aspirational"},
+         {t:"C",c:"letter-c",l:"Case-by-case — there's no single rule; each un-flagged aspirational-sounding bullet needs to be individually confirmed with the business before being treated either way"}]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const sel = {};
+Q.forEach(q => { sel[q.id] = null; });
+
+// ── BUILD FORM (pure DOM — no innerHTML with template literals) ───────────────
+function buildForm() {
+  const container = document.getElementById('formContainer');
+
+  Q.forEach(function(q, idx) {
+    const num = idx + 1;
+
+    // Section pill
+    if (q.sec) {
+      const pill = document.createElement('div');
+      pill.className = 'section-pill';
+      pill.style.background = q.scBg;
+      pill.style.color = q.scFg;
+      pill.style.border = '1px solid ' + q.scFg + '30';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      dot.setAttribute('width','8'); dot.setAttribute('height','8'); dot.setAttribute('viewBox','0 0 8 8');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','4'); circle.setAttribute('cy','4'); circle.setAttribute('r','4'); circle.setAttribute('fill', q.scFg);
+      dot.appendChild(circle);
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(' ' + q.sec));
+      container.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Top section
+    const top = document.createElement('div');
+    top.className = 'q-card-top';
+
+    // Meta row
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+
+    const numBadge = document.createElement('div');
+    numBadge.className = 'q-number';
+    numBadge.id = 'num-' + q.id;
+    numBadge.textContent = num;
+    meta.appendChild(numBadge);
+
+    const gapBadge = document.createElement('span');
+    gapBadge.className = 'gap-badge ' + q.gc;
+    gapBadge.textContent = q.gap;
+    meta.appendChild(gapBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'q-title-text';
+    titleSpan.textContent = q.title;
+    meta.appendChild(titleSpan);
+    top.appendChild(meta);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.text;
+    const star = document.createElement('span');
+    star.className = 'req-star';
+    star.textContent = ' *';
+    qtext.appendChild(star);
+    top.appendChild(qtext);
+
+    // Why box
+    const why = document.createElement('div');
+    why.className = 'q-why';
+    const parts = q.why.split('\n');
+    if (parts.length >= 2) {
+      // Line 1: BRD reference
+      const brdRef = document.createElement('div');
+      brdRef.style.cssText = 'font-size:11px;color:#0969da;font-weight:600;margin-bottom:4px;';
+      brdRef.textContent = parts[0];
+      why.appendChild(brdRef);
+      // Line 2: Why this matters
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      const whyText = document.createElement('span');
+      whyText.textContent = parts[1];
+      why.appendChild(whyB);
+      why.appendChild(whyText);
+    } else {
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      why.appendChild(whyB);
+      why.appendChild(document.createTextNode(q.why));
+    }
+    top.appendChild(why);
+
+    card.appendChild(top);
+
+    // Options
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'options-wrap';
+
+    q.opts.forEach(function(o) {
+      const lbl = document.createElement('div');
+      lbl.className = 'opt-label';
+      lbl.id = 'lbl-' + q.id + '-' + o.t;
+
+      const ind = document.createElement('div');
+      ind.className = 'opt-indicator';
+      lbl.appendChild(ind);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter ' + o.c;
+      letter.textContent = o.t;
+      lbl.appendChild(letter);
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = o.l;
+      lbl.appendChild(optText);
+
+      lbl.addEventListener('click', function() { toggleOpt(q.id, o.t); });
+      optsWrap.appendChild(lbl);
+    });
+
+    card.appendChild(optsWrap);
+
+    // Custom textarea
+    const customWrap = document.createElement('div');
+    customWrap.className = 'custom-wrap';
+
+    const customLbl = document.createElement('span');
+    customLbl.className = 'custom-lbl';
+    customLbl.textContent = 'D \u2014 Custom answer or additional notes (optional):';
+    customWrap.appendChild(customLbl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'custom-ta';
+    ta.id = 'custom-' + q.id;
+    ta.placeholder = 'Add your own answer or clarify your selection...';
+    ta.addEventListener('input', function() { onCustomInput(q.id); });
+    customWrap.appendChild(ta);
+    card.appendChild(customWrap);
+
+    // Error message
+    const err = document.createElement('div');
+    err.className = 'err-msg';
+    err.id = 'err-' + q.id;
+    err.textContent = 'This question is required \u2014 please select an option or provide a custom answer.';
+    card.appendChild(err);
+
+    container.appendChild(card);
+  });
+}
+
+buildForm();
+
+// ── TOGGLE: click to select, click same to deselect ───────────────────────────
+function toggleOpt(qid, tag) {
+  const current = sel[qid];
+  if (current === tag) {
+    sel[qid] = null;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.remove('selected');
+    const custom = document.getElementById('custom-' + qid).value.trim();
+    if (!custom) unmark(qid);
+  } else {
+    if (current) document.getElementById('lbl-' + qid + '-' + current).classList.remove('selected');
+    sel[qid] = tag;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.add('selected');
+    mark(qid);
+  }
+}
+
+function onCustomInput(qid) {
+  const custom = document.getElementById('custom-' + qid).value.trim();
+  if (custom || sel[qid]) mark(qid); else unmark(qid);
+}
+
+function mark(qid) {
+  const card = document.getElementById('card-' + qid);
+  card.classList.add('answered'); card.classList.remove('has-error');
+  document.getElementById('num-' + qid).classList.add('answered-num');
+  document.getElementById('err-' + qid).classList.remove('visible');
+  updateProgress();
+}
+function unmark(qid) {
+  document.getElementById('card-' + qid).classList.remove('answered');
+  document.getElementById('num-' + qid).classList.remove('answered-num');
+  updateProgress();
+}
+function updateProgress() {
+  let answered = 0;
+  Q.forEach(function(q) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (sel[q.id] || (custom && custom.value.trim())) answered++;
+  });
+  const pct = Math.round((answered / Q.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = answered + ' / ' + Q.length;
+  document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
+}
+
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
+function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
+  const missing = [];
+  Q.forEach(function(q, i) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (!sel[q.id] && !(custom && custom.value.trim())) {
+      missing.push({ id: q.id, num: i + 1, title: q.title });
+      document.getElementById('card-' + q.id).classList.add('has-error');
+      document.getElementById('err-' + q.id).classList.add('visible');
+    }
+  });
+
+  if (nameMissing || missing.length > 0) {
+    const msgEl = document.getElementById('incompleteMsg');
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
+    }
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
+    fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fc.classList.add('shake');
+    setTimeout(function() { fc.classList.remove('shake'); }, 400);
+    return;
+  }
+  document.getElementById('incompleteMsg').classList.remove('show');
+  generateAndSend();
+}
+
+// ── TEXT SUMMARY FOR EMAIL BODY ─────────────────────────────────────────────────
+function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
+  var lines = ['MUZPAYROLL ATTENDANCE & LEAVE MODULE — BRD STAKEHOLDER RESPONSES',
+    'Submitted by: ' + (userName || '(not provided)'),
+    '='.repeat(60), ''];
+  var curSec = '';
+  Q.forEach(function(q, i) {
+    if (q.sec && q.sec !== curSec) {
+      curSec = q.sec;
+      lines.push('', '-'.repeat(60), curSec.toUpperCase(), '-'.repeat(60), '');
+    }
+    var s = sel[q.id];
+    var custom = document.getElementById('custom-' + q.id).value.trim();
+    var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+    lines.push('Q' + (i+1) + '. [' + q.gap + '] ' + q.title);
+    lines.push('Question : ' + q.text);
+    lines.push('ANSWER   : ' + (opt ? '(' + opt.t + ') ' + opt.l : '(Custom)'));
+    if (custom) lines.push('NOTES    : ' + custom);
+    lines.push('');
+  });
+  lines.push('='.repeat(60), 'End of BRD Responses');
+  return lines.join('\n');
+}
+
+// ── GENERATE DOCX + OPEN EMAIL ─────────────────────────────────────────────────
+async function generateAndSend() {
+  var overlay = document.getElementById('genOverlay');
+  var titleEl = document.getElementById('genTitle');
+  var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
+  overlay.classList.add('show');
+
+  try {
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    await new Promise(function(r) { setTimeout(r, 80); });
+
+    var D = docx;
+    var nb = { style: D.BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    var tb = { style: D.BorderStyle.SINGLE, size: 4,  color: 'D0D7DE' };
+    function al(col) { return { style: D.BorderStyle.SINGLE, size: 12, color: col }; }
+    function sp(pt) {
+      return new D.Paragraph({ spacing: { before: 0, after: pt*20 }, children: [new D.TextRun('')] });
+    }
+    var secCols = {
+      'Section 1: Data Sources & Time Sheet Upload':'0550AE',
+      'Section 2: Muster Roll — Attendance Status Codes':'0D5B52',
+      'Section 3: Shift & Off-Day Allocation':'92400E',
+      'Section 4: Compensatory Off':'14532D',
+      'Section 5: Leave Allocation — Joining & Promotion':'5B21B6',
+      'Section 6: Leave Allocation — Yearly Opening & Special Leave':'7F1D1D',
+      'Section 7: Leave Encashment':'3730A3',
+      'Section 8: Leave Year End Process':'7C2D12',
+      'Section 9: Documentation Consistency':'86198F'
+    };
+    function secHead(text) {
+      var col = secCols[text] || '0969DA';
+      return new D.Paragraph({
+        spacing: { before: 480, after: 120 },
+        border: { bottom: { style: D.BorderStyle.SINGLE, size: 10, color: col, space: 4 } },
+        children: [new D.TextRun({ text: text, font: 'Arial', size: 28, bold: true, color: col })]
+      });
+    }
+    function qRow(num, q) {
+      var s = sel[q.id];
+      var custom = document.getElementById('custom-' + q.id).value.trim();
+      var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+      var tagColMap = { 'badge-missing':'CF222E','badge-ambiguous':'9A6700','badge-workflow':'0969DA','badge-scalability':'6639BA' };
+      var tc = tagColMap[q.gc] || 'CF222E';
+      var ansText = opt ? 'ANSWER (' + opt.t + '):  ' + opt.l : 'ANSWER (Custom)';
+      var ansBg   = opt ? 'EAF5EA' : 'FFF8C5';
+      var ansCol  = opt ? '1A7F37' : '9A6700';
+      var ansLeft = al(ansCol);
+      var rows = [
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 80, bottom: 40, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: 'Q' + num + '  ', font: 'Arial', size: 18, bold: true, color: '0D1117' }),
+            new D.TextRun({ text: '[' + q.gap + ']  ', font: 'Arial', size: 17, bold: true, color: tc }),
+            new D.TextRun({ text: q.title, font: 'Arial', size: 18, color: '57606A' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 20, bottom: 80, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: q.text, font: 'Arial', size: 22, bold: true, color: '0D1117' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: tb, bottom: tb, left: ansLeft, right: nb },
+          shading: { fill: ansBg, type: D.ShadingType.CLEAR },
+          margins: { top: 100, bottom: 100, left: 160, right: 120 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+              new D.TextRun({ text: ansText, font: 'Arial', size: 21, bold: true, color: ansCol })
+            ]}),
+            ...(custom ? [new D.Paragraph({ spacing: { before: 60, after: 0 }, children: [
+              new D.TextRun({ text: 'Notes:  ' + custom, font: 'Arial', size: 20, italics: true, color: '57606A' })
+            ]})] : [])
+          ]
+        })]
+        })
+      ];
+      return [
+        new D.Table({ width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626], rows: rows }),
+        sp(8)
+      ];
+    }
+
+    var children = [];
+    // Cover
+    children.push(
+      new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY', font: 'Arial', size: 17, color: '999999', bold: true })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 100 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA', space: 8 } }, children: [new D.TextRun({ text: 'MUZPAYROLL', font: 'Arial', size: 48, bold: true, color: '0969DA' })] }),
+      new D.Paragraph({ spacing: { before: 100, after: 40 }, children: [new D.TextRun({ text: 'BRD Stakeholder Responses', font: 'Arial', size: 32, color: '0D1117' })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 40 }, children: [new D.TextRun({ text: 'Attendance & Leave Management Module', font: 'Arial', size: 26, color: '57606A' })] }),
+      new D.Paragraph({ spacing: { before: 60, after: 40 }, children: [
+        new D.TextRun({ text: 'Submitted by: ', font: 'Arial', size: 24, bold: true, color: '0D1117' }),
+        new D.TextRun({ text: userName || '(not provided)', font: 'Arial', size: 24, color: '0969DA', bold: true })
+      ]}),
+      sp(8)
+    );
+    // Stats table
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
+        rows: [new D.TableRow({ children: [['20','Total Questions'],['9','Sections'],['20','Answered'],['0','Skipped']].map(function(pair) {
+          return new D.TableCell({
+            width: { size: 2156, type: D.WidthType.DXA },
+            borders: { top: tb, bottom: tb, left: tb, right: tb },
+            shading: { fill: 'E8F4FD', type: D.ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            children: [
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[0], font: 'Arial', size: 44, bold: true, color: '0969DA' })] }),
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[1], font: 'Arial', size: 18, color: '57606A' })] })
+            ]
+          });
+        })})]
+      }),
+      sp(12)
+    );
+    // Purpose box
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626],
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA' }, right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 140, bottom: 140, left: 180, right: 180 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'Instructions for Development Team', font: 'Arial', size: 21, bold: true, color: '0969DA' })] }),
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.TextRun({ text: 'These are confirmed business decisions from HR and payroll stakeholders. Use these answers directly to build the production HRMS system. Each answer maps to a specific code or configuration decision. Do not make assumptions where an answer is provided.', font: 'Arial', size: 20, color: '57606A' })] })
+          ]
+        })]
+        })]
+      }),
+      sp(16)
+    );
+    // Meta
+    [['Submitted by', userName || '(not provided)'],['Module','Attendance & Leave Management Module'],['Prepared for','Development Team - MUZPAYROLL Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+      children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
+        new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
+        new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
+      ]}));
+    });
+    children.push(sp(14));
+
+    // Questions
+    var qi = 0; var curSec = '';
+    Q.forEach(function(q) {
+      qi++;
+      if (q.sec && q.sec !== curSec) {
+        curSec = q.sec;
+        children.push(secHead(curSec));
+        children.push(sp(6));
+      }
+      qRow(qi, q).forEach(function(b) { children.push(b); });
+    });
+
+    children.push(sp(16));
+    children.push(new D.Paragraph({
+      border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 6 } },
+      spacing: { before: 120, after: 0 },
+      children: [new D.TextRun({ text: 'End of BRD Responses - Do not modify above this line', font: 'Arial', size: 17, color: '999999', italics: true })]
+    }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } } },
+        headers: { default: new D.Header({ children: [new D.Paragraph({ border: { bottom: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 0, after: 80 }, children: [new D.TextRun({ text: 'MUZPAYROLL Attendance & Leave Module - BRD Stakeholder Responses', font: 'Arial', size: 17, color: '888888' })] })] }) },
+        footers: { default: new D.Footer({ children: [new D.Paragraph({ border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 80, after: 0 }, children: [new D.TextRun({ text: 'Attendance & Leave Module  |  Confidential', font: 'Arial', size: 17, color: '999999' })] })] }) },
+        children: children
+      }]
+    });
+
+    var FILENAME = 'MUZPAYROLL_AttendanceLeave_BRD_Answers.docx';
+    var blob = await D.Packer.toBlob(doc);
+
+    // Trigger local download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    // Email the actual Word document as a real attachment via a small
+    // Cloudflare Worker (see email-worker.js) that relays it through Resend.
+    // The Resend API key lives only on the Worker, never in this page.
+    titleEl.textContent = 'Sending email...';
+    subEl.textContent   = 'Attaching the Word file';
+    try {
+      var fd = new FormData();
+      fd.append('subject', 'MUZPAYROLL Attendance & Leave BRD Submission - ' + userName);
+      fd.append('message', buildSummary());
+      fd.append('filename', FILENAME);
+      fd.append('attachment', blob, FILENAME);
+      var resp = await fetch(EMAIL_WORKER_URL, { method: 'POST', body: fd });
+      var result = await resp.json();
+      document.getElementById('toastMsg').textContent = result.success
+        ? 'Word file downloaded & emailed!'
+        : 'Word file downloaded! (Email failed: ' + (result.error || (result.result && result.result.message) || 'unknown error') + ')';
+    } catch (e) {
+      console.warn('Email failed:', e);
+      document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
+    }
+
+    overlay.classList.remove('show');
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error(err);
+    alert('Error: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>
