@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUZPAYROLL Leave Management (ESS) — BRD Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --amber:#9a6700;--amber-bg:#fff8c5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:200px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3fb950;border-radius:4px;transition:width .35s}
+.progress-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;white-space:nowrap}
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.hero-stat{padding:14px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .n{font-size:22px;font-weight:600;color:#fff;line-height:1}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+/* MAIN */
+.main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
+.section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
+/* CARD */
+.q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.q-card.answered{border-color:#3fb950}
+.q-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.q-card-top{padding:20px 24px 0}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.q-number.answered-num{background:#3fb950}
+.gap-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px;flex-shrink:0}
+.badge-missing{background:var(--red-bg);color:var(--red)}
+.badge-ambiguous{background:var(--amber-bg);color:var(--amber)}
+.badge-workflow{background:#dbeafe;color:#1e40af}
+.badge-scalability{background:var(--purple-bg);color:var(--purple)}
+.q-title-text{font-size:13px;font-weight:500;color:var(--ink3)}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.45}
+.req-star{color:var(--red);margin-left:2px}
+.q-why{background:var(--paper2);border-left:3px solid var(--accent);padding:9px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px}
+.q-why b{color:var(--accent);font-weight:600}
+/* OPTIONS */
+.options-wrap{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:all .15s;user-select:none}
+.opt-label:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt-label.selected{border-color:var(--accent);background:var(--accent-light)}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;margin-top:1px;background:#fff;transition:all .15s;position:relative}
+.opt-indicator::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .15s}
+.opt-label.selected .opt-indicator{border-color:var(--accent)}
+.opt-label.selected .opt-indicator::after{opacity:1}
+.opt-letter{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.3px}
+.letter-a{background:var(--green-bg);color:var(--green)}
+.letter-b{background:var(--amber-bg);color:var(--amber)}
+.letter-c{background:var(--red-bg);color:var(--red)}
+.opt-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+/* CUSTOM */
+.custom-wrap{padding:0 24px 20px}
+.custom-lbl{font-size:12px;font-weight:600;color:var(--ink4);margin-bottom:6px;display:block;letter-spacing:.3px}
+.custom-ta{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);resize:vertical;min-height:64px;background:var(--paper2);transition:border-color .15s,background .15s;line-height:1.55}
+.custom-ta:focus{outline:none;border-color:var(--accent);background:#fff}
+.custom-ta::placeholder{color:var(--ink4)}
+/* ERROR */
+.err-msg{padding:0 24px 14px;font-size:12px;color:var(--red);font-weight:500;display:none}
+.err-msg.visible{display:block}
+/* SUBMIT */
+.submit-zone{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:32px;margin-top:36px;text-align:center;box-shadow:var(--shadow-lg)}
+.submit-zone h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+.submit-zone p{font-size:13px;color:var(--ink3);margin-bottom:24px}
+.submit-btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(13,17,23,.18)}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn.all-good{background:#1a7f37}
+.submit-btn.all-good:hover{background:#116329}
+.incomplete-msg{background:var(--red-bg);border:1px solid #ffc1c0;border-radius:var(--radius);padding:12px 16px;color:var(--red);font-size:13px;font-weight:500;margin-bottom:16px;display:none;text-align:left}
+.incomplete-msg.show{display:block}
+.incomplete-msg ul{margin-top:6px;padding-left:18px}
+.incomplete-msg li{font-size:12px;margin-top:3px;font-weight:400}
+/* OVERLAY */
+.gen-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.65);align-items:center;justify-content:center}
+.gen-overlay.show{display:flex}
+.gen-box{background:#fff;border-radius:var(--radius-lg);padding:36px 52px;text-align:center;box-shadow:var(--shadow-lg);min-width:260px}
+.spinner{width:40px;height:40px;border:3px solid #eaeef2;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.gen-sub{font-size:12px;color:var(--ink3)}
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.175,.885,.32,1.275),opacity .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-check{width:20px;height:20px;background:#3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .progress-track{width:100px}
+  .hero{padding:36px 16px 44px}
+  .q-card-top,.options-wrap,.custom-wrap{padding-left:16px;padding-right:16px}
+  .submit-zone{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">L</div>
+    <span class="brand-name">MUZPAYROLL &mdash; Leave Management (Employee Portal) BRD Questionnaire</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-label" id="pLabel">0 / 12</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Stakeholder Review Required
+  </div>
+  <h1>Leave Management<br><em>Employee Portal &mdash; BRD Requirements Form</em></h1>
+  <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">12</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">5</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
+  <div id="formContainer"></div>
+  <div class="submit-zone">
+    <h3>Ready to submit?</h3>
+    <p>All 12 questions must be answered. On submit, your answers download as a Word document.</p>
+    <div class="incomplete-msg" id="incompleteMsg">
+      <strong>Please answer all required questions before submitting:</strong>
+      <ul id="missingList"></ul>
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Submit &amp; Download Word File
+    </button>
+  </div>
+</div>
+
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-box">
+    <div class="spinner"></div>
+    <div class="gen-title" id="genTitle">Building Word document...</div>
+    <div class="gen-sub" id="genSub">Please wait a moment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-check">
+    <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <span id="toastMsg">Word file downloaded!</span>
+</div>
+
+<script src="docx.umd.js"></script>
+<script>
+// ── EMAIL DELIVERY (Cloudflare Worker + Resend — sends to basilareeckal06@gmail.com) ──
+// Deploy email-worker.js as a Cloudflare Worker (see repo instructions) and
+// paste its *.workers.dev URL below. Safe to leave visible — the Worker itself
+// holds the real secret (the Resend API key) and only ever emails one fixed address.
+const EMAIL_WORKER_URL = "https://muzpayroll.basilareeckal06.workers.dev";
+
+// ── QUESTION DATA ──────────────────────────────────────────────────
+const Q = [
+  {sec:"Section 1: Leave Application — Leave Days Calculation",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q1",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Leave Days — When Does \"Manually Input\" Override the Auto-Calculation?",
+   text:"Leave Days on the application form is described as \"Auto-calculated or manually input\" without saying which applies when, or under what circumstances an employee would be allowed to override the automatic count. For a Date From/Date To range, is Leave Days always auto-calculated (excluding offs/holidays in between), with manual entry only ever used for the half-day Session case, or can an employee override the auto-calculated value for any application?",
+   why:"BRD Leave Management · Leave Application/Withdrawal: \"Auto-calculated or manually input\" is stated as if both are simultaneously true without saying which governs in which situation.\nIf manual override is allowed broadly, an employee could enter a Leave Days value inconsistent with the actual date range and offs/holidays in between, corrupting the leave balance calculation — this needs to be scoped precisely before the form's validation logic can be built.",
+   opts:[{t:"A",c:"letter-a",l:"Always auto-calculated, no override — Leave Days is computed from Date From/Date To (excluding holidays and off days) or set to 0.5 for a half-day Session, and is never manually editable by the employee; the \"manually input\" phrase refers only to how HR might occasionally correct a record, not a normal employee-facing option"},
+         {t:"B",c:"letter-b",l:"Auto-calculated by default, but manually editable — the system pre-fills Leave Days from the date range, and the employee can adjust it before submitting (e.g. to exclude a day they realize is already an off day the system didn't detect); no approval-level restriction on this override"},
+         {t:"C",c:"letter-c",l:"Depends on leave type — Earned Leave and Optional Holiday are always auto-calculated with no override, while Comp Off types (Holiday/Sunday/Rest Day) require manual entry since those balances are typically claimed in specific increments not tied to a date range"}]},
+  {sec:"Section 2: Multi-Entry & Status Lifecycle",scBg:"#ede9fe",scFg:"#5b21b6",
+   id:"q2",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Multi-Row Applications — Does Each Row Get Its Own Approval Routing?",
+   text:"\"Add New Row\" lets an employee apply for multiple leave periods — potentially of different Types of Leave — in a single submission. Does each row then move independently through the two-level recommend/approve workflow (so one row could be approved while another is still pending or gets rejected), or does the entire multi-row submission move through approval as a single unit that succeeds or fails together?",
+   why:"BRD Leave Management · Leave Application/Withdrawal (Add New Row) vs Leave Approval/Rejection (two-level recommend/approve): the approval section describes approving/rejecting \"applications\" without clarifying whether a multi-row submission is one application or several.\nThis determines the data model (one leave-application record with several line items sharing one status, vs several independent leave-application records that happen to share a submission timestamp) and how the approval screen needs to present a multi-row submission to the supervisor.",
+   opts:[{t:"A",c:"letter-a",l:"Each row is independent — every row created via Add New Row becomes its own separate leave-application record with its own status, and the supervisor can approve some rows and reject others within the same original submission"},
+         {t:"B",c:"letter-b",l:"The whole submission moves together — all rows in one Add New Row submission share a single status; the supervisor approves or rejects the entire batch as one unit, and cannot selectively approve individual rows"},
+         {t:"C",c:"letter-c",l:"Depends on Type of Leave — rows of the same leave type submitted together move as one unit, but rows of different types (e.g. one Leave row and one Comp Off row in the same submission) are split into separate application records for independent approval"}]},
+  {id:"q3",gap:"MISSING RULE",gc:"badge-missing",title:"Full Leave Status Lifecycle — One Authoritative State Diagram Needed",
+   text:"Leave status is described piecemeal across three different places in this document: Applied/Approved/Rejected/Withdrawn (the basic four states named in Leave Application/Withdrawal), a separate \"Withdraw\" action available only in the Applied state, and a newer \"cancel an already-approved leave\" facility (accessed via application history) whose own cancellation request can itself be withdrawn — yet the Show Entered Data status filter only lists four checkboxes (Applied, Withdrawn, Approved, Rejected), with no visible status for \"cancellation requested\" or \"canceled.\" What is the complete, authoritative list of leave statuses and the exact transitions allowed between them?",
+   why:"BRD Leave Management · Leave Application/Withdrawal, Show Entered Data, and the \"new facility\" paragraph describing approved-leave cancellation: three different mechanisms (direct Withdraw, Cancellation Request, Withdraw-the-cancellation-request) are described in separate short sentences with no single list of all the statuses a leave application can actually hold, and the one place a status list IS shown (the filter checkboxes) doesn't include whatever status a pending cancellation request would need.\nAlso worth resolving in the same breath: the word \"Cancel\" is used for at least three different things in this document — exiting a screen without saving (an Actions Available button), the \"Reason for Rejection/Cancellation\" field, and cancelling an already-approved leave — which is confusing enough to warrant a single, disambiguated status/action glossary rather than leaving each use to be inferred from context.",
+   opts:[{t:"A",c:"letter-a",l:"Six statuses total — Applied, Approved, Rejected, Withdrawn, Cancellation Requested, Canceled — with Cancellation Requested and Canceled simply missing from the Show Entered Data filter as a documentation gap, not a real absence; a Cancellation Requested leave can move to either Canceled (supervisor approves) or back to Approved (employee withdraws the cancellation request)"},
+         {t:"B",c:"letter-b",l:"No separate status for cancellation — requesting cancellation of an approved leave reuses the existing Withdrawn status once the supervisor approves it (rather than introducing new statuses), and \"withdrawing a cancellation request\" just means the record stays Approved and the request record is deleted, not tracked as a status transition"},
+         {t:"C",c:"letter-c",l:"The full status set needs to be defined fresh as part of this BRD — the existing four statuses plus the cancellation facility were built somewhat ad hoc over time and should be redesigned into one clean state model rather than reverse-engineered from the current inconsistent behavior"}]},
+  {sec:"Section 3: Approval Workflow",scBg:"#fff8c5",scFg:"#92400e",
+   id:"q4",gap:"MISSING RULE",gc:"badge-missing",title:"Approval SLA — Is There Any Escalation Timeout?",
+   text:"No time limit is stated anywhere for how long a supervisor has to recommend or approve a leave application before some kind of escalation or reminder kicks in — unlike, for example, the Time Log Management module elsewhere in this Employee Portal, which has an explicit deadline (comp off claims must be approved only after the 7th of the following month, tied to a 7-day claim window). Should Leave approval have any SLA/escalation behavior, or is it intentionally left to run indefinitely until a supervisor acts?",
+   why:"BRD Leave Management · Leave Approval/Rejection: no deadline, reminder, or escalation-to-next-level behavior is mentioned anywhere, even though a pending leave application directly affects an employee's ability to plan (e.g. book travel) around an unconfirmed leave date.\nWithout this, a leave request could sit unactioned indefinitely with no system-driven consequence — worth explicitly confirming this is the intended behavior rather than an oversight, especially since other approval-driven modules in this BRD set at least gesture toward deadlines.",
+   opts:[{t:"A",c:"letter-a",l:"No SLA needed — leave approval has no time limit or escalation; HR handles unusually slow approvals manually and outside the system, exactly as currently described"},
+         {t:"B",c:"letter-b",l:"Needs a reminder, not an escalation — the system should notify the supervisor (and optionally the employee) if a leave request has been pending beyond some configurable number of days, but approval authority never automatically shifts to anyone else"},
+         {t:"C",c:"letter-c",l:"Needs a full escalation path — if a supervisor doesn't act within a defined window, the request should automatically escalate to the second-level approver (or their own superior) so leave requests are never silently stuck"}]},
+  {sec:"Section 4: Leave Sanctioning Cancellation",scBg:"#dafbe1",scFg:"#14532d",
+   id:"q5",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Leave Sanctioning Cancellation — Single-Level or Two-Level Approval?",
+   text:"The original Leave Application goes through an explicit two-level recommend/approve process. Leave Sanctioning Cancellation, by contrast, is described in a single sentence with no mention of a recommend step: \"supervisors\" review cancellation requests and approving one cancels the leave. Does cancelling an already-approved leave require the same two-level structure as approving it in the first place, or is a single supervisor's approval sufficient to cancel it?",
+   why:"BRD Leave Management · Leave Sanctioning Cancellation vs Leave Approval/Rejection: the original approval process is described with explicit two-level detail; the cancellation process is described with none of that structure, just \"supervisors\" generically.\nSymmetry would suggest the same two-level structure should apply (undoing something should arguably require at least as much scrutiny as granting it), but the document doesn't say so explicitly, and it's equally plausible cancellation was deliberately simplified to one level since it's typically employee-initiated and lower-risk than a fresh leave request.",
+   opts:[{t:"A",c:"letter-a",l:"Single-level, by design — Leave Sanctioning Cancellation only needs one supervisor's approval (typically the reporting head, since they gave final approval originally); this is intentionally simpler than the original two-level application process"},
+         {t:"B",c:"letter-b",l:"Same two-level structure as the original application — cancellation should mirror the recommend/approve flow exactly, just in reverse, to keep the same scrutiny on undoing an approved leave as on granting it"},
+         {t:"C",c:"letter-c",l:"Depends on who initiates it — if the employee requests the cancellation, single-level supervisor approval is enough; if HR or a supervisor initiates the cancellation unilaterally (e.g. due to a business need), it should go through the same two-level process as a fresh application"}]},
+  {id:"q6",gap:"MISSING RULE",gc:"badge-missing",title:"Cancellation — Does the Leave Balance Auto-Restore, and When?",
+   text:"When an approved leave is successfully cancelled through Leave Sanctioning Cancellation, does the employee's leave balance get credited back automatically and immediately, or does this require a separate manual step, and does the timing depend on whether that month's payroll/attendance has already been processed?",
+   why:"BRD Leave Management · Leave Sanctioning Cancellation: the section only says the approved leave application \"will be canceled\" — it never states what happens to the leave balance that was originally debited when the leave was approved.\nGetting this wrong either strands an employee's leave balance in limbo (debited but never restored) or double-credits it if a manual restoration step is also performed — this needs one explicit, automatic rule.",
+   opts:[{t:"A",c:"letter-a",l:"Automatic and immediate — the moment the cancellation is approved, the leave balance is credited back to the employee's account in the same transaction, with no separate manual step required"},
+         {t:"B",c:"letter-b",l:"Automatic, but deferred to next leave processing — the balance is restored, but only takes effect at the next scheduled leave-balance recalculation (e.g. overnight batch or next payroll cycle), not instantly on approval"},
+         {t:"C",c:"letter-c",l:"Manual — cancellation approval only changes the application's status; HR must separately and manually adjust the employee's leave balance through a different screen (e.g. Leave Allocation/Deallocation in the employer portal) to actually restore the days"}]},
+  {id:"q7",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Cancellation of Already-Processed-Payroll Leaves — What Happens?",
+   text:"If an employee requests cancellation of an approved leave from a month whose payroll has already been processed and verified (payroll verification, per the Process module, is explicitly irreversible), what happens? Is cancellation blocked for leaves in already-verified months, or does it proceed and create a downstream discrepancy that has to be corrected through some other mechanism (e.g. next month's Monthly Allowances & Deductions)?",
+   why:"BRD Leave Management · Leave Sanctioning Cancellation (no time window mentioned) cross-referenced against BRD Process · Payroll Process Verification (\"after verification, payroll process cannot be deleted or reprocessed\"): a cancelled leave from a past, already-verified month directly changes what that month's attendance/LOP calculation should have been, but the payroll for that month can no longer be touched — the same unresolved \"no correction path\" gap already flagged in the Process Module questionnaire surfaces here from the opposite direction (an attendance-side event that needs a payroll-side consequence after the fact).\nThis needs an explicit rule: either cancellation is blocked once a month is payroll-verified, or there's a defined downstream adjustment mechanism — leaving it unstated risks silent data drift between attendance records and what was actually paid.",
+   opts:[{t:"A",c:"letter-a",l:"Blocked for verified months — Leave Sanctioning Cancellation only allows cancelling leaves in months whose payroll has not yet been verified; once verified, the leave (and its payroll effect) is locked and cancellation is not permitted through this screen"},
+         {t:"B",c:"letter-b",l:"Allowed regardless, with a downstream adjustment — cancellation is permitted for any month, and any resulting balance/pay discrepancy for an already-verified month is corrected via a Monthly Allowances & Deductions entry in a later month, the same mechanism used for other post-verification corrections"},
+         {t:"C",c:"letter-c",l:"Not yet handled — this scenario hasn't been considered; flag it as a genuine open design question rather than assuming either behavior above"}]},
+  {id:"q8",gap:"MISSING RULE",gc:"badge-missing",title:"Cancellation — Is There a Time Window/Deadline for Requesting It?",
+   text:"No deadline is stated for how long after a leave is approved (or after its date has passed) an employee can still request its cancellation. Can a cancellation request be raised for a leave from any time in the past, or is there a practical cutoff (e.g. before the leave's start date, before month-end, or within the same leave year)?",
+   why:"BRD Leave Management · Leave Sanctioning Cancellation: the mechanism is described as newly implemented but with no time-window constraint mentioned anywhere, unlike Compensatory Off claims elsewhere in this Employee Portal, which explicitly require submission within 7 days of the overtime worked.\nAn unbounded cancellation window compounds the already-open question above (Q7) about already-verified payroll months — the two need to be resolved together, since a stated deadline here (e.g. \"only before the leave's start date\") could make the payroll-verification conflict moot in most cases.",
+   opts:[{t:"A",c:"letter-a",l:"No fixed deadline — cancellation can be requested at any time after approval, for a leave in the past, present, or future, subject only to the payroll-verification rule addressed in Q11 above"},
+         {t:"B",c:"letter-b",l:"Only before the leave starts — cancellation requests are limited to leaves whose start date is still in the future; once a leave period has begun or passed, it can no longer be cancelled through this screen"},
+         {t:"C",c:"letter-c",l:"Bounded by the leave year — cancellation is allowed any time within the same leave year the leave falls in (matching the leave-year-end carry-forward/lapse cycle already defined elsewhere), but not for leaves from a prior leave year"}]},
+{sec:"Section 5: Leave Application/Withdrawal — Screen Fields, Draft State & Status Control",scBg:"#fee2e2",scFg:"#9f1239",
+   id:"q9",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Earned Leave Balance — Shown on the Application Screen, or Not?",
+   text:"The module's own Key Features summary promises \"real-time leave balances, including earned leaves, optional holidays, compensatory offs, and rest days\" on the Leave Application/Withdrawal screen. But the detailed \"Leave Balances\" field list for the Proceed screen names only three: Optional holidays, Compensatory offs (if applicable), and Rest days and Sunday comp offs (if applicable) — Earned Leave is absent, and Show Entered Data's balance panel is stated to be \"same as in Proceed,\" so the same gap carries over there too. Is Earned Leave balance actually displayed alongside the other three, or is its omission from the detailed list intentional?",
+   why:"BRD Leave Management · Leave Management Module intro (\"...including earned leaves, optional holidays, compensatory offs, and rest days\") vs Leave Application/Withdrawal · Proceed's own \"Leave Balances\" bullet list (Optional holidays / Compensatory offs / Rest days and Sunday comp offs only): the module's own summary and its own detailed field list disagree on whether Earned Leave is part of this screen at all.\nEarned Leave is the single most-used leave type in this module (it's the default, non-comp-off leave category) — if its balance is silently missing from the screen employees use to decide how much leave they can apply for, that's a significant usability gap, not a cosmetic one; if it should be shown and simply got left off the detailed list, the field needs to be added back before this screen can be built correctly.",
+   opts:[{t:"A",c:"letter-a",l:"Earned Leave balance IS shown — the detailed field list is incomplete; Proceed (and Show Entered Data) should display all four balances together: Earned Leave, Optional Holiday, Compensatory Off, and Rest Day/Sunday Comp Off"},
+         {t:"B",c:"letter-b",l:"Earned Leave balance is intentionally NOT shown on this screen — an employee applying for Earned Leave simply doesn't see their running balance here (they'd need to check it elsewhere, e.g. Leave Allocation/Deallocation or a payslip); the module summary's wording is loose/aspirational, not a literal field list"},
+         {t:"C",c:"letter-c",l:"Earned Leave balance is shown, but only conditionally — e.g. only once the employee selects \"Leave\" as the Type of Leave, whereas the other three balances shown by default correspond to the types most often needing an upfront balance check before selecting them"}]},
+  {id:"q10",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"\"Save\" vs \"Proceed\" — Does This Module Support a Draft State With No Corresponding Status?",
+   text:"The Proceed screen's Actions Available list both \"Proceed: Initiates the leave application process\" and, separately, \"Save: To save the entered data\" as two distinct actions. If \"Save\" persists an application without submitting it (the way Time Sheet Entry elsewhere in this Employee Portal explicitly supports saving as a draft), that record would need its own status — but the only four statuses named anywhere in this document (Applied, Approved, Rejected, Withdrawn) don't include a Draft state. Does \"Save\" actually create a retrievable, not-yet-submitted draft application, or does it mean something narrower — such as saving one row of a multi-row submission before the whole batch is finalized by \"Proceed\"?",
+   why:"BRD Leave Management · Leave Application/Withdrawal, Actions Available (\"Proceed\" and \"Save\" listed as two separate actions) cross-referenced against the same document's own complete status list (Applied/Approved/Rejected/Withdrawn — no Draft) and against Time Sheet Management's explicit, named draft-save feature elsewhere in the same Employee Portal: if Save genuinely creates an unsubmitted draft, it currently has nowhere to live in the status model, and Show Entered Data's Status Filter (which only lists the same four values) would have no way to surface it.\nBuilding \"Save\" without resolving this either silently drops draft data nobody can find again, or requires retrofitting a fifth status value into a model that's already the subject of a separate open question (Q3) about its completeness.",
+   opts:[{t:"A",c:"letter-a",l:"Save creates a genuine Draft — a fifth status (Draft) needs to be added to the status model and the Show Entered Data status filter, alongside whatever the answer to Q3 resolves for the cancellation-related statuses"},
+         {t:"B",c:"letter-b",l:"Save is not a separate draft state — it simply commits the current row(s) into the same in-progress application that Proceed will later submit; nothing persists as retrievable/visible data until Proceed is actually clicked, so no new status is needed"},
+         {t:"C",c:"letter-c",l:"Save silently sets the application to Applied immediately (i.e. Save and Proceed both submit) — the two buttons are functionally identical, and \"Save\" is just alternate wording, not evidence of a real draft feature"}]},
+  {id:"q11",gap:"MISSING RULE",gc:"badge-missing",title:"Show Entered Data's Per-Row Status Drop-Down — Which Values Can an Employee Actually Select?",
+   text:"Show Entered Data describes leave withdrawal as: \"Option to withdraw leave: Selecting 'Withdraw' from the Status drop-down in the relevant row\" — implying each row's Status column is an editable drop-down control, not a read-only label. Taken literally, that drop-down would need to expose the same four values used elsewhere (Applied, Approved, Rejected, Withdrawn) unless the available options are restricted. Is \"Withdraw\" the only value an employee can ever select from that drop-down (with the current status shown but not itself changeable to something else), or does the control genuinely list multiple status values with only some enabled depending on the row's current state?",
+   why:"BRD Leave Management · Leave Application/Withdrawal, Show Entered Data (\"Selecting 'Withdraw' from the Status drop-down\"): the phrasing describes a general-purpose drop-down control without stating which of the four status values are actually selectable at any given time, or by whom.\nA drop-down that isn't explicitly constrained to a single valid transition per state is a genuine authorization gap — built literally, an employee could conceivably select \"Approved\" or \"Rejected\" on their own row from the same control that's meant only to let them withdraw a pending request.",
+   opts:[{t:"A",c:"letter-a",l:"Single-purpose control — the \"drop-down\" only ever exposes one actionable value (Withdraw) when a row's status is Applied, and is disabled/read-only for every other status; it's a UI convenience, not a general status editor"},
+         {t:"B",c:"letter-b",l:"Genuinely multi-valued, but server-validated — the drop-down shows all four values for context, but the backend only accepts an Applied→Withdrawn transition from an employee and silently rejects/blocks any other selection regardless of what the UI allows them to click"},
+         {t:"C",c:"letter-c",l:"Not yet specified — this needs to be nailed down as an explicit client- and server-side validation rule before the screen can be built; flag as a genuine open design/security question"}]},
+  {id:"q12",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Show Entered Data's \"New Page\" Action — What Does It Actually Do?",
+   text:"Show Entered Data's Actions Available list includes: \"New Page: Navigate back to the previous screen.\" The label (\"New Page\") suggests moving forward to something new, while its own stated definition (\"Navigate back\") describes the opposite — going backward. What does this action actually do: return to the module's landing/home screen, advance to a new page of paginated results, or open a fresh, blank filter/search view within Show Entered Data itself?",
+   why:"BRD Leave Management · Leave Application/Withdrawal, Show Entered Data · Actions Available: the action's own name and its own one-line definition point in opposite directions within the same bullet point, with no further elaboration anywhere else in the document to resolve which one is correct.\nThe three readings imply genuinely different UI behavior (a full navigation away from the screen, a pagination control that keeps the user in place, or a filter reset) — guessing wrong means building a control that does something the button's own name actively misleads users about.",
+   opts:[{t:"A",c:"letter-a",l:"Literally as defined — \"New Page\" navigates back to the previous screen (e.g. the Leave Management module's landing page); the label is simply a carried-over/legacy control name that doesn't need to semantically match its behavior"},
+         {t:"B",c:"letter-b",l:"Pagination — \"New Page\" advances the Show Entered Data results list to the next page of applications, and the \"navigate back to previous screen\" wording in the source is a documentation error"},
+         {t:"C",c:"letter-c",l:"Fresh filter view — \"New Page\" resets Show Entered Data's filters and reloads a blank search, functioning like a \"start over\" control rather than either of the above"}]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const sel = {};
+Q.forEach(q => { sel[q.id] = null; });
+
+// ── BUILD FORM (pure DOM — no innerHTML with template literals) ───────────────
+function buildForm() {
+  const container = document.getElementById('formContainer');
+
+  Q.forEach(function(q, idx) {
+    const num = idx + 1;
+
+    // Section pill
+    if (q.sec) {
+      const pill = document.createElement('div');
+      pill.className = 'section-pill';
+      pill.style.background = q.scBg;
+      pill.style.color = q.scFg;
+      pill.style.border = '1px solid ' + q.scFg + '30';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      dot.setAttribute('width','8'); dot.setAttribute('height','8'); dot.setAttribute('viewBox','0 0 8 8');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','4'); circle.setAttribute('cy','4'); circle.setAttribute('r','4'); circle.setAttribute('fill', q.scFg);
+      dot.appendChild(circle);
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(' ' + q.sec));
+      container.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Top section
+    const top = document.createElement('div');
+    top.className = 'q-card-top';
+
+    // Meta row
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+
+    const numBadge = document.createElement('div');
+    numBadge.className = 'q-number';
+    numBadge.id = 'num-' + q.id;
+    numBadge.textContent = num;
+    meta.appendChild(numBadge);
+
+    const gapBadge = document.createElement('span');
+    gapBadge.className = 'gap-badge ' + q.gc;
+    gapBadge.textContent = q.gap;
+    meta.appendChild(gapBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'q-title-text';
+    titleSpan.textContent = q.title;
+    meta.appendChild(titleSpan);
+    top.appendChild(meta);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.text;
+    const star = document.createElement('span');
+    star.className = 'req-star';
+    star.textContent = ' *';
+    qtext.appendChild(star);
+    top.appendChild(qtext);
+
+    // Why box
+    const why = document.createElement('div');
+    why.className = 'q-why';
+    const parts = q.why.split('\n');
+    if (parts.length >= 2) {
+      // Line 1: BRD reference
+      const brdRef = document.createElement('div');
+      brdRef.style.cssText = 'font-size:11px;color:#0969da;font-weight:600;margin-bottom:4px;';
+      brdRef.textContent = parts[0];
+      why.appendChild(brdRef);
+      // Line 2: Why this matters
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      const whyText = document.createElement('span');
+      whyText.textContent = parts[1];
+      why.appendChild(whyB);
+      why.appendChild(whyText);
+    } else {
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      why.appendChild(whyB);
+      why.appendChild(document.createTextNode(q.why));
+    }
+    top.appendChild(why);
+
+    card.appendChild(top);
+
+    // Options
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'options-wrap';
+
+    q.opts.forEach(function(o) {
+      const lbl = document.createElement('div');
+      lbl.className = 'opt-label';
+      lbl.id = 'lbl-' + q.id + '-' + o.t;
+
+      const ind = document.createElement('div');
+      ind.className = 'opt-indicator';
+      lbl.appendChild(ind);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter ' + o.c;
+      letter.textContent = o.t;
+      lbl.appendChild(letter);
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = o.l;
+      lbl.appendChild(optText);
+
+      lbl.addEventListener('click', function() { toggleOpt(q.id, o.t); });
+      optsWrap.appendChild(lbl);
+    });
+
+    card.appendChild(optsWrap);
+
+    // Custom textarea
+    const customWrap = document.createElement('div');
+    customWrap.className = 'custom-wrap';
+
+    const customLbl = document.createElement('span');
+    customLbl.className = 'custom-lbl';
+    customLbl.textContent = 'D \u2014 Custom answer or additional notes (optional):';
+    customWrap.appendChild(customLbl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'custom-ta';
+    ta.id = 'custom-' + q.id;
+    ta.placeholder = 'Add your own answer or clarify your selection...';
+    ta.addEventListener('input', function() { onCustomInput(q.id); });
+    customWrap.appendChild(ta);
+    card.appendChild(customWrap);
+
+    // Error message
+    const err = document.createElement('div');
+    err.className = 'err-msg';
+    err.id = 'err-' + q.id;
+    err.textContent = 'This question is required \u2014 please select an option or provide a custom answer.';
+    card.appendChild(err);
+
+    container.appendChild(card);
+  });
+}
+
+buildForm();
+
+// ── TOGGLE: click to select, click same to deselect ───────────────────────────
+function toggleOpt(qid, tag) {
+  const current = sel[qid];
+  if (current === tag) {
+    sel[qid] = null;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.remove('selected');
+    const custom = document.getElementById('custom-' + qid).value.trim();
+    if (!custom) unmark(qid);
+  } else {
+    if (current) document.getElementById('lbl-' + qid + '-' + current).classList.remove('selected');
+    sel[qid] = tag;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.add('selected');
+    mark(qid);
+  }
+}
+
+function onCustomInput(qid) {
+  const custom = document.getElementById('custom-' + qid).value.trim();
+  if (custom || sel[qid]) mark(qid); else unmark(qid);
+}
+
+function mark(qid) {
+  const card = document.getElementById('card-' + qid);
+  card.classList.add('answered'); card.classList.remove('has-error');
+  document.getElementById('num-' + qid).classList.add('answered-num');
+  document.getElementById('err-' + qid).classList.remove('visible');
+  updateProgress();
+}
+function unmark(qid) {
+  document.getElementById('card-' + qid).classList.remove('answered');
+  document.getElementById('num-' + qid).classList.remove('answered-num');
+  updateProgress();
+}
+function updateProgress() {
+  let answered = 0;
+  Q.forEach(function(q) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (sel[q.id] || (custom && custom.value.trim())) answered++;
+  });
+  const pct = Math.round((answered / Q.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = answered + ' / ' + Q.length;
+  document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
+}
+
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
+function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
+  const missing = [];
+  Q.forEach(function(q, i) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (!sel[q.id] && !(custom && custom.value.trim())) {
+      missing.push({ id: q.id, num: i + 1, title: q.title });
+      document.getElementById('card-' + q.id).classList.add('has-error');
+      document.getElementById('err-' + q.id).classList.add('visible');
+    }
+  });
+
+  if (nameMissing || missing.length > 0) {
+    const msgEl = document.getElementById('incompleteMsg');
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
+    }
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
+    fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fc.classList.add('shake');
+    setTimeout(function() { fc.classList.remove('shake'); }, 400);
+    return;
+  }
+  document.getElementById('incompleteMsg').classList.remove('show');
+  generateAndSend();
+}
+
+// ── TEXT SUMMARY FOR EMAIL BODY ─────────────────────────────────────────────────
+function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
+  var lines = ['MUZPAYROLL LEAVE MANAGEMENT (EMPLOYEE PORTAL) — BRD STAKEHOLDER RESPONSES',
+    'Submitted by: ' + (userName || '(not provided)'),
+    '='.repeat(60), ''];
+  var curSec = '';
+  Q.forEach(function(q, i) {
+    if (q.sec && q.sec !== curSec) {
+      curSec = q.sec;
+      lines.push('', '-'.repeat(60), curSec.toUpperCase(), '-'.repeat(60), '');
+    }
+    var s = sel[q.id];
+    var custom = document.getElementById('custom-' + q.id).value.trim();
+    var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+    lines.push('Q' + (i+1) + '. [' + q.gap + '] ' + q.title);
+    lines.push('Question : ' + q.text);
+    lines.push('ANSWER   : ' + (opt ? '(' + opt.t + ') ' + opt.l : '(Custom)'));
+    if (custom) lines.push('NOTES    : ' + custom);
+    lines.push('');
+  });
+  lines.push('='.repeat(60), 'End of BRD Responses');
+  return lines.join('\n');
+}
+
+// ── GENERATE DOCX + OPEN EMAIL ─────────────────────────────────────────────────
+async function generateAndSend() {
+  var overlay = document.getElementById('genOverlay');
+  var titleEl = document.getElementById('genTitle');
+  var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
+  overlay.classList.add('show');
+
+  try {
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    await new Promise(function(r) { setTimeout(r, 80); });
+
+    var D = docx;
+    var nb = { style: D.BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    var tb = { style: D.BorderStyle.SINGLE, size: 4,  color: 'D0D7DE' };
+    function al(col) { return { style: D.BorderStyle.SINGLE, size: 12, color: col }; }
+    function sp(pt) {
+      return new D.Paragraph({ spacing: { before: 0, after: pt*20 }, children: [new D.TextRun('')] });
+    }
+    var secCols = {
+      'Section 1: Leave Application — Leave Days Calculation':'0550AE',
+      'Section 2: Multi-Entry & Status Lifecycle':'5B21B6',
+      'Section 3: Approval Workflow':'92400E',
+      'Section 4: Leave Sanctioning Cancellation':'14532D',
+      'Section 5: Leave Application/Withdrawal — Screen Fields, Draft State & Status Control':'9F1239'
+    };
+    function secHead(text) {
+      var col = secCols[text] || '0969DA';
+      return new D.Paragraph({
+        spacing: { before: 480, after: 120 },
+        border: { bottom: { style: D.BorderStyle.SINGLE, size: 10, color: col, space: 4 } },
+        children: [new D.TextRun({ text: text, font: 'Arial', size: 28, bold: true, color: col })]
+      });
+    }
+    function qRow(num, q) {
+      var s = sel[q.id];
+      var custom = document.getElementById('custom-' + q.id).value.trim();
+      var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+      var tagColMap = { 'badge-missing':'CF222E','badge-ambiguous':'9A6700','badge-workflow':'0969DA','badge-scalability':'6639BA' };
+      var tc = tagColMap[q.gc] || 'CF222E';
+      var ansText = opt ? 'ANSWER (' + opt.t + '):  ' + opt.l : 'ANSWER (Custom)';
+      var ansBg   = opt ? 'EAF5EA' : 'FFF8C5';
+      var ansCol  = opt ? '1A7F37' : '9A6700';
+      var ansLeft = al(ansCol);
+      var rows = [
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 80, bottom: 40, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: 'Q' + num + '  ', font: 'Arial', size: 18, bold: true, color: '0D1117' }),
+            new D.TextRun({ text: '[' + q.gap + ']  ', font: 'Arial', size: 17, bold: true, color: tc }),
+            new D.TextRun({ text: q.title, font: 'Arial', size: 18, color: '57606A' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 20, bottom: 80, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: q.text, font: 'Arial', size: 22, bold: true, color: '0D1117' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: tb, bottom: tb, left: ansLeft, right: nb },
+          shading: { fill: ansBg, type: D.ShadingType.CLEAR },
+          margins: { top: 100, bottom: 100, left: 160, right: 120 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+              new D.TextRun({ text: ansText, font: 'Arial', size: 21, bold: true, color: ansCol })
+            ]}),
+            ...(custom ? [new D.Paragraph({ spacing: { before: 60, after: 0 }, children: [
+              new D.TextRun({ text: 'Notes:  ' + custom, font: 'Arial', size: 20, italics: true, color: '57606A' })
+            ]})] : [])
+          ]
+        })]
+        })
+      ];
+      return [
+        new D.Table({ width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626], rows: rows }),
+        sp(8)
+      ];
+    }
+
+    var children = [];
+    // Cover
+    children.push(
+      new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY', font: 'Arial', size: 17, color: '999999', bold: true })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 100 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA', space: 8 } }, children: [new D.TextRun({ text: 'MUZPAYROLL', font: 'Arial', size: 48, bold: true, color: '0969DA' })] }),
+      new D.Paragraph({ spacing: { before: 100, after: 40 }, children: [new D.TextRun({ text: 'BRD Stakeholder Responses', font: 'Arial', size: 32, color: '0D1117' })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 40 }, children: [new D.TextRun({ text: 'Leave Management (Employee Portal)', font: 'Arial', size: 26, color: '57606A' })] }),
+      new D.Paragraph({ spacing: { before: 60, after: 40 }, children: [
+        new D.TextRun({ text: 'Submitted by: ', font: 'Arial', size: 24, bold: true, color: '0D1117' }),
+        new D.TextRun({ text: userName || '(not provided)', font: 'Arial', size: 24, color: '0969DA', bold: true })
+      ]}),
+      sp(8)
+    );
+    // Stats table
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
+        rows: [new D.TableRow({ children: [['12','Total Questions'],['5','Sections'],['12','Answered'],['0','Skipped']].map(function(pair) {
+          return new D.TableCell({
+            width: { size: 2156, type: D.WidthType.DXA },
+            borders: { top: tb, bottom: tb, left: tb, right: tb },
+            shading: { fill: 'E8F4FD', type: D.ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            children: [
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[0], font: 'Arial', size: 44, bold: true, color: '0969DA' })] }),
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[1], font: 'Arial', size: 18, color: '57606A' })] })
+            ]
+          });
+        })})]
+      }),
+      sp(12)
+    );
+    // Purpose box
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626],
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA' }, right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 140, bottom: 140, left: 180, right: 180 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'Instructions for Development Team', font: 'Arial', size: 21, bold: true, color: '0969DA' })] }),
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.TextRun({ text: 'These are confirmed business decisions from HR and payroll stakeholders. Use these answers directly to build the production HRMS system. Each answer maps to a specific code or configuration decision. Do not make assumptions where an answer is provided.', font: 'Arial', size: 20, color: '57606A' })] })
+          ]
+        })]
+        })]
+      }),
+      sp(16)
+    );
+    // Meta
+    [['Submitted by', userName || '(not provided)'],['Module','Leave Management (Employee Portal)'],['Prepared for','Development Team - MUZPAYROLL Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+      children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
+        new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
+        new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
+      ]}));
+    });
+    children.push(sp(14));
+
+    // Questions
+    var qi = 0; var curSec = '';
+    Q.forEach(function(q) {
+      qi++;
+      if (q.sec && q.sec !== curSec) {
+        curSec = q.sec;
+        children.push(secHead(curSec));
+        children.push(sp(6));
+      }
+      qRow(qi, q).forEach(function(b) { children.push(b); });
+    });
+
+    children.push(sp(16));
+    children.push(new D.Paragraph({
+      border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 6 } },
+      spacing: { before: 120, after: 0 },
+      children: [new D.TextRun({ text: 'End of BRD Responses - Do not modify above this line', font: 'Arial', size: 17, color: '999999', italics: true })]
+    }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } } },
+        headers: { default: new D.Header({ children: [new D.Paragraph({ border: { bottom: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 0, after: 80 }, children: [new D.TextRun({ text: 'MUZPAYROLL Leave Management (Employee Portal) - BRD Stakeholder Responses', font: 'Arial', size: 17, color: '888888' })] })] }) },
+        footers: { default: new D.Footer({ children: [new D.Paragraph({ border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 80, after: 0 }, children: [new D.TextRun({ text: 'Leave Management (ESS)  |  Confidential', font: 'Arial', size: 17, color: '999999' })] })] }) },
+        children: children
+      }]
+    });
+
+    var FILENAME = 'MUZPAYROLL_LeaveManagementESS_BRD_Answers.docx';
+    var blob = await D.Packer.toBlob(doc);
+
+    // Trigger local download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    // Email the actual Word document as a real attachment via a small
+    // Cloudflare Worker (see email-worker.js) that relays it through Resend.
+    // The Resend API key lives only on the Worker, never in this page.
+    titleEl.textContent = 'Sending email...';
+    subEl.textContent   = 'Attaching the Word file';
+    try {
+      var fd = new FormData();
+      fd.append('subject', 'MUZPAYROLL Leave Management (ESS) BRD Submission - ' + userName);
+      fd.append('message', buildSummary());
+      fd.append('filename', FILENAME);
+      fd.append('attachment', blob, FILENAME);
+      var resp = await fetch(EMAIL_WORKER_URL, { method: 'POST', body: fd });
+      var result = await resp.json();
+      document.getElementById('toastMsg').textContent = result.success
+        ? 'Word file downloaded & emailed!'
+        : 'Word file downloaded! (Email failed: ' + (result.error || (result.result && result.result.message) || 'unknown error') + ')';
+    } catch (e) {
+      console.warn('Email failed:', e);
+      document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
+    }
+
+    overlay.classList.remove('show');
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error(err);
+    alert('Error: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUZPAYROLL Time Sheet Management (ESS) — BRD Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --amber:#9a6700;--amber-bg:#fff8c5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:200px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3fb950;border-radius:4px;transition:width .35s}
+.progress-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;white-space:nowrap}
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.hero-stat{padding:14px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .n{font-size:22px;font-weight:600;color:#fff;line-height:1}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+/* MAIN */
+.main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
+.section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
+/* CARD */
+.q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.q-card.answered{border-color:#3fb950}
+.q-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.q-card-top{padding:20px 24px 0}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.q-number.answered-num{background:#3fb950}
+.gap-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px;flex-shrink:0}
+.badge-missing{background:var(--red-bg);color:var(--red)}
+.badge-ambiguous{background:var(--amber-bg);color:var(--amber)}
+.badge-workflow{background:#dbeafe;color:#1e40af}
+.badge-scalability{background:var(--purple-bg);color:var(--purple)}
+.q-title-text{font-size:13px;font-weight:500;color:var(--ink3)}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.45}
+.req-star{color:var(--red);margin-left:2px}
+.q-why{background:var(--paper2);border-left:3px solid var(--accent);padding:9px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px}
+.q-why b{color:var(--accent);font-weight:600}
+/* OPTIONS */
+.options-wrap{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:all .15s;user-select:none}
+.opt-label:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt-label.selected{border-color:var(--accent);background:var(--accent-light)}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;margin-top:1px;background:#fff;transition:all .15s;position:relative}
+.opt-indicator::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .15s}
+.opt-label.selected .opt-indicator{border-color:var(--accent)}
+.opt-label.selected .opt-indicator::after{opacity:1}
+.opt-letter{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.3px}
+.letter-a{background:var(--green-bg);color:var(--green)}
+.letter-b{background:var(--amber-bg);color:var(--amber)}
+.letter-c{background:var(--red-bg);color:var(--red)}
+.opt-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+/* CUSTOM */
+.custom-wrap{padding:0 24px 20px}
+.custom-lbl{font-size:12px;font-weight:600;color:var(--ink4);margin-bottom:6px;display:block;letter-spacing:.3px}
+.custom-ta{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);resize:vertical;min-height:64px;background:var(--paper2);transition:border-color .15s,background .15s;line-height:1.55}
+.custom-ta:focus{outline:none;border-color:var(--accent);background:#fff}
+.custom-ta::placeholder{color:var(--ink4)}
+/* ERROR */
+.err-msg{padding:0 24px 14px;font-size:12px;color:var(--red);font-weight:500;display:none}
+.err-msg.visible{display:block}
+/* SUBMIT */
+.submit-zone{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:32px;margin-top:36px;text-align:center;box-shadow:var(--shadow-lg)}
+.submit-zone h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+.submit-zone p{font-size:13px;color:var(--ink3);margin-bottom:24px}
+.submit-btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(13,17,23,.18)}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn.all-good{background:#1a7f37}
+.submit-btn.all-good:hover{background:#116329}
+.incomplete-msg{background:var(--red-bg);border:1px solid #ffc1c0;border-radius:var(--radius);padding:12px 16px;color:var(--red);font-size:13px;font-weight:500;margin-bottom:16px;display:none;text-align:left}
+.incomplete-msg.show{display:block}
+.incomplete-msg ul{margin-top:6px;padding-left:18px}
+.incomplete-msg li{font-size:12px;margin-top:3px;font-weight:400}
+/* OVERLAY */
+.gen-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.65);align-items:center;justify-content:center}
+.gen-overlay.show{display:flex}
+.gen-box{background:#fff;border-radius:var(--radius-lg);padding:36px 52px;text-align:center;box-shadow:var(--shadow-lg);min-width:260px}
+.spinner{width:40px;height:40px;border:3px solid #eaeef2;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.gen-sub{font-size:12px;color:var(--ink3)}
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.175,.885,.32,1.275),opacity .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-check{width:20px;height:20px;background:#3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .progress-track{width:100px}
+  .hero{padding:36px 16px 44px}
+  .q-card-top,.options-wrap,.custom-wrap{padding-left:16px;padding-right:16px}
+  .submit-zone{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">T</div>
+    <span class="brand-name">MUZPAYROLL &mdash; Time Sheet Management (Employee Portal) BRD Questionnaire</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-label" id="pLabel">0 / 8</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Stakeholder Review Required
+  </div>
+  <h1>Time Sheet Management<br><em>Employee Portal &mdash; BRD Requirements Form</em></h1>
+  <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">8</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">4</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
+  <div id="formContainer"></div>
+  <div class="submit-zone">
+    <h3>Ready to submit?</h3>
+    <p>All 8 questions must be answered. On submit, your answers download as a Word document.</p>
+    <div class="incomplete-msg" id="incompleteMsg">
+      <strong>Please answer all required questions before submitting:</strong>
+      <ul id="missingList"></ul>
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Submit &amp; Download Word File
+    </button>
+  </div>
+</div>
+
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-box">
+    <div class="spinner"></div>
+    <div class="gen-title" id="genTitle">Building Word document...</div>
+    <div class="gen-sub" id="genSub">Please wait a moment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-check">
+    <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <span id="toastMsg">Word file downloaded!</span>
+</div>
+
+<script src="docx.umd.js"></script>
+<script>
+// ── EMAIL DELIVERY (Cloudflare Worker + Resend — sends to basilareeckal06@gmail.com) ──
+// Deploy email-worker.js as a Cloudflare Worker (see repo instructions) and
+// paste its *.workers.dev URL below. Safe to leave visible — the Worker itself
+// holds the real secret (the Resend API key) and only ever emails one fixed address.
+const EMAIL_WORKER_URL = "https://muzpayroll.basilareeckal06.workers.dev";
+
+// ── QUESTION DATA ──────────────────────────────────────────────────
+const Q = [
+  {sec:"Section 1: Employee Portal ↔ Employer Portal Handoff",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q1",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Supervisor's Month-End \"Upload\" vs HR's Employee Time Sheet Upload Screen — Same Step or Two?",
+   text:"Time Sheet Approval says the supervisor must \"upload the time sheets for attendance processing\" at month end, after which \"the list will be cleared\" and \"the time sheets will be available in the employer portal after upload.\" Separately, the Attendance & Leave Management module describes an employer-portal screen called Employee Time Sheet Upload where HR \"fetch[es]\" Level 2 employees' portal-entered time sheets and clicks its own Save button before the data reaches Muster Roll. Is the supervisor's month-end upload the very action that populates Employee Time Sheet Upload's fetch (so HR's Save is the very next step on the same batch), or are these two independent uploads — supervisor uploads first, then HR separately fetches and re-saves before Muster Roll ever sees the data?",
+   why:"BRD Time Sheet Management · Time Sheet Approval (\"upload the time sheets for attendance processing... available in the employer portal after upload\") vs BRD Attendance & Leave Management · Employee Time Sheet Upload (\"Level 2... fetched when Level 2 is pressed\", its own Save button, \"used in further attendance processing\"): neither document references the other's screen, yet both describe what sounds like the same hand-off from employee-portal approval to employer-portal attendance processing.\nIf these are actually two separate steps and only one is built, saved time sheets could either never reach Muster Roll (if HR's fetch/save step is skipped) or get double-processed (if both steps independently push the same data) — the exact hand-off needs to be pinned down before either screen's \"Save\"/\"Upload\" logic can be implemented.",
+   opts:[{t:"A",c:"letter-a",l:"One combined step — the supervisor's month-end Upload IS the action that lands the batch in Employee Time Sheet Upload already fetched and ready; HR's Save on that screen is simply the next click in the same pipeline, not a separate fetch"},
+         {t:"B",c:"letter-b",l:"Two independent steps — the supervisor's Upload only marks time sheets as employer-portal-visible; HR must separately open Employee Time Sheet Upload, press Level 2 to fetch, review, and click Save before anything reaches Muster Roll"},
+         {t:"C",c:"letter-c",l:"Level-dependent — Level 2 employees follow the two-step path (B) since their data is explicitly \"fetched\" by HR, while Level 1 (Senior Management) time sheets skip Time Sheet Entry/Approval entirely and only ever appear via Employee Time Sheet Upload's own auto-population"}]},
+  {id:"q2",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Do Level 1 (Senior Management) Employees Use Time Sheet Entry / Time Sheet Approval At All?",
+   text:"This module's Time Sheet Entry and Time Sheet Approval sections never mention a Level 1/Level 2 distinction — they describe one uniform flow for \"employees\" entering and supervisors approving. But the Attendance & Leave Management module frames Level 1 (Senior Management) time sheets as \"automatically populated\" and Level 2 (Other Employees) as \"entered by employees in their employee portal.\" Does a Level 1 employee ever see or use this module's Time Sheet Entry screen, and does their supervisor's Time Sheet Approval list include them at all, or are Level 1 employees entirely bypassed by this employee-portal module?",
+   why:"BRD Time Sheet Management · Time Sheet Entry/Time Sheet Approval (no Level 1/2 mention anywhere) vs BRD Attendance & Leave Management · Employee Time Sheet Upload (\"Level 1... automatically populated\"): this module's own text is completely silent on the Level 1/2 split that the sibling module treats as a defining distinction for the same underlying data. (The sibling questionnaire's own Q2 already asks how Level 1 is determined and where its data comes from — this question is the complementary employee-portal-side one: whether Level 1 employees interact with this module's screens at all.)\nGetting this wrong either builds unused Time Sheet Entry/Approval screens for employees who will never touch them, or silently drops Level 1 employees from a workflow they were actually meant to use manually in some cases (e.g. before promotion, or as an override).",
+   opts:[{t:"A",c:"letter-a",l:"Level 1 employees never use this module — they are fully excluded from Time Sheet Entry and Time Sheet Approval; their auto-populated data flows only through Employee Time Sheet Upload on the employer-portal side"},
+         {t:"B",c:"letter-b",l:"Level 1 employees use the same screens as everyone else — the Level 1/2 split only affects which employer-portal fetch button (Level 1 vs Level 2) HR presses after the fact; every employee, regardless of level, still enters and gets approval through this module's Time Sheet Entry/Approval"},
+         {t:"C",c:"letter-c",l:"Level 1 employees can optionally use Time Sheet Entry as an override/exception path (e.g. if auto-population is wrong for a given month), but are not required to for the automatic population to take effect"}]},
+  {sec:"Section 2: Time Sheet Entry — Scope & Data Capture",scBg:"#ede9fe",scFg:"#5b21b6",
+   id:"q3",gap:"SCALABILITY",gc:"badge-scalability",title:"Start-Time / End-Time Fields in Time Sheet Entry — In Scope for This Build?",
+   text:"Time Sheet Entry, as described in this module, only captures \"monthly working hours on a daily basis\" — no start-time or end-time fields are mentioned. Yet the Compensatory Offs module flags, as its own new requirement, that \"in the time sheet, provision for start time and end time needs to be available\" and that \"comp off claims have to be verified with the time sheet data\" — implying today's Time Sheet Entry cannot support that cross-check. Should this module's Time Sheet Entry be extended with start-time/end-time fields (per Comp Off's own flagged requirement), and if so, is that part of the current build?",
+   why:"BRD Time Sheet Management · Time Sheet Entry (silent on start/end time) cross-referenced against BRD Compensatory Offs · Comp Off Approval/Rejection's own admission (\"New requirement... In the time sheet, provision for start time and end time needs to be available. Comp off claims have to be verified with the time sheet data\"): the gap is flagged by the source material itself, from the Comp Off module's side, but this module's own text gives no indication such fields are planned.\nWithout resolving this, comp-off claims stay verifiable only against a start/end time record that doesn't exist in Time Sheet Entry today — leaving Comp Off's flagged cross-verification permanently unbuildable unless this module explicitly commits to carrying the field.",
+   opts:[{t:"A",c:"letter-a",l:"Not in scope now — Time Sheet Entry keeps total-hours-only fields; Comp Off Claim's own separate start-time/end-time entry remains the sole overtime record, and the Comp Off module's cross-verification requirement stays deferred/unbuilt for this band"},
+         {t:"B",c:"letter-b",l:"In scope — add start-time and end-time fields (alongside total hours) to Time Sheet Entry in this build, so Comp Off Approval/Rejection can cross-validate each claim's date/hours against the matching Time Sheet Entry record"},
+         {t:"C",c:"letter-c",l:"Partial — add the fields to Time Sheet Entry for data capture now, but defer the actual Comp Off cross-verification logic itself to a later band"}]},
+  {id:"q4",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"\"Time Log Management\" — A Separate Daily-Log Screen, or Just This Module's Summary Heading?",
+   text:"The document opens with a \"Time Log Management\" section describing \"Daily Time Entry,\" an \"Approval Workflow\" run by \"reporting managers or team leads,\" and integration with attendance/payroll — then immediately follows with fully detailed \"Time Sheet Entry\" and \"Time Sheet Approval\" sections that appear to cover the same ground at the monthly level, with their own field lists and edge cases. Unlike those two, \"Time Log Management\"'s own bullet points are never elaborated into a screen description. Is \"Time Log Management\" simply this module's umbrella/marketing heading for the Time Sheet Entry + Time Sheet Approval pair described right after it, or is it a distinct, still-undescribed screen (e.g. a lighter daily log with its own per-entry approval, separate from the monthly batch)?",
+   why:"BRD Time Sheet Management · Time Log Management (bullet list only, no field list, no screen description) vs the immediately following Time Sheet Entry/Time Sheet Approval sections (fully elaborated with fields, actions, and edge cases): the document structure itself suggests Time Log Management may be nothing more than an introductory summary, but it is never explicitly stated to be the same feature, and its \"approved by reporting managers or team leads\" phrasing doesn't obviously match Time Sheet Approval's later, more precise \"only one level approval is needed.\"\nIf Time Log Management is actually meant to be a distinct daily-entry-with-daily-approval screen, it is completely unspecified (no fields, no screen, no edge cases) and would need its own requirements gathering before it could be built at all.",
+   opts:[{t:"A",c:"letter-a",l:"Same feature — \"Time Log Management\" is purely this module's introductory/umbrella heading; Time Sheet Entry and Time Sheet Approval are its only two real screens, and no separate daily-log screen needs to be built"},
+         {t:"B",c:"letter-b",l:"A distinct, still-undescribed screen — Time Log Management is a genuinely separate, more granular daily time-entry-and-approval feature that needs its own requirements gathering before this module can be considered complete"},
+         {t:"C",c:"letter-c",l:"Same feature now, but named separately for a future phase — currently it's just the Time Sheet Entry/Approval pair, but the distinct \"Time Log\" framing is intentional groundwork for a future finer-grained daily-approval feature, out of scope for this band"}]},
+  {sec:"Section 3: Correction & Month-End Edge Cases",scBg:"#fff8c5",scFg:"#92400e",
+   id:"q5",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Can a Time Sheet Still Be Corrected After Month-End Upload?",
+   text:"Before month-end upload, \"if an employee needs to change the approved time sheet, supervisor can choose the particular employee and remove the approval\" so the employee can make changes. But once the supervisor uploads for attendance processing, \"the list will be cleared\" and the data moves to the employer portal — with no mention of whether remove-approval (or any other correction path) still works on a time sheet after that point. Can a supervisor still \"remove approval\" on an already-uploaded time sheet, or does correction become impossible (or move to a different, employer-portal-side mechanism) once upload has happened?",
+   why:"BRD Time Sheet Management · Time Sheet Approval: the remove-approval correction mechanism is described only in the context of the pre-upload list, which is explicitly said to clear after upload — leaving the post-upload case entirely unaddressed, in a document set where other modules (Process · Payroll Process Verification: \"cannot be deleted or reprocessed\"; Attendance & Leave · Muster Roll's own separate Set Option correction tool) treat this exact \"correction after an irreversible step\" edge case as needing an explicit answer.\nWithout this, either a genuine post-upload data-entry mistake becomes permanently uncorrectable through this module, or an undocumented back-channel correction path silently exists that conflicts with whatever the employer-portal side (Muster Roll's Set Option) already does for the same purpose.",
+   opts:[{t:"A",c:"letter-a",l:"Correction stops at upload — once uploaded, the list clears and remove-approval no longer applies through this module; any further correction must go through the employer-portal Muster Roll's own Set Option tool instead"},
+         {t:"B",c:"letter-b",l:"Remove-approval still works post-upload — the supervisor can still pull an individual employee's already-uploaded time sheet back for correction from Time Sheet Approval, independent of whatever has happened on the employer-portal side since"},
+         {t:"C",c:"letter-c",l:"Blocked once attendance/payroll has consumed the data — correction is possible only until Muster Roll conversion; once the time sheet has fed into an official attendance record, it is locked and no longer editable from either side"}]},
+  {id:"q6",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Incomplete Month-End Submission — Blocks the Whole Team's Upload, or Just That Employee?",
+   text:"At month end, \"the supervisor has to ensure that full month time sheet has been submitted by team members\" before uploading — but the document never states what happens if one team member hasn't finished. Does an incomplete time sheet from a single employee block the supervisor's entire month-end upload for the whole team, or can the supervisor upload everyone who is complete while that one employee's record is simply excluded and carried over?",
+   why:"BRD Time Sheet Management · Time Sheet Approval: \"the supervisor has to ensure that full month time sheet has been submitted by team members and upload the time sheets\" states an expectation without saying what enforces it or what the system actually does if it isn't met — there's no error state, partial-upload behavior, or deadline described anywhere in this section.\nAn all-or-nothing block could stall an entire team's attendance/payroll processing over one straggler, while a silent per-employee exclusion could let an employee's month go unprocessed indefinitely if nobody notices they were skipped — the system needs one explicit, stated behavior here.",
+   opts:[{t:"A",c:"letter-a",l:"All-or-nothing — the supervisor cannot upload any part of the team's time sheets for that month until every team member's submission is complete; the system blocks the whole batch"},
+         {t:"B",c:"letter-b",l:"Per-employee, partial upload allowed — the supervisor can upload every employee who has a complete month, leaving the incomplete employee's record un-uploaded and available to include in a later upload once they finish"},
+         {t:"C",c:"letter-c",l:"Not yet handled — this scenario hasn't been considered; flag it as a genuine open design question rather than assuming either behavior above"}]},
+  {sec:"Section 4: Approval Authority & Work-From-Home Marking",scBg:"#dafbe1",scFg:"#14532d",
+   id:"q7",gap:"MISSING RULE",gc:"badge-missing",title:"Work-From-Office/Home Marking — Purely Informational, or Does It Drive a Policy/Payroll Consequence?",
+   text:"Time Sheet Entry provides \"provision to mark whether the employee is working from office or home on each day,\" and Muster Roll later highlights work-from-home days in its list — but no rule anywhere states why this distinction is tracked. Is the office/home marking purely informational/reporting (with no approval requirement or downstream payroll effect), or does it drive something concrete — a required prior WFH approval, a cap on WFH days, or a different allowance/eligibility treatment?",
+   why:"BRD Time Sheet Management · Time Sheet Entry (\"provision to mark... working from office or home\") and BRD Attendance & Leave Management · Muster Roll (\"Work from home days are highlighted in the list\"): both documents confirm the marking exists and is carried through to the official attendance record, but neither states what triggers it, what constrains it, or what it changes downstream.\nIf WFH eligibility or a payroll consequence (e.g. a location-linked allowance) is actually expected to hinge on this flag, it needs its own approval/validation rule before Time Sheet Entry can be built correctly; if it's purely informational, the field can be built as simple self-declared metadata with no additional logic.",
+   opts:[{t:"A",c:"letter-a",l:"Purely informational — the employee self-declares office/home freely with no approval requirement or payroll effect; it exists only for reporting/visibility (e.g. the Muster Roll highlight)"},
+         {t:"B",c:"letter-b",l:"Requires prior approval — an employee can only mark a day as work-from-home if a separate WFH request for that date was already approved elsewhere; Time Sheet Entry just reflects that approved status, it doesn't grant it"},
+         {t:"C",c:"letter-c",l:"Drives a payroll/allowance difference — the office/home flag feeds a concrete downstream calculation (e.g. a location-linked allowance or a cap on WFH days per month), which needs to be specified"}]},
+  {id:"q8",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Time Sheet Approval's Single-Level Sign-Off — Reporting Person or Reporting Head?",
+   text:"\"Only one level approval is needed for time sheets,\" but the Employee screen's Official Info → Location tab configures two distinct roles for every employee — Reporting Person (first-level/immediate) and Reporting Head (second-level/final) — which the Leave Management module confirms is the single shared source of truth driving approval routing across other modules. Since time sheets skip the two-level structure entirely, which of the two configured roles performs that one required approval — always the Reporting Person, always the Reporting Head, or whichever the module treats as the \"direct report\" relationship regardless of which field that maps to?",
+   why:"BRD Time Sheet Management · Time Sheet Approval (\"lists out all the direct reports\"... \"only one level approval is needed\") cross-referenced against the Employee screen's confirmed two-role Reporting Person/Reporting Head configuration (already established as the shared routing source for Leave, Advance, Comp Off and Off Day approvals): this module names neither role explicitly, just \"supervisor,\" leaving it unclear which of the two configured fields \"direct reports\" is actually querying against.\nBuilding the Time Sheet Approval screen's employee list requires picking one specific field to query — guessing wrong would show the wrong supervisor's team, or let the wrong role approve time sheets entirely.",
+   opts:[{t:"A",c:"letter-a",l:"Reporting Person only — time sheets are approved by the immediate/first-level supervisor (the same role that \"recommends\" in the two-level modules); Reporting Head is never involved in time sheet approval"},
+         {t:"B",c:"letter-b",l:"Reporting Head only — time sheets skip straight to the final/second-level approver, treating the immediate supervisor's recommend step as unnecessary for this lower-risk, single-level workflow"},
+         {t:"C",c:"letter-c",l:"Configurable per employee — whichever of the two roles is marked as that employee's actual day-to-day supervisor (which may be either field depending on the org structure) is the one whose Time Sheet Approval list the employee appears in"}]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const sel = {};
+Q.forEach(q => { sel[q.id] = null; });
+
+// ── BUILD FORM (pure DOM — no innerHTML with template literals) ───────────────
+function buildForm() {
+  const container = document.getElementById('formContainer');
+
+  Q.forEach(function(q, idx) {
+    const num = idx + 1;
+
+    // Section pill
+    if (q.sec) {
+      const pill = document.createElement('div');
+      pill.className = 'section-pill';
+      pill.style.background = q.scBg;
+      pill.style.color = q.scFg;
+      pill.style.border = '1px solid ' + q.scFg + '30';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      dot.setAttribute('width','8'); dot.setAttribute('height','8'); dot.setAttribute('viewBox','0 0 8 8');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','4'); circle.setAttribute('cy','4'); circle.setAttribute('r','4'); circle.setAttribute('fill', q.scFg);
+      dot.appendChild(circle);
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(' ' + q.sec));
+      container.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Top section
+    const top = document.createElement('div');
+    top.className = 'q-card-top';
+
+    // Meta row
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+
+    const numBadge = document.createElement('div');
+    numBadge.className = 'q-number';
+    numBadge.id = 'num-' + q.id;
+    numBadge.textContent = num;
+    meta.appendChild(numBadge);
+
+    const gapBadge = document.createElement('span');
+    gapBadge.className = 'gap-badge ' + q.gc;
+    gapBadge.textContent = q.gap;
+    meta.appendChild(gapBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'q-title-text';
+    titleSpan.textContent = q.title;
+    meta.appendChild(titleSpan);
+    top.appendChild(meta);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.text;
+    const star = document.createElement('span');
+    star.className = 'req-star';
+    star.textContent = ' *';
+    qtext.appendChild(star);
+    top.appendChild(qtext);
+
+    // Why box
+    const why = document.createElement('div');
+    why.className = 'q-why';
+    const parts = q.why.split('\n');
+    if (parts.length >= 2) {
+      // Line 1: BRD reference
+      const brdRef = document.createElement('div');
+      brdRef.style.cssText = 'font-size:11px;color:#0969da;font-weight:600;margin-bottom:4px;';
+      brdRef.textContent = parts[0];
+      why.appendChild(brdRef);
+      // Line 2: Why this matters
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      const whyText = document.createElement('span');
+      whyText.textContent = parts[1];
+      why.appendChild(whyB);
+      why.appendChild(whyText);
+    } else {
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      why.appendChild(whyB);
+      why.appendChild(document.createTextNode(q.why));
+    }
+    top.appendChild(why);
+
+    card.appendChild(top);
+
+    // Options
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'options-wrap';
+
+    q.opts.forEach(function(o) {
+      const lbl = document.createElement('div');
+      lbl.className = 'opt-label';
+      lbl.id = 'lbl-' + q.id + '-' + o.t;
+
+      const ind = document.createElement('div');
+      ind.className = 'opt-indicator';
+      lbl.appendChild(ind);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter ' + o.c;
+      letter.textContent = o.t;
+      lbl.appendChild(letter);
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = o.l;
+      lbl.appendChild(optText);
+
+      lbl.addEventListener('click', function() { toggleOpt(q.id, o.t); });
+      optsWrap.appendChild(lbl);
+    });
+
+    card.appendChild(optsWrap);
+
+    // Custom textarea
+    const customWrap = document.createElement('div');
+    customWrap.className = 'custom-wrap';
+
+    const customLbl = document.createElement('span');
+    customLbl.className = 'custom-lbl';
+    customLbl.textContent = 'D \u2014 Custom answer or additional notes (optional):';
+    customWrap.appendChild(customLbl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'custom-ta';
+    ta.id = 'custom-' + q.id;
+    ta.placeholder = 'Add your own answer or clarify your selection...';
+    ta.addEventListener('input', function() { onCustomInput(q.id); });
+    customWrap.appendChild(ta);
+    card.appendChild(customWrap);
+
+    // Error message
+    const err = document.createElement('div');
+    err.className = 'err-msg';
+    err.id = 'err-' + q.id;
+    err.textContent = 'This question is required \u2014 please select an option or provide a custom answer.';
+    card.appendChild(err);
+
+    container.appendChild(card);
+  });
+}
+
+buildForm();
+
+// ── TOGGLE: click to select, click same to deselect ───────────────────────────
+function toggleOpt(qid, tag) {
+  const current = sel[qid];
+  if (current === tag) {
+    sel[qid] = null;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.remove('selected');
+    const custom = document.getElementById('custom-' + qid).value.trim();
+    if (!custom) unmark(qid);
+  } else {
+    if (current) document.getElementById('lbl-' + qid + '-' + current).classList.remove('selected');
+    sel[qid] = tag;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.add('selected');
+    mark(qid);
+  }
+}
+
+function onCustomInput(qid) {
+  const custom = document.getElementById('custom-' + qid).value.trim();
+  if (custom || sel[qid]) mark(qid); else unmark(qid);
+}
+
+function mark(qid) {
+  const card = document.getElementById('card-' + qid);
+  card.classList.add('answered'); card.classList.remove('has-error');
+  document.getElementById('num-' + qid).classList.add('answered-num');
+  document.getElementById('err-' + qid).classList.remove('visible');
+  updateProgress();
+}
+function unmark(qid) {
+  document.getElementById('card-' + qid).classList.remove('answered');
+  document.getElementById('num-' + qid).classList.remove('answered-num');
+  updateProgress();
+}
+function updateProgress() {
+  let answered = 0;
+  Q.forEach(function(q) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (sel[q.id] || (custom && custom.value.trim())) answered++;
+  });
+  const pct = Math.round((answered / Q.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = answered + ' / ' + Q.length;
+  document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
+}
+
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
+function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
+  const missing = [];
+  Q.forEach(function(q, i) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (!sel[q.id] && !(custom && custom.value.trim())) {
+      missing.push({ id: q.id, num: i + 1, title: q.title });
+      document.getElementById('card-' + q.id).classList.add('has-error');
+      document.getElementById('err-' + q.id).classList.add('visible');
+    }
+  });
+
+  if (nameMissing || missing.length > 0) {
+    const msgEl = document.getElementById('incompleteMsg');
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
+    }
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
+    fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fc.classList.add('shake');
+    setTimeout(function() { fc.classList.remove('shake'); }, 400);
+    return;
+  }
+  document.getElementById('incompleteMsg').classList.remove('show');
+  generateAndSend();
+}
+
+// ── TEXT SUMMARY FOR EMAIL BODY ─────────────────────────────────────────────────
+function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
+  var lines = ['MUZPAYROLL TIME SHEET MANAGEMENT (EMPLOYEE PORTAL) — BRD STAKEHOLDER RESPONSES',
+    'Submitted by: ' + (userName || '(not provided)'),
+    '='.repeat(60), ''];
+  var curSec = '';
+  Q.forEach(function(q, i) {
+    if (q.sec && q.sec !== curSec) {
+      curSec = q.sec;
+      lines.push('', '-'.repeat(60), curSec.toUpperCase(), '-'.repeat(60), '');
+    }
+    var s = sel[q.id];
+    var custom = document.getElementById('custom-' + q.id).value.trim();
+    var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+    lines.push('Q' + (i+1) + '. [' + q.gap + '] ' + q.title);
+    lines.push('Question : ' + q.text);
+    lines.push('ANSWER   : ' + (opt ? '(' + opt.t + ') ' + opt.l : '(Custom)'));
+    if (custom) lines.push('NOTES    : ' + custom);
+    lines.push('');
+  });
+  lines.push('='.repeat(60), 'End of BRD Responses');
+  return lines.join('\n');
+}
+
+// ── GENERATE DOCX + OPEN EMAIL ─────────────────────────────────────────────────
+async function generateAndSend() {
+  var overlay = document.getElementById('genOverlay');
+  var titleEl = document.getElementById('genTitle');
+  var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
+  overlay.classList.add('show');
+
+  try {
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    await new Promise(function(r) { setTimeout(r, 80); });
+
+    var D = docx;
+    var nb = { style: D.BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    var tb = { style: D.BorderStyle.SINGLE, size: 4,  color: 'D0D7DE' };
+    function al(col) { return { style: D.BorderStyle.SINGLE, size: 12, color: col }; }
+    function sp(pt) {
+      return new D.Paragraph({ spacing: { before: 0, after: pt*20 }, children: [new D.TextRun('')] });
+    }
+    var secCols = {
+      'Section 1: Employee Portal ↔ Employer Portal Handoff':'0550AE',
+      'Section 2: Time Sheet Entry — Scope & Data Capture':'5B21B6',
+      'Section 3: Correction & Month-End Edge Cases':'92400E',
+      'Section 4: Approval Authority & Work-From-Home Marking':'14532D'
+    };
+    function secHead(text) {
+      var col = secCols[text] || '0969DA';
+      return new D.Paragraph({
+        spacing: { before: 480, after: 120 },
+        border: { bottom: { style: D.BorderStyle.SINGLE, size: 10, color: col, space: 4 } },
+        children: [new D.TextRun({ text: text, font: 'Arial', size: 28, bold: true, color: col })]
+      });
+    }
+    function qRow(num, q) {
+      var s = sel[q.id];
+      var custom = document.getElementById('custom-' + q.id).value.trim();
+      var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+      var tagColMap = { 'badge-missing':'CF222E','badge-ambiguous':'9A6700','badge-workflow':'0969DA','badge-scalability':'6639BA' };
+      var tc = tagColMap[q.gc] || 'CF222E';
+      var ansText = opt ? 'ANSWER (' + opt.t + '):  ' + opt.l : 'ANSWER (Custom)';
+      var ansBg   = opt ? 'EAF5EA' : 'FFF8C5';
+      var ansCol  = opt ? '1A7F37' : '9A6700';
+      var ansLeft = al(ansCol);
+      var rows = [
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 80, bottom: 40, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: 'Q' + num + '  ', font: 'Arial', size: 18, bold: true, color: '0D1117' }),
+            new D.TextRun({ text: '[' + q.gap + ']  ', font: 'Arial', size: 17, bold: true, color: tc }),
+            new D.TextRun({ text: q.title, font: 'Arial', size: 18, color: '57606A' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 20, bottom: 80, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: q.text, font: 'Arial', size: 22, bold: true, color: '0D1117' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: tb, bottom: tb, left: ansLeft, right: nb },
+          shading: { fill: ansBg, type: D.ShadingType.CLEAR },
+          margins: { top: 100, bottom: 100, left: 160, right: 120 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+              new D.TextRun({ text: ansText, font: 'Arial', size: 21, bold: true, color: ansCol })
+            ]}),
+            ...(custom ? [new D.Paragraph({ spacing: { before: 60, after: 0 }, children: [
+              new D.TextRun({ text: 'Notes:  ' + custom, font: 'Arial', size: 20, italics: true, color: '57606A' })
+            ]})] : [])
+          ]
+        })]
+        })
+      ];
+      return [
+        new D.Table({ width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626], rows: rows }),
+        sp(8)
+      ];
+    }
+
+    var children = [];
+    // Cover
+    children.push(
+      new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY', font: 'Arial', size: 17, color: '999999', bold: true })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 100 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA', space: 8 } }, children: [new D.TextRun({ text: 'MUZPAYROLL', font: 'Arial', size: 48, bold: true, color: '0969DA' })] }),
+      new D.Paragraph({ spacing: { before: 100, after: 40 }, children: [new D.TextRun({ text: 'BRD Stakeholder Responses', font: 'Arial', size: 32, color: '0D1117' })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 40 }, children: [new D.TextRun({ text: 'Time Sheet Management (Employee Portal)', font: 'Arial', size: 26, color: '57606A' })] }),
+      new D.Paragraph({ spacing: { before: 60, after: 40 }, children: [
+        new D.TextRun({ text: 'Submitted by: ', font: 'Arial', size: 24, bold: true, color: '0D1117' }),
+        new D.TextRun({ text: userName || '(not provided)', font: 'Arial', size: 24, color: '0969DA', bold: true })
+      ]}),
+      sp(8)
+    );
+    // Stats table
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
+        rows: [new D.TableRow({ children: [['8','Total Questions'],['4','Sections'],['8','Answered'],['0','Skipped']].map(function(pair) {
+          return new D.TableCell({
+            width: { size: 2156, type: D.WidthType.DXA },
+            borders: { top: tb, bottom: tb, left: tb, right: tb },
+            shading: { fill: 'E8F4FD', type: D.ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            children: [
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[0], font: 'Arial', size: 44, bold: true, color: '0969DA' })] }),
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[1], font: 'Arial', size: 18, color: '57606A' })] })
+            ]
+          });
+        })})]
+      }),
+      sp(12)
+    );
+    // Purpose box
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626],
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA' }, right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 140, bottom: 140, left: 180, right: 180 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'Instructions for Development Team', font: 'Arial', size: 21, bold: true, color: '0969DA' })] }),
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.TextRun({ text: 'These are confirmed business decisions from HR and payroll stakeholders. Use these answers directly to build the production HRMS system. Each answer maps to a specific code or configuration decision. Do not make assumptions where an answer is provided.', font: 'Arial', size: 20, color: '57606A' })] })
+          ]
+        })]
+        })]
+      }),
+      sp(16)
+    );
+    // Meta
+    [['Submitted by', userName || '(not provided)'],['Module','Time Sheet Management (Employee Portal)'],['Prepared for','Development Team - MUZPAYROLL Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+      children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
+        new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
+        new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
+      ]}));
+    });
+    children.push(sp(14));
+
+    // Questions
+    var qi = 0; var curSec = '';
+    Q.forEach(function(q) {
+      qi++;
+      if (q.sec && q.sec !== curSec) {
+        curSec = q.sec;
+        children.push(secHead(curSec));
+        children.push(sp(6));
+      }
+      qRow(qi, q).forEach(function(b) { children.push(b); });
+    });
+
+    children.push(sp(16));
+    children.push(new D.Paragraph({
+      border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 6 } },
+      spacing: { before: 120, after: 0 },
+      children: [new D.TextRun({ text: 'End of BRD Responses - Do not modify above this line', font: 'Arial', size: 17, color: '999999', italics: true })]
+    }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } } },
+        headers: { default: new D.Header({ children: [new D.Paragraph({ border: { bottom: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 0, after: 80 }, children: [new D.TextRun({ text: 'MUZPAYROLL Time Sheet Management (Employee Portal) - BRD Stakeholder Responses', font: 'Arial', size: 17, color: '888888' })] })] }) },
+        footers: { default: new D.Footer({ children: [new D.Paragraph({ border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 80, after: 0 }, children: [new D.TextRun({ text: 'Time Sheet Management (ESS)  |  Confidential', font: 'Arial', size: 17, color: '999999' })] })] }) },
+        children: children
+      }]
+    });
+
+    var FILENAME = 'MUZPAYROLL_TimeSheetManagement_BRD_Answers.docx';
+    var blob = await D.Packer.toBlob(doc);
+
+    // Trigger local download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    // Email the actual Word document as a real attachment via a small
+    // Cloudflare Worker (see email-worker.js) that relays it through Resend.
+    // The Resend API key lives only on the Worker, never in this page.
+    titleEl.textContent = 'Sending email...';
+    subEl.textContent   = 'Attaching the Word file';
+    try {
+      var fd = new FormData();
+      fd.append('subject', 'MUZPAYROLL Time Sheet Management (ESS) BRD Submission - ' + userName);
+      fd.append('message', buildSummary());
+      fd.append('filename', FILENAME);
+      fd.append('attachment', blob, FILENAME);
+      var resp = await fetch(EMAIL_WORKER_URL, { method: 'POST', body: fd });
+      var result = await resp.json();
+      document.getElementById('toastMsg').textContent = result.success
+        ? 'Word file downloaded & emailed!'
+        : 'Word file downloaded! (Email failed: ' + (result.error || (result.result && result.result.message) || 'unknown error') + ')';
+    } catch (e) {
+      console.warn('Email failed:', e);
+      document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
+    }
+
+    overlay.classList.remove('show');
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error(err);
+    alert('Error: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUZPAYROLL Advance Management — BRD Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --amber:#9a6700;--amber-bg:#fff8c5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:200px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3fb950;border-radius:4px;transition:width .35s}
+.progress-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;white-space:nowrap}
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.hero-stat{padding:14px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .n{font-size:22px;font-weight:600;color:#fff;line-height:1}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+/* MAIN */
+.main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
+.section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
+/* CARD */
+.q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.q-card.answered{border-color:#3fb950}
+.q-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.q-card-top{padding:20px 24px 0}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.q-number.answered-num{background:#3fb950}
+.gap-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px;flex-shrink:0}
+.badge-missing{background:var(--red-bg);color:var(--red)}
+.badge-ambiguous{background:var(--amber-bg);color:var(--amber)}
+.badge-workflow{background:#dbeafe;color:#1e40af}
+.badge-scalability{background:var(--purple-bg);color:var(--purple)}
+.q-title-text{font-size:13px;font-weight:500;color:var(--ink3)}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.45}
+.req-star{color:var(--red);margin-left:2px}
+.q-why{background:var(--paper2);border-left:3px solid var(--accent);padding:9px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px}
+.q-why b{color:var(--accent);font-weight:600}
+/* OPTIONS */
+.options-wrap{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:all .15s;user-select:none}
+.opt-label:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt-label.selected{border-color:var(--accent);background:var(--accent-light)}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;margin-top:1px;background:#fff;transition:all .15s;position:relative}
+.opt-indicator::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .15s}
+.opt-label.selected .opt-indicator{border-color:var(--accent)}
+.opt-label.selected .opt-indicator::after{opacity:1}
+.opt-letter{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.3px}
+.letter-a{background:var(--green-bg);color:var(--green)}
+.letter-b{background:var(--amber-bg);color:var(--amber)}
+.letter-c{background:var(--red-bg);color:var(--red)}
+.opt-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+/* CUSTOM */
+.custom-wrap{padding:0 24px 20px}
+.custom-lbl{font-size:12px;font-weight:600;color:var(--ink4);margin-bottom:6px;display:block;letter-spacing:.3px}
+.custom-ta{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);resize:vertical;min-height:64px;background:var(--paper2);transition:border-color .15s,background .15s;line-height:1.55}
+.custom-ta:focus{outline:none;border-color:var(--accent);background:#fff}
+.custom-ta::placeholder{color:var(--ink4)}
+/* ERROR */
+.err-msg{padding:0 24px 14px;font-size:12px;color:var(--red);font-weight:500;display:none}
+.err-msg.visible{display:block}
+/* SUBMIT */
+.submit-zone{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:32px;margin-top:36px;text-align:center;box-shadow:var(--shadow-lg)}
+.submit-zone h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+.submit-zone p{font-size:13px;color:var(--ink3);margin-bottom:24px}
+.submit-btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(13,17,23,.18)}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn.all-good{background:#1a7f37}
+.submit-btn.all-good:hover{background:#116329}
+.incomplete-msg{background:var(--red-bg);border:1px solid #ffc1c0;border-radius:var(--radius);padding:12px 16px;color:var(--red);font-size:13px;font-weight:500;margin-bottom:16px;display:none;text-align:left}
+.incomplete-msg.show{display:block}
+.incomplete-msg ul{margin-top:6px;padding-left:18px}
+.incomplete-msg li{font-size:12px;margin-top:3px;font-weight:400}
+/* OVERLAY */
+.gen-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.65);align-items:center;justify-content:center}
+.gen-overlay.show{display:flex}
+.gen-box{background:#fff;border-radius:var(--radius-lg);padding:36px 52px;text-align:center;box-shadow:var(--shadow-lg);min-width:260px}
+.spinner{width:40px;height:40px;border:3px solid #eaeef2;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.gen-sub{font-size:12px;color:var(--ink3)}
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.175,.885,.32,1.275),opacity .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-check{width:20px;height:20px;background:#3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .progress-track{width:100px}
+  .hero{padding:36px 16px 44px}
+  .q-card-top,.options-wrap,.custom-wrap{padding-left:16px;padding-right:16px}
+  .submit-zone{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">&#8377;</div>
+    <span class="brand-name">MUZPAYROLL &mdash; Advance Management BRD Questionnaire</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-label" id="pLabel">0 / 17</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Stakeholder Review Required
+  </div>
+  <h1>Advance Management Module<br><em>BRD Requirements Form</em></h1>
+  <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">17</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">7</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
+  <div id="formContainer"></div>
+  <div class="submit-zone">
+    <h3>Ready to submit?</h3>
+    <p>All 17 questions must be answered. On submit, your answers download as a Word document.</p>
+    <div class="incomplete-msg" id="incompleteMsg">
+      <strong>Please answer all required questions before submitting:</strong>
+      <ul id="missingList"></ul>
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Submit &amp; Download Word File
+    </button>
+  </div>
+</div>
+
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-box">
+    <div class="spinner"></div>
+    <div class="gen-title" id="genTitle">Building Word document...</div>
+    <div class="gen-sub" id="genSub">Please wait a moment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-check">
+    <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <span id="toastMsg">Word file downloaded!</span>
+</div>
+
+<script src="docx.umd.js"></script>
+<script>
+// ── EMAIL DELIVERY (Cloudflare Worker + Resend — sends to basilareeckal06@gmail.com) ──
+// Deploy email-worker.js as a Cloudflare Worker (see repo instructions) and
+// paste its *.workers.dev URL below. Safe to leave visible — the Worker itself
+// holds the real secret (the Resend API key) and only ever emails one fixed address.
+const EMAIL_WORKER_URL = "https://muzpayroll.basilareeckal06.workers.dev";
+
+// ── QUESTION DATA ──────────────────────────────────────────────────
+const Q = [
+  {sec:"Section 1: Module Scope — Intro vs Detail",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q1",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Eligibility Check — In Scope for This Phase, or Aspirational Intro Copy?",
+   text:"The module's own Key Features list promises \"System-based validations to check eligibility based on salary, tenure, and company policy,\" but Advance Issue's actual field list (Issued Amount, Recovery Start Month, Monthly Recovery Amount) has no eligibility check of any kind. Is Eligibility Check a real requirement for this phase, and if so what are the actual salary/tenure/policy rules?",
+   why:"BRD Advance Management · Key Features vs Advance Issue: the intro promises system-based eligibility validation; the detailed feature description that follows never mentions it again anywhere in the document.\nDetermines whether Advance Issue needs new validation logic built (and the actual salary/tenure thresholds defined) or whether eligibility is a manual HR judgment call with no system enforcement — a materially different scope.",
+   opts:[{t:"A",c:"letter-a",l:"In scope — Eligibility Check is a real requirement; define the actual salary/tenure/policy rules in the notes field below so validation logic can be built into Advance Issue"},
+         {t:"B",c:"letter-b",l:"Aspirational — Eligibility Check is not being built for this phase; HR applies eligibility judgment manually with no system validation; the intro line should be removed or marked as a future enhancement"},
+         {t:"C",c:"letter-c",l:"Partially in scope — only a simple check is needed (e.g. a maximum-amount cap tied to salary), not the full salary/tenure/policy combination the intro describes; specify the simplified rule in the notes field below"}]},
+  {id:"q2",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Approval Workflow — Single-Step (Reporting/Recommendation Head), or Configurable Multi-Level With HR and Finance?",
+   text:"The intro promises a \"Configurable multi-level approval process involving reporting managers, HR, and Finance.\" The only approval flow actually described anywhere in the document (under Mobile App Features → Approval & Recommendation Flow) is a single step to a Reporting Head or Recommendation Head — no HR or Finance approval step appears anywhere. Which is correct?",
+   why:"BRD Advance Management · Key Features vs Mobile App Features Integration → Approval & Recommendation Flow: the intro's \"multi-level... HR, and Finance\" claim is never matched by any described workflow step involving HR or Finance approval.\nThis is the single biggest scope question in the whole document — a configurable multi-level approval engine is a substantially larger build than a fixed single-step Reporting Head approval, and every other open item about approval sequencing in this questionnaire depends on the answer.",
+   opts:[{t:"A",c:"letter-a",l:"Single-step only — Reporting Head/Recommendation Head approval is the complete workflow for this phase; the intro's HR/Finance/multi-level language was aspirational and is not being built now"},
+         {t:"B",c:"letter-b",l:"Multi-level, as the intro describes — Reporting Head/Recommendation Head approval is only the first step; HR and Finance approval steps also exist and need to be specified (sequence, who, when) in the notes field below"},
+         {t:"C",c:"letter-c",l:"Multi-level, but only for advances above a threshold — small advances go through Reporting Head only; larger amounts additionally require HR and/or Finance approval; specify the threshold and additional steps in the notes field below"}]},
+  {id:"q3",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Policy Configuration Admin Panel — Does It Exist, and Does It Resolve the Masters BRD's Open Advance Type Question?",
+   text:"The intro promises an \"Admin panel to define loan types, interest (if applicable), repayment period, and maximum eligibility,\" but this panel is never described again anywhere in the document. The Masters BRD's own Advance Type master already has an open question asking exactly this (what rules — amount limits, interest, eligibility — apply per Advance Type). Is this Policy Configuration panel the answer to that open question, and if so what does it actually look like?",
+   why:"BRD Advance Management · Key Features (Policy Configuration) cross-referenced against BRD Masters · Advance Type: both documents point at the same missing capability — a place to define per-Advance-Type rules — without either one actually describing it.\nIf this panel is real, it directly closes the Masters BRD's Advance Type open item; if it isn't being built, that open item stays genuinely unresolved and Advance Type stays a bare name+Recovery-Head record with no enforceable rules.",
+   opts:[{t:"A",c:"letter-a",l:"Yes, it exists and is in scope — Policy Configuration is a real admin screen that extends the Masters Advance Type master with interest rate, repayment period, and maximum eligibility fields; describe the exact field list needed in the notes field below"},
+         {t:"B",c:"letter-b",l:"No, not for this phase — there is no separate Policy Configuration panel; Advance Type stays exactly as documented in the Masters BRD (name + Recovery Head only), and any limits are enforced manually by HR, not by the system"},
+         {t:"C",c:"letter-c",l:"Exists, but simpler than described — some policy fields are needed (e.g. just a maximum amount), but not the full loan-types/interest/repayment-period/eligibility set the intro describes; specify which fields in the notes field below"}]},
+
+  {sec:"Section 2: Advance Issue",scBg:"#ede9fe",scFg:"#5b21b6",
+   id:"q4",gap:"MISSING RULE",gc:"badge-missing",title:"Advance Issue — Does It Require Selecting an Advance Type, and Do Types Have Different Rules?",
+   text:"Advance Issue's fields are Issued Amount, Recovery Start Month, and Monthly Recovery Amount — no field for selecting which Advance Type (Salary Advance or Travel Advance, per the Masters BRD) applies. Does issuing an advance require choosing an Advance Type first, and do the two types behave differently (different approval flow, different eligibility, different recovery rules)?",
+   why:"BRD Advance Management · Advance Issue vs BRD Masters · Advance Type: this document treats every advance generically throughout, with the words \"loan\" and \"advance\" used interchangeably and no reference anywhere to the Masters BRD's two confirmed Advance Type records or their Recovery Head link.\nDetermines whether Advance Issue needs an Advance Type selector field (tying the transaction to a specific Masters record and whatever rules that type carries), or whether Advance Type is purely a reporting/recovery-routing label with no behavioral difference between types.",
+   opts:[{t:"A",c:"letter-a",l:"Yes, Advance Type selection is required — Advance Issue must select Salary Advance or Travel Advance from the Masters master, and each type can carry its own rules (approval flow, eligibility, interest) once Policy Configuration (see above) defines them"},
+         {t:"B",c:"letter-b",l:"Advance Type is selected but purely for recovery routing — it only determines which Salary Head the recovery deduction posts to (via Recovery Head); it has no effect on approval flow, eligibility, or any other Advance Issue behavior"},
+         {t:"C",c:"letter-c",l:"Advance Type is not referenced at all — Advance Issue is entirely generic; \"Salary Advance\" vs \"Travel Advance\" in Masters is effectively unused by this module as currently scoped"}]},
+  {id:"q5",gap:"MISSING RULE",gc:"badge-missing",title:"Recovery Duration — What Happens When Issued Amount Doesn't Divide Evenly by Monthly Recovery Amount?",
+   text:"The system \"automatically calculates: Recovery Duration\" from Issued Amount and Monthly Recovery Amount, but no formula or rounding rule is given. If, for example, Rs. 10,000 is issued with a Rs. 3,000 monthly recovery amount, the exact division is 3.33 months — how is the final, partial installment handled?",
+   why:"BRD Advance Management · Advance Issue: \"System automatically calculates: Recovery Duration\" is stated with no formula, and no rule for non-even division anywhere in the document.\nThis affects every advance where the amount doesn't divide evenly by the monthly recovery figure — likely the common case, not an edge case — so the rounding behavior needs to be exact before the calculation can be built.",
+   opts:[{t:"A",c:"letter-a",l:"Round up, smaller final installment — Recovery Duration rounds up to the next whole month, and the last month's deduction is only whatever balance remains (e.g. 4 months: 3,000/3,000/3,000/1,000)"},
+         {t:"B",c:"letter-b",l:"Round up, equal installments recalculated — Recovery Duration rounds up to the next whole month, and the Monthly Recovery Amount is recalculated so every installment (including the last) is equal"},
+         {t:"C",c:"letter-c",l:"Exact Monthly Recovery Amount held fixed, no pre-computed duration — the system tracks remaining balance and simply stops deducting once balance reaches zero, whatever month that happens to be, without pre-computing a fixed Recovery Duration up front"}]},
+  {id:"q6",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Advance Issue — Who Has Access to Create, Approve, and Modify Advances?",
+   text:"No role is named anywhere in this document for Advance Issue, Advance Recovery Update, or report access. Which roles can issue an advance directly (outside the mobile-request approval flow), and which can perform Advance Recovery Update actions (change recovery amount, exclude months, settle)?",
+   why:"BRD Advance Management: unlike other BRDs in this set (which at least sometimes name HR Admin/Super Admin), this document never states a role anywhere for any Advance Management action.\nAdvance amounts directly affect employee take-home pay every month; without an explicit access-control rule, this is one of the higher-risk unscoped areas in the whole document.",
+   opts:[{t:"A",c:"letter-a",l:"HR Admin only — HR Admin can issue advances, perform all Advance Recovery Update actions, and view all reports; no other role has write access to this module"},
+         {t:"B",c:"letter-b",l:"HR Admin issues and updates; Finance can view reports and settlements only — a read-only split for Finance, full access for HR Admin"},
+         {t:"C",c:"letter-c",l:"Split by action — issuing a new advance requires one role, mid-recovery updates (especially Partial/Full Settlement) require a stricter role or a second approval; specify the exact split in the notes field below"}]},
+
+  {sec:"Section 3: Advance Recovery Update",scBg:"#fff8c5",scFg:"#92400e",
+   id:"q7",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Partial / Full Settlement — How Is the Lump Sum Actually Received and Recorded?",
+   text:"Partial Settlement (\"pay a lump sum amount to the loan\") and Full Settlement (\"clear full balance instantly\") both describe money flowing from the employee to the company outside the normal monthly salary-deduction mechanism. How is that payment actually captured — cash handed to HR/Finance and manually recorded, a bank transfer reconciled separately, or a one-time additional payroll deduction?",
+   why:"BRD Advance Management · Advance Recovery Update: both settlement actions are described only by their end effect (balance reduces or clears) with no description of the payment-capture mechanism itself — this is the least-specified part of the whole Advance Recovery Update feature.\nWithout knowing the payment method, the screen can't be built: a manually-recorded cash/bank payment needs a reference-number/proof-of-payment field and a reconciliation step; a payroll deduction needs different (payroll-cycle-timed) logic entirely.",
+   opts:[{t:"A",c:"letter-a",l:"Manually recorded — HR/Finance receives payment outside the system (cash, cheque, bank transfer) and simply records the settlement amount and a reference note on the Advance Recovery Update screen; no payment gateway or bank reconciliation is built"},
+         {t:"B",c:"letter-b",l:"One-time payroll deduction — the settlement amount is deducted from the employee's next payroll run as a lump sum, the same mechanism as the regular monthly recovery, just for the full/partial balance in one go"},
+         {t:"C",c:"letter-c",l:"Employee self-service payment — the employee pays via a linked payment method (bank transfer with a reference the system tracks, or similar) and HR/Finance confirms receipt before the balance updates"}]},
+  {id:"q8",gap:"MISSING RULE",gc:"badge-missing",title:"Insufficient Salary in a Recovery Month — Skip, Partial-Deduct, or Carry to Arrears?",
+   text:"Salary Deduction Integration states the recovery amount is \"automatically deducted during monthly salary processing,\" with no rule for what happens if that month's salary is insufficient to cover it (e.g. an employee on Loss of Pay, or a short final month before relieving). Does the deduction get skipped for that month, partially taken, or carried forward as arrears added to a future month?",
+   why:"BRD Advance Management · Salary Deduction Integration: the integration is described only for the normal case (sufficient salary); no exception handling is given anywhere in the document for a shortfall.\nThis is a direct payroll-correctness gap — building the deduction logic without this rule risks either a negative net-pay calculation or a silently-skipped recovery that never gets made up, extending the loan indefinitely without anyone noticing.",
+   opts:[{t:"A",c:"letter-a",l:"Skip and carry forward — if salary is insufficient, that month's deduction is skipped entirely and added to the following month's scheduled amount (extending Recovery Duration if the shortfall persists)"},
+         {t:"B",c:"letter-b",l:"Partial deduction — take whatever portion of the scheduled amount the month's salary can cover, and carry the remaining shortfall forward to the following month"},
+         {t:"C",c:"letter-c",l:"Block or flag instead — the system does not attempt a partial deduction; it flags the shortfall for HR/Finance to manually decide (skip, adjust the schedule, or exclude the month via Advance Recovery Update) rather than resolving it automatically"}]},
+
+  {sec:"Section 4: Advance Slip & Audit Trail",scBg:"#dafbe1",scFg:"#14532d",
+   id:"q9",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Advance Slip — Persisted on the Server, or Client-Side Export Only?",
+   text:"Advance Slip Generation states the slip \"can be exported and stored on client side for records\" — a specific phrase that implies the system itself may not keep a server-side copy, only a one-time export the employee or HR downloads. If the exported copy is ever lost, can the slip be regenerated from the system later, or was the export the only copy that ever existed?",
+   why:"BRD Advance Management · Advance Slip Generation: \"stored on client side\" is unusual, deliberate-sounding phrasing that, taken literally, means no server-side persistence exists — which sits awkwardly against the later claim (Advance Detailed Report) of a \"Full audit trail for each advance issued.\"\nA genuine audit trail requires the slip (or the data behind it) to be reproducible from the system at any time, not dependent on whichever copy the original recipient happened to keep.",
+   opts:[{t:"A",c:"letter-a",l:"Server-persisted, regenerable — the slip's underlying data is stored in the system regardless of the export; HR/Finance can regenerate an identical slip at any time from Advance Detailed Report or the advance record itself; \"stored on client side\" only describes the download/export action, not the only copy"},
+         {t:"B",c:"letter-b",l:"Client-side export is genuinely the only copy — the system does not persist the rendered slip; if lost, it cannot be regenerated exactly, though the underlying issued-amount/schedule data still exists in the Loan Ledger and reports"},
+         {t:"C",c:"letter-c",l:"Needs to change — the current \"client side only\" behavior (if that's what exists) is a gap that should be fixed by adding server-side slip storage/regeneration as part of this BRD"}]},
+  {id:"q10",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Manual Adjustments — What Detail Is Actually Captured for the Audit Trail?",
+   text:"Advance Detailed Report claims to show \"Manual adjustments\" as part of a \"Full audit trail for each advance issued,\" but no section of the document states what gets recorded when HR makes a manual adjustment (Change Recovery Amount, Exclude Recovery Month) — is a reason/comment required, and is the change logged with who made it and when?",
+   why:"BRD Advance Management · Advance Recovery Update vs Advance Detailed Report: the Update screen's own description gives no logging behavior at all, while the Report section asserts a \"Full audit trail\" exists — the audit content has to come from somewhere, and that somewhere is never described.\nDetermines whether Advance Recovery Update needs a mandatory reason/comment field and an automatic who/when log entry built in, or whether \"Full audit trail\" in the Report description is itself aspirational language matching the pattern already found in this document's intro.",
+   opts:[{t:"A",c:"letter-a",l:"Full audit capture — every manual adjustment (amount change, excluded month, settlement) requires HR to enter a reason/comment, and the system automatically logs who made the change and when; all of this feeds Advance Detailed Report"},
+         {t:"B",c:"letter-b",l:"Minimal capture — the system logs what changed and when automatically, but does not require or capture a reason/comment from HR"},
+         {t:"C",c:"letter-c",l:"Not currently captured — no structured audit logging exists for these actions today; \"Full audit trail\" in the Report description is aspirational and needs to be built as new scope, not assumed to already work"}]},
+
+  {sec:"Section 5: Salary Head Integration",scBg:"#ccfbf1",scFg:"#0d5b52",
+   id:"q11",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"\"Advance Type Head\" / \"Salary Head: Advance Recovery Head\" / \"Internal Calculation\" — What Do These Three Terms Actually Mean?",
+   text:"Advance Recovery Salary Head (Salary Integration) uses three overlapping terms in four lines: \"Create Advance type Head: With Type Advance Recovery,\" \"Create Salary Head: With Type Advance Recovery Head (recovery Head),\" and \"Salary Structure Calculation Type: Internal Calculation (system controlled).\" None of these map cleanly onto the Masters BRD's confirmed Advance Type or Salary Head fields, or onto System Management's \"internally calculated\" Salary Head Group classification. What do these three terms each actually refer to?",
+   why:"BRD Advance Management · Advance Recovery Salary Head vs BRD Masters · Advance Type/Salary Head vs BRD System Management · Salary Head Group: this is the densest, least-reconciled terminology cluster across all four BRD documents reviewed so far — three different documents each use a slightly different vocabulary for what appears to be the same underlying mechanism (an advance's recovery amount flowing into a specific Salary Head each month).\nWithout untangling this, the Advance Recovery Salary Head section can't be translated into an actual data model or calculation rule — it's currently unbuildable as written.",
+   opts:[{t:"A",c:"letter-a",l:"\"Advance type Head\" = the Masters Advance Type's Recovery Head field (already confirmed); \"Salary Head: Advance Recovery Head\" = that same Salary Head record, described from the Salary Head side instead of the Advance Type side; \"Internal Calculation\" = System Management's \"internally calculated\" classification, meaning the system computes this Salary Head's monthly value automatically (as the sum of that employee's active scheduled recovery amounts) rather than HR entering it manually — all three phrases describe one single mechanism from three angles"},
+         {t:"B",c:"letter-b",l:"These are three genuinely separate things, not three descriptions of one mechanism — please describe what each one actually is/does independently in the notes field below"},
+         {t:"C",c:"letter-c",l:"This whole section is describing a technical implementation note for developers (how to configure the Salary Head master and Salary Head Group settings screens to wire up recovery), not a business requirement — it should inform the PRD's technical design but doesn't need its own business-level question"}]},
+
+  {sec:"Section 6: Mobile Request & Approval Workflow",scBg:"#ffebe9",scFg:"#7f1d1d",
+   id:"q12",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Advance Issue vs Mobile Advance Request — One Connected Workflow, or Two Separate Paths?",
+   text:"Advance Issue (described early in the document, with no approval step at all) and Advance Request via Mobile App (employee-initiated, with a Reporting Head/Recommendation Head approval step) read as two different ways an advance gets created. Does an approved mobile request automatically become an Advance Issue record, or does HR still need to separately/manually create the Advance Issue entry after a mobile request is approved?",
+   why:"BRD Advance Management · Advance Issue vs Mobile App Features Integration: the document never states whether these are the same underlying data flow described from two different user perspectives, or genuinely two independent paths to create an advance record — one with no approval step described, one with an explicit approval step.\nThis is the module's most significant workflow gap: it determines whether Advance Issue is a downstream consequence of an approved request, a completely separate direct-entry mechanism for advances HR decides on its own initiative, or both.",
+   opts:[{t:"A",c:"letter-a",l:"One connected workflow — a mobile Advance Request, once approved by the Reporting Head/Recommendation Head, automatically creates the Advance Issue record with no further manual entry required; Advance Issue's own description (no approval step) is simply describing the system's internal state once a request has already cleared approval"},
+         {t:"B",c:"letter-b",l:"Two separate paths — mobile Advance Request (employee-initiated, approval-gated) and Advance Issue (HR/Finance-initiated, direct entry, no approval) are genuinely independent; an approved mobile request still requires HR to manually create a separate Advance Issue entry"},
+         {t:"C",c:"letter-c",l:"Mobile Advance Request doesn't create anything itself — it's only a recommendation/notification mechanism; the actual Advance Issue always happens through the employer-portal screen regardless of how the request originated"}]},
+  {id:"q13",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Reporting Head vs Recommendation Authority — Same Role, or Two Distinct Approvers?",
+   text:"Each employee is mapped with both a \"Reporting Head\" and a \"Recommendation Authority,\" both \"configured in the employee master screen.\" Are these the same person serving two functions, or genuinely two different people, and if different, what's the relationship between them in the approval sequence?",
+   why:"BRD Advance Management · Mobile App Features Integration → Approval & Recommendation Flow: both roles are named and both are said to be configured on the employee master, but no field list, sequence, or example distinguishes them from each other anywhere in the document.\nDetermines whether the employee master needs one reporting-hierarchy field reused for both purposes, or two genuinely separate fields — and, per the following open item, whether both must act or either one suffices.",
+   opts:[{t:"A",c:"letter-a",l:"Same person, two labels — Reporting Head and Recommendation Authority are the same field/person in the vast majority of cases; \"Recommendation Authority\" is just this module's name for the general reporting-hierarchy concept, not a separate role"},
+         {t:"B",c:"letter-b",l:"Different people, sequential — Recommendation Authority reviews/recommends first (e.g. a direct supervisor for day-to-day matters), then the Reporting Head gives the final approval; both fields are genuinely distinct and both steps are required"},
+         {t:"C",c:"letter-c",l:"Different people, either can approve — Recommendation Authority is an alternate/backup approver to the Reporting Head, not a required second step; either one approving is sufficient to move the request forward"}]},
+  {id:"q14",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Approval Trigger — Either Reporting Head OR Recommendation Head, or Both Required in Sequence?",
+   text:"When an advance request is submitted, the document states \"Approval flow triggers to Reporting Head / Recommendation Head\" — the slash is ambiguous between \"either one of these two approves it\" and \"both of these, one after the other, must approve it.\" Which is correct?",
+   why:"BRD Advance Management · Mobile App Features Integration → Approval & Recommendation Flow: this single ambiguous slash directly determines whether the approval workflow needs one decision gate or two sequential ones — a materially different screen flow and notification design either way.\nThis question is closely related to, but distinct from, the previous open item's role-identity question — even if Reporting Head and Recommendation Authority are confirmed as different people, this question is specifically about whether the workflow needs one or both of their approvals to proceed.",
+   opts:[{t:"A",c:"letter-a",l:"Either one — approval from whichever of the two (Reporting Head or Recommendation Head) is configured for that employee is sufficient; there is no second mandatory gate"},
+         {t:"B",c:"letter-b",l:"Both required, in sequence — the request must be approved by both, one after the other, before it's considered approved; specify the order (which approves first) in the notes field below"},
+         {t:"C",c:"letter-c",l:"Depends on advance amount or type — small/routine advances need only one approval; larger advances or specific Advance Types require both; specify the threshold/rule in the notes field below"}]},
+  {id:"q15",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Reporting Head (This Module) — Same Field as the Employee Module's Existing Reporting Hierarchy, or a New One?",
+   text:"The Employee module already has its own reporting-hierarchy concept (reporting head assignments used for team/hierarchy management elsewhere in the system). Is the \"Reporting Head\" referenced here for advance approval the exact same field, or a separate, Advance-Management-specific reporting relationship that happens to share the same name?",
+   why:"BRD Advance Management · Mobile App Features Integration: states \"Reporting Head\" is \"configured in the employee master screen\" without clarifying whether this reuses an existing employee-record field or introduces a new one under the same name.\nGetting this wrong either silently reuses a field for a purpose it wasn't designed for (e.g. an employee's day-to-day reporting manager being wrongly treated as their financial-approval authority) or duplicates a field the Employee module already has.",
+   opts:[{t:"A",c:"letter-a",l:"Same field — Advance Management's Reporting Head is exactly the Employee module's existing reporting-hierarchy field; no new field is needed, this module simply reads it"},
+         {t:"B",c:"letter-b",l:"A new, separate field — Advance Management needs its own Reporting Head assignment, distinct from the Employee module's general reporting hierarchy, since financial approval authority may differ from day-to-day reporting"},
+         {t:"C",c:"letter-c",l:"Same field today, but should be separated — the Employee module's field is being reused for now as a stopgap, but a dedicated financial-approval-authority field is the correct long-term design; note this as a future refinement rather than blocking this BRD"}]},
+
+  {sec:"Section 7: Recovery Completion & Reporting",scBg:"#e0e7ff",scFg:"#3730a3",
+   id:"q16",gap:"MISSING RULE",gc:"badge-missing",title:"Fully Recovered Advances — Stay Visible in the Loan Ledger, With Employee Notification?",
+   text:"Automatic Recovery Completion marks an advance \"Fully Recovered\" once its balance reaches zero, but the document doesn't say whether it remains visible in the Loan Ledger the intro promises, or whether the employee is notified when their advance is fully paid off.",
+   why:"BRD Advance Management · Automatic Recovery Completion vs Key Features (Loan Ledger): the Loan Ledger is described in the intro as containing \"repayment history,\" which implies fully-recovered advances should stay visible historically, but this isn't explicitly confirmed anywhere, and no notification behavior is described at all.",
+   opts:[{t:"A",c:"letter-a",l:"Stays visible, no notification — fully recovered advances remain in the Loan Ledger's history indefinitely for audit/reference purposes, but no automatic notification is sent to the employee when it completes"},
+         {t:"B",c:"letter-b",l:"Stays visible, with notification — same as above, plus the employee receives a notification (in-app, or via Employee Reminders if that feature exists per the Masters BRD) when their advance reaches zero balance"},
+         {t:"C",c:"letter-c",l:"Archived, not actively shown — fully recovered advances move to a separate historical/archived view rather than staying in the main active Loan Ledger list, to keep the active view focused on outstanding advances only"}]},
+  {id:"q17",gap:"MISSING RULE",gc:"badge-missing",title:"Advance Summary & Detailed Reports — What Filters and Columns Are Actually Needed?",
+   text:"Both reports are described only by their broad content (\"month-wise recovery status,\" \"complete monthly tracking\") with no filter options (by employee, department, date range, Advance Type?) or exact column list given for either.",
+   why:"BRD Advance Management · Reports: Advance Summary Report and Advance Detailed Report are each given a one-line content description with no field-level or filter-level detail, unlike some reports in other modules of this BRD set that at least name their filter dimensions explicitly.",
+   opts:[{t:"A",c:"letter-a",l:"Match the pattern used elsewhere in the system — filter by Employee, Department, Location, and Date Range (the same filter set already used on Muster Roll and similar screens), with columns exactly as listed in the BRD text (issued/recovered/pending for Summary; recovered/skipped/adjustments/settlements for Detailed)"},
+         {t:"B",c:"letter-b",l:"Broader filtering needed — the above, plus filter by Advance Type (Salary Advance/Travel Advance) and by approval status, since those dimensions matter specifically to this module"},
+         {t:"C",c:"letter-c",l:"Minimal for now — no filters beyond a basic employee search are needed for this phase; broader filtering is a future enhancement"}]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const sel = {};
+Q.forEach(q => { sel[q.id] = null; });
+
+// ── BUILD FORM (pure DOM — no innerHTML with template literals) ───────────────
+function buildForm() {
+  const container = document.getElementById('formContainer');
+
+  Q.forEach(function(q, idx) {
+    const num = idx + 1;
+
+    // Section pill
+    if (q.sec) {
+      const pill = document.createElement('div');
+      pill.className = 'section-pill';
+      pill.style.background = q.scBg;
+      pill.style.color = q.scFg;
+      pill.style.border = '1px solid ' + q.scFg + '30';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      dot.setAttribute('width','8'); dot.setAttribute('height','8'); dot.setAttribute('viewBox','0 0 8 8');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','4'); circle.setAttribute('cy','4'); circle.setAttribute('r','4'); circle.setAttribute('fill', q.scFg);
+      dot.appendChild(circle);
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(' ' + q.sec));
+      container.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Top section
+    const top = document.createElement('div');
+    top.className = 'q-card-top';
+
+    // Meta row
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+
+    const numBadge = document.createElement('div');
+    numBadge.className = 'q-number';
+    numBadge.id = 'num-' + q.id;
+    numBadge.textContent = num;
+    meta.appendChild(numBadge);
+
+    const gapBadge = document.createElement('span');
+    gapBadge.className = 'gap-badge ' + q.gc;
+    gapBadge.textContent = q.gap;
+    meta.appendChild(gapBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'q-title-text';
+    titleSpan.textContent = q.title;
+    meta.appendChild(titleSpan);
+    top.appendChild(meta);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.text;
+    const star = document.createElement('span');
+    star.className = 'req-star';
+    star.textContent = ' *';
+    qtext.appendChild(star);
+    top.appendChild(qtext);
+
+    // Why box
+    const why = document.createElement('div');
+    why.className = 'q-why';
+    const parts = q.why.split('\n');
+    if (parts.length >= 2) {
+      // Line 1: BRD reference
+      const brdRef = document.createElement('div');
+      brdRef.style.cssText = 'font-size:11px;color:#0969da;font-weight:600;margin-bottom:4px;';
+      brdRef.textContent = parts[0];
+      why.appendChild(brdRef);
+      // Line 2: Why this matters
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      const whyText = document.createElement('span');
+      whyText.textContent = parts[1];
+      why.appendChild(whyB);
+      why.appendChild(whyText);
+    } else {
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      why.appendChild(whyB);
+      why.appendChild(document.createTextNode(q.why));
+    }
+    top.appendChild(why);
+
+    card.appendChild(top);
+
+    // Options
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'options-wrap';
+
+    q.opts.forEach(function(o) {
+      const lbl = document.createElement('div');
+      lbl.className = 'opt-label';
+      lbl.id = 'lbl-' + q.id + '-' + o.t;
+
+      const ind = document.createElement('div');
+      ind.className = 'opt-indicator';
+      lbl.appendChild(ind);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter ' + o.c;
+      letter.textContent = o.t;
+      lbl.appendChild(letter);
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = o.l;
+      lbl.appendChild(optText);
+
+      lbl.addEventListener('click', function() { toggleOpt(q.id, o.t); });
+      optsWrap.appendChild(lbl);
+    });
+
+    card.appendChild(optsWrap);
+
+    // Custom textarea
+    const customWrap = document.createElement('div');
+    customWrap.className = 'custom-wrap';
+
+    const customLbl = document.createElement('span');
+    customLbl.className = 'custom-lbl';
+    customLbl.textContent = 'D \u2014 Custom answer or additional notes (optional):';
+    customWrap.appendChild(customLbl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'custom-ta';
+    ta.id = 'custom-' + q.id;
+    ta.placeholder = 'Add your own answer or clarify your selection...';
+    ta.addEventListener('input', function() { onCustomInput(q.id); });
+    customWrap.appendChild(ta);
+    card.appendChild(customWrap);
+
+    // Error message
+    const err = document.createElement('div');
+    err.className = 'err-msg';
+    err.id = 'err-' + q.id;
+    err.textContent = 'This question is required \u2014 please select an option or provide a custom answer.';
+    card.appendChild(err);
+
+    container.appendChild(card);
+  });
+}
+
+buildForm();
+
+// ── TOGGLE: click to select, click same to deselect ───────────────────────────
+function toggleOpt(qid, tag) {
+  const current = sel[qid];
+  if (current === tag) {
+    sel[qid] = null;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.remove('selected');
+    const custom = document.getElementById('custom-' + qid).value.trim();
+    if (!custom) unmark(qid);
+  } else {
+    if (current) document.getElementById('lbl-' + qid + '-' + current).classList.remove('selected');
+    sel[qid] = tag;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.add('selected');
+    mark(qid);
+  }
+}
+
+function onCustomInput(qid) {
+  const custom = document.getElementById('custom-' + qid).value.trim();
+  if (custom || sel[qid]) mark(qid); else unmark(qid);
+}
+
+function mark(qid) {
+  const card = document.getElementById('card-' + qid);
+  card.classList.add('answered'); card.classList.remove('has-error');
+  document.getElementById('num-' + qid).classList.add('answered-num');
+  document.getElementById('err-' + qid).classList.remove('visible');
+  updateProgress();
+}
+function unmark(qid) {
+  document.getElementById('card-' + qid).classList.remove('answered');
+  document.getElementById('num-' + qid).classList.remove('answered-num');
+  updateProgress();
+}
+function updateProgress() {
+  let answered = 0;
+  Q.forEach(function(q) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (sel[q.id] || (custom && custom.value.trim())) answered++;
+  });
+  const pct = Math.round((answered / Q.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = answered + ' / ' + Q.length;
+  document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
+}
+
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
+function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
+  const missing = [];
+  Q.forEach(function(q, i) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (!sel[q.id] && !(custom && custom.value.trim())) {
+      missing.push({ id: q.id, num: i + 1, title: q.title });
+      document.getElementById('card-' + q.id).classList.add('has-error');
+      document.getElementById('err-' + q.id).classList.add('visible');
+    }
+  });
+
+  if (nameMissing || missing.length > 0) {
+    const msgEl = document.getElementById('incompleteMsg');
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
+    }
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
+    fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fc.classList.add('shake');
+    setTimeout(function() { fc.classList.remove('shake'); }, 400);
+    return;
+  }
+  document.getElementById('incompleteMsg').classList.remove('show');
+  generateAndSend();
+}
+
+// ── TEXT SUMMARY FOR EMAIL BODY ─────────────────────────────────────────────────
+function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
+  var lines = ['MUZPAYROLL ADVANCE MANAGEMENT MODULE — BRD STAKEHOLDER RESPONSES',
+    'Submitted by: ' + (userName || '(not provided)'),
+    '='.repeat(60), ''];
+  var curSec = '';
+  Q.forEach(function(q, i) {
+    if (q.sec && q.sec !== curSec) {
+      curSec = q.sec;
+      lines.push('', '-'.repeat(60), curSec.toUpperCase(), '-'.repeat(60), '');
+    }
+    var s = sel[q.id];
+    var custom = document.getElementById('custom-' + q.id).value.trim();
+    var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+    lines.push('Q' + (i+1) + '. [' + q.gap + '] ' + q.title);
+    lines.push('Question : ' + q.text);
+    lines.push('ANSWER   : ' + (opt ? '(' + opt.t + ') ' + opt.l : '(Custom)'));
+    if (custom) lines.push('NOTES    : ' + custom);
+    lines.push('');
+  });
+  lines.push('='.repeat(60), 'End of BRD Responses');
+  return lines.join('\n');
+}
+
+// ── GENERATE DOCX + OPEN EMAIL ─────────────────────────────────────────────────
+async function generateAndSend() {
+  var overlay = document.getElementById('genOverlay');
+  var titleEl = document.getElementById('genTitle');
+  var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
+  overlay.classList.add('show');
+
+  try {
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    await new Promise(function(r) { setTimeout(r, 80); });
+
+    var D = docx;
+    var nb = { style: D.BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    var tb = { style: D.BorderStyle.SINGLE, size: 4,  color: 'D0D7DE' };
+    function al(col) { return { style: D.BorderStyle.SINGLE, size: 12, color: col }; }
+    function sp(pt) {
+      return new D.Paragraph({ spacing: { before: 0, after: pt*20 }, children: [new D.TextRun('')] });
+    }
+    var secCols = {
+      'Section 1: Module Scope — Intro vs Detail':'0550AE',
+      'Section 2: Advance Issue':'5B21B6',
+      'Section 3: Advance Recovery Update':'92400E',
+      'Section 4: Advance Slip & Audit Trail':'14532D',
+      'Section 5: Salary Head Integration':'0D5B52',
+      'Section 6: Mobile Request & Approval Workflow':'7F1D1D',
+      'Section 7: Recovery Completion & Reporting':'3730A3'
+    };
+    function secHead(text) {
+      var col = secCols[text] || '0969DA';
+      return new D.Paragraph({
+        spacing: { before: 480, after: 120 },
+        border: { bottom: { style: D.BorderStyle.SINGLE, size: 10, color: col, space: 4 } },
+        children: [new D.TextRun({ text: text, font: 'Arial', size: 28, bold: true, color: col })]
+      });
+    }
+    function qRow(num, q) {
+      var s = sel[q.id];
+      var custom = document.getElementById('custom-' + q.id).value.trim();
+      var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+      var tagColMap = { 'badge-missing':'CF222E','badge-ambiguous':'9A6700','badge-workflow':'0969DA','badge-scalability':'6639BA' };
+      var tc = tagColMap[q.gc] || 'CF222E';
+      var ansText = opt ? 'ANSWER (' + opt.t + '):  ' + opt.l : 'ANSWER (Custom)';
+      var ansBg   = opt ? 'EAF5EA' : 'FFF8C5';
+      var ansCol  = opt ? '1A7F37' : '9A6700';
+      var ansLeft = al(ansCol);
+      var rows = [
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 80, bottom: 40, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: 'Q' + num + '  ', font: 'Arial', size: 18, bold: true, color: '0D1117' }),
+            new D.TextRun({ text: '[' + q.gap + ']  ', font: 'Arial', size: 17, bold: true, color: tc }),
+            new D.TextRun({ text: q.title, font: 'Arial', size: 18, color: '57606A' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 20, bottom: 80, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: q.text, font: 'Arial', size: 22, bold: true, color: '0D1117' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: tb, bottom: tb, left: ansLeft, right: nb },
+          shading: { fill: ansBg, type: D.ShadingType.CLEAR },
+          margins: { top: 100, bottom: 100, left: 160, right: 120 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+              new D.TextRun({ text: ansText, font: 'Arial', size: 21, bold: true, color: ansCol })
+            ]}),
+            ...(custom ? [new D.Paragraph({ spacing: { before: 60, after: 0 }, children: [
+              new D.TextRun({ text: 'Notes:  ' + custom, font: 'Arial', size: 20, italics: true, color: '57606A' })
+            ]})] : [])
+          ]
+        })]
+        })
+      ];
+      return [
+        new D.Table({ width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626], rows: rows }),
+        sp(8)
+      ];
+    }
+
+    var children = [];
+    // Cover
+    children.push(
+      new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY', font: 'Arial', size: 17, color: '999999', bold: true })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 100 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA', space: 8 } }, children: [new D.TextRun({ text: 'MUZPAYROLL', font: 'Arial', size: 48, bold: true, color: '0969DA' })] }),
+      new D.Paragraph({ spacing: { before: 100, after: 40 }, children: [new D.TextRun({ text: 'BRD Stakeholder Responses', font: 'Arial', size: 32, color: '0D1117' })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 40 }, children: [new D.TextRun({ text: 'Advance Management Module', font: 'Arial', size: 26, color: '57606A' })] }),
+      new D.Paragraph({ spacing: { before: 60, after: 40 }, children: [
+        new D.TextRun({ text: 'Submitted by: ', font: 'Arial', size: 24, bold: true, color: '0D1117' }),
+        new D.TextRun({ text: userName || '(not provided)', font: 'Arial', size: 24, color: '0969DA', bold: true })
+      ]}),
+      sp(8)
+    );
+    // Stats table
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
+        rows: [new D.TableRow({ children: [['17','Total Questions'],['7','Sections'],['17','Answered'],['0','Skipped']].map(function(pair) {
+          return new D.TableCell({
+            width: { size: 2156, type: D.WidthType.DXA },
+            borders: { top: tb, bottom: tb, left: tb, right: tb },
+            shading: { fill: 'E8F4FD', type: D.ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            children: [
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[0], font: 'Arial', size: 44, bold: true, color: '0969DA' })] }),
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[1], font: 'Arial', size: 18, color: '57606A' })] })
+            ]
+          });
+        })})]
+      }),
+      sp(12)
+    );
+    // Purpose box
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626],
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA' }, right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 140, bottom: 140, left: 180, right: 180 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'Instructions for Development Team', font: 'Arial', size: 21, bold: true, color: '0969DA' })] }),
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.TextRun({ text: 'These are confirmed business decisions from HR and payroll stakeholders. Use these answers directly to build the production HRMS system. Each answer maps to a specific code or configuration decision. Do not make assumptions where an answer is provided.', font: 'Arial', size: 20, color: '57606A' })] })
+          ]
+        })]
+        })]
+      }),
+      sp(16)
+    );
+    // Meta
+    [['Submitted by', userName || '(not provided)'],['Module','Advance Management Module'],['Prepared for','Development Team - MUZPAYROLL Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+      children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
+        new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
+        new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
+      ]}));
+    });
+    children.push(sp(14));
+
+    // Questions
+    var qi = 0; var curSec = '';
+    Q.forEach(function(q) {
+      qi++;
+      if (q.sec && q.sec !== curSec) {
+        curSec = q.sec;
+        children.push(secHead(curSec));
+        children.push(sp(6));
+      }
+      qRow(qi, q).forEach(function(b) { children.push(b); });
+    });
+
+    children.push(sp(16));
+    children.push(new D.Paragraph({
+      border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 6 } },
+      spacing: { before: 120, after: 0 },
+      children: [new D.TextRun({ text: 'End of BRD Responses - Do not modify above this line', font: 'Arial', size: 17, color: '999999', italics: true })]
+    }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } } },
+        headers: { default: new D.Header({ children: [new D.Paragraph({ border: { bottom: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 0, after: 80 }, children: [new D.TextRun({ text: 'MUZPAYROLL Advance Management Module - BRD Stakeholder Responses', font: 'Arial', size: 17, color: '888888' })] })] }) },
+        footers: { default: new D.Footer({ children: [new D.Paragraph({ border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 80, after: 0 }, children: [new D.TextRun({ text: 'Advance Management Module  |  Confidential', font: 'Arial', size: 17, color: '999999' })] })] }) },
+        children: children
+      }]
+    });
+
+    var FILENAME = 'MUZPAYROLL_AdvanceManagement_BRD_Answers.docx';
+    var blob = await D.Packer.toBlob(doc);
+
+    // Trigger local download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    // Email the actual Word document as a real attachment via a small
+    // Cloudflare Worker (see email-worker.js) that relays it through Resend.
+    // The Resend API key lives only on the Worker, never in this page.
+    titleEl.textContent = 'Sending email...';
+    subEl.textContent   = 'Attaching the Word file';
+    try {
+      var fd = new FormData();
+      fd.append('subject', 'MUZPAYROLL Advance Management BRD Submission - ' + userName);
+      fd.append('message', buildSummary());
+      fd.append('filename', FILENAME);
+      fd.append('attachment', blob, FILENAME);
+      var resp = await fetch(EMAIL_WORKER_URL, { method: 'POST', body: fd });
+      var result = await resp.json();
+      document.getElementById('toastMsg').textContent = result.success
+        ? 'Word file downloaded & emailed!'
+        : 'Word file downloaded! (Email failed: ' + (result.error || (result.result && result.result.message) || 'unknown error') + ')';
+    } catch (e) {
+      console.warn('Email failed:', e);
+      document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
+    }
+
+    overlay.classList.remove('show');
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error(err);
+    alert('Error: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>

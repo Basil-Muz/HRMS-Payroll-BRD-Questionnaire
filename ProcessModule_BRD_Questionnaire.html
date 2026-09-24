@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUZPAYROLL Process Module — BRD Questionnaire</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d1117;--ink2:#24292f;--ink3:#57606a;--ink4:#8c959f;
+  --paper:#fff;--paper2:#f6f8fa;--rule:#d0d7de;
+  --accent:#0969da;--accent2:#054ada;--accent-light:#e8f4fd;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --amber:#9a6700;--amber-bg:#fff8c5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(13,17,23,.06),0 4px 12px rgba(13,17,23,.04);
+  --shadow-lg:0 8px 32px rgba(13,17,23,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--ink);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo-mark{width:28px;height:28px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:14px}
+.brand-name{color:#fff;font-size:13px;font-weight:500}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:200px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3fb950;border-radius:4px;transition:width .35s}
+.progress-label{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;white-space:nowrap}
+/* HERO */
+.hero{background:var(--ink);padding:56px 32px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(9,105,218,.18) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(28px,5vw,46px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:#79c0ff}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;max-width:560px;margin:0 auto 32px;line-height:1.7}
+.hero-stats{display:inline-flex;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+.hero-stat{padding:14px 24px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .n{font-size:22px;font-weight:600;color:#fff;line-height:1}
+.hero-stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+/* MAIN */
+.main-wrap{max-width:780px;margin:0 auto;padding:40px 16px 120px}
+/* NAME CARD */
+.name-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:24px;box-shadow:var(--shadow);transition:border-color .2s}
+.name-card.answered{border-color:#3fb950}
+.name-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.name-label{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.name-input{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--paper2);transition:border-color .15s,background .15s}
+.name-input:focus{outline:none;border-color:var(--accent);background:#fff}
+.name-input::placeholder{color:var(--ink4)}
+.name-card .err-msg{padding:8px 0 0}
+.section-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin:36px 0 16px}
+/* CARD */
+.q-card{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);margin-bottom:16px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.q-card.answered{border-color:#3fb950}
+.q-card.has-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(207,34,46,.08)}
+.q-card-top{padding:20px 24px 0}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{width:26px;height:26px;border-radius:6px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.q-number.answered-num{background:#3fb950}
+.gap-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px;flex-shrink:0}
+.badge-missing{background:var(--red-bg);color:var(--red)}
+.badge-ambiguous{background:var(--amber-bg);color:var(--amber)}
+.badge-workflow{background:#dbeafe;color:#1e40af}
+.badge-scalability{background:var(--purple-bg);color:var(--purple)}
+.q-title-text{font-size:13px;font-weight:500;color:var(--ink3)}
+.q-text{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.45}
+.req-star{color:var(--red);margin-left:2px}
+.q-why{background:var(--paper2);border-left:3px solid var(--accent);padding:9px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px}
+.q-why b{color:var(--accent);font-weight:600}
+/* OPTIONS */
+.options-wrap{padding:0 24px 20px;display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--rule);border-radius:var(--radius);cursor:pointer;transition:all .15s;user-select:none}
+.opt-label:hover{border-color:var(--accent);background:var(--accent-light)}
+.opt-label.selected{border-color:var(--accent);background:var(--accent-light)}
+.opt-indicator{width:18px;height:18px;border-radius:50%;border:2px solid var(--rule);flex-shrink:0;margin-top:1px;background:#fff;transition:all .15s;position:relative}
+.opt-indicator::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .15s}
+.opt-label.selected .opt-indicator{border-color:var(--accent)}
+.opt-label.selected .opt-indicator::after{opacity:1}
+.opt-letter{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.3px}
+.letter-a{background:var(--green-bg);color:var(--green)}
+.letter-b{background:var(--amber-bg);color:var(--amber)}
+.letter-c{background:var(--red-bg);color:var(--red)}
+.opt-text{font-size:14px;color:var(--ink2);line-height:1.5;flex:1}
+/* CUSTOM */
+.custom-wrap{padding:0 24px 20px}
+.custom-lbl{font-size:12px;font-weight:600;color:var(--ink4);margin-bottom:6px;display:block;letter-spacing:.3px}
+.custom-ta{width:100%;border:1.5px solid var(--rule);border-radius:var(--radius);padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--ink);resize:vertical;min-height:64px;background:var(--paper2);transition:border-color .15s,background .15s;line-height:1.55}
+.custom-ta:focus{outline:none;border-color:var(--accent);background:#fff}
+.custom-ta::placeholder{color:var(--ink4)}
+/* ERROR */
+.err-msg{padding:0 24px 14px;font-size:12px;color:var(--red);font-weight:500;display:none}
+.err-msg.visible{display:block}
+/* SUBMIT */
+.submit-zone{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius-lg);padding:32px;margin-top:36px;text-align:center;box-shadow:var(--shadow-lg)}
+.submit-zone h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+.submit-zone p{font-size:13px;color:var(--ink3);margin-bottom:24px}
+.submit-btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border:none;border-radius:var(--radius);padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s,transform .1s;box-shadow:0 2px 8px rgba(13,17,23,.18)}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn.all-good{background:#1a7f37}
+.submit-btn.all-good:hover{background:#116329}
+.incomplete-msg{background:var(--red-bg);border:1px solid #ffc1c0;border-radius:var(--radius);padding:12px 16px;color:var(--red);font-size:13px;font-weight:500;margin-bottom:16px;display:none;text-align:left}
+.incomplete-msg.show{display:block}
+.incomplete-msg ul{margin-top:6px;padding-left:18px}
+.incomplete-msg li{font-size:12px;margin-top:3px;font-weight:400}
+/* OVERLAY */
+.gen-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(13,17,23,.65);align-items:center;justify-content:center}
+.gen-overlay.show{display:flex}
+.gen-box{background:#fff;border-radius:var(--radius-lg);padding:36px 52px;text-align:center;box-shadow:var(--shadow-lg);min-width:260px}
+.spinner{width:40px;height:40px;border:3px solid #eaeef2;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.gen-sub{font-size:12px;color:var(--ink3)}
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:transform .3s cubic-bezier(.175,.885,.32,1.275),opacity .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-check{width:20px;height:20px;background:#3fb950;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .35s ease}
+@media(max-width:640px){
+  .site-header{padding:0 16px}
+  .progress-track{width:100px}
+  .hero{padding:36px 16px 44px}
+  .q-card-top,.options-wrap,.custom-wrap{padding-left:16px;padding-right:16px}
+  .submit-zone{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-mark">P</div>
+    <span class="brand-name">MUZPAYROLL &mdash; Process Module BRD Questionnaire</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
+    <span class="progress-label" id="pLabel">0 / 21</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#3fb950"/></svg>
+    Stakeholder Review Required
+  </div>
+  <h1>Process Module<br><em>BRD Requirements Form</em></h1>
+  <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">21</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">10</div><div class="l">Sections</div></div>
+    <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="name-card" id="nameCard">
+    <label class="name-label" for="userName">Name <span class="req-star">*</span></label>
+    <input type="text" id="userName" class="name-input" placeholder="Enter your full name" autocomplete="name" oninput="onNameInput()">
+    <div class="err-msg" id="err-name">Please enter your name before submitting.</div>
+  </div>
+  <div id="formContainer"></div>
+  <div class="submit-zone">
+    <h3>Ready to submit?</h3>
+    <p>All 21 questions must be answered. On submit, your answers download as a Word document.</p>
+    <div class="incomplete-msg" id="incompleteMsg">
+      <strong>Please answer all required questions before submitting:</strong>
+      <ul id="missingList"></ul>
+    </div>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Submit &amp; Download Word File
+    </button>
+  </div>
+</div>
+
+<div class="gen-overlay" id="genOverlay">
+  <div class="gen-box">
+    <div class="spinner"></div>
+    <div class="gen-title" id="genTitle">Building Word document...</div>
+    <div class="gen-sub" id="genSub">Please wait a moment</div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-check">
+    <svg width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <span id="toastMsg">Word file downloaded!</span>
+</div>
+
+<script src="docx.umd.js"></script>
+<script>
+// ── EMAIL DELIVERY (Cloudflare Worker + Resend — sends to basilareeckal06@gmail.com) ──
+// Deploy email-worker.js as a Cloudflare Worker (see repo instructions) and
+// paste its *.workers.dev URL below. Safe to leave visible — the Worker itself
+// holds the real secret (the Resend API key) and only ever emails one fixed address.
+const EMAIL_WORKER_URL = "https://muzpayroll.basilareeckal06.workers.dev";
+
+// ── QUESTION DATA ──────────────────────────────────────────────────
+const Q = [
+  {sec:"Section 1: CTC & Payroll Fundamentals",scBg:"#ddf4ff",scFg:"#0550ae",
+   id:"q1",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"CTC Formula — What Exactly Does It Include?",
+   text:"CTC is defined once, early in this document, as \"gross salary plus employer contributions to PF and ESI.\" But later sections imply more: Incentives Process states incentive payments are \"not as part of gross salary\" yet \"definitely included in CTC,\" and Employer NPS Contribution is described as a tax-exempt employer cost with no stated relationship to CTC at all. What is the complete, authoritative CTC formula?",
+   why:"BRD Process · Salary Structure & Process (CTC definition) vs Incentives Process vs Employer Contributions: the CTC formula stated once early in the document doesn't account for components introduced later that are explicitly said to be CTC-inclusive (Incentives) or CTC-adjacent (Employer NPS), and a fuller version of this same BRD separately flags Welfare Fund employer contribution as a future CTC candidate.\nWithout one complete, authoritative formula, neither the CTC figure shown on the Employee screen nor any CTC-dependent report can be built correctly — every component that should or shouldn't count needs to be enumerated explicitly, not assembled by inference across scattered sentences.",
+   opts:[{t:"A",c:"letter-a",l:"CTC = Gross Salary + Employer PF + Employer ESI + Incentives — this is the complete list for this phase; Employer NPS and Welfare Fund contributions are not yet part of CTC and will be added only if/when those components are actually built"},
+         {t:"B",c:"letter-b",l:"CTC = Gross Salary + Employer PF + Employer ESI + Employer NPS + Incentives + Welfare Fund employer contribution — the fuller list should be the authoritative formula now, even though not every component is fully built yet"},
+         {t:"C",c:"letter-c",l:"CTC = Gross Salary + Employer PF + Employer ESI only, exactly as first stated — Incentives and NPS being \"included in CTC\" in later sections is a documentation inconsistency, not an actual requirement; correct those sections instead"}]},
+  {id:"q2",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Payroll Period — Calendar Month Only, or Configurable (25th-to-25th)?",
+   text:"The document states payroll period is \"from first of the month to last day of the month,\" then immediately notes \"certain companies process payroll from 25th of a month to next month 25th\" without confirming which applies to Muziris, or whether the new system needs to support both as a configurable choice.",
+   why:"BRD Process · Salary Structure & Process: both period conventions are described, but only as general industry context — neither is confirmed as Muziris's actual practice or as a system requirement.\nDetermines whether payroll period start/end dates are a hardcoded calendar-month assumption throughout the payroll engine, or a configurable per-company/branch setting that needs its own field somewhere in Settings.",
+   opts:[{t:"A",c:"letter-a",l:"Calendar month only — 1st to last day of the month is Muziris's actual practice and the only period this system needs to support; the 25th-to-25th mention is general context, not a requirement"},
+         {t:"B",c:"letter-b",l:"Configurable — the payroll period start day needs to be a Settings-level parameter, since other companies using this system in the future may need the 25th-to-25th convention"},
+         {t:"C",c:"letter-c",l:"Muziris actually uses the 25th-to-25th convention (not calendar month) — the document's own opening sentence is incorrect; confirm the real convention in the notes field below"}]},
+  {id:"q3",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"LOP Calculation Formula — Which Denominator: Working Days or Month Days?",
+   text:"The LOP formula is given as \"(Monthly Allowance Amount / No. Of working days or Month Days) x Number of LOP days\" — an unresolved \"or\" between two different denominators that produce different results depending on which is used. Which one actually applies?",
+   why:"BRD Process · Salary Structure & Process (LOP Calculation formula): the formula itself states the denominator as an either/or without disambiguating, and no worked example is given anywhere in this document to infer which one is intended.\nSystem Management's Branch Wage Settings confirms a \"Wage Calculation Type: Month Days\" parameter exists, which strongly suggests Month Days is the configured choice for Muziris specifically — but that connection is never explicitly stated in either document, and the LOP formula needs one fixed, confirmed denominator before it can be implemented correctly, not one assumed by cross-document inference.",
+   opts:[{t:"A",c:"letter-a",l:"Month Days — the denominator is the fixed number of calendar days in that month (e.g. 30 or 31), matching the confirmed Branch Wage Settings' \"Wage Calculation Type: Month Days\" parameter; this is the actual, already-configured choice for Muziris"},
+         {t:"B",c:"letter-b",l:"Working Days — the denominator is the number of actual working days in that month (excluding weekly offs and holidays), which varies month to month and by each employee group's own off-day pattern"},
+         {t:"C",c:"letter-c",l:"Configurable per branch — the denominator follows whichever Wage Calculation Type is set in Branch Wage Settings (Month Days today, but Working Days for a future branch/company configured differently), so the LOP formula must read this setting dynamically rather than hardcoding either denominator"}]},
+  {sec:"Section 2: Formula-Based Allowances",scBg:"#ede9fe",scFg:"#5b21b6",
+   id:"q4",gap:"SCALABILITY",gc:"badge-scalability",title:"Formula-Based Allowance Calculation — Confirm Scope and Priority",
+   text:"Three separate parts of this BRD set independently confirm the same gap: allowances are \"currently all fixed amounts\" with no formula/percentage mechanism, and this document explicitly asks for \"a new option to generate salary split ups by giving formulas to define the allowances... e.g. Basic shall be 40% of Gross Salary or HRA shall be 50% of Basic.\" Given three independent confirmations, is this now a confirmed, must-build requirement for this phase?",
+   why:"BRD Process · Salary Structure & Process, corroborated independently by BRD Masters · Salary Head (no rate/formula field on the confirmed master) and BRD System Management · Salary Head Group (a formula mechanism is described conceptually but not yet built for most allowances). This is the highest-confidence, most-corroborated finding across the entire BRD set reviewed so far.\nGiven the strength of the corroboration, this should be treated as a near-certain requirement rather than an open hypothesis — the remaining question is scope and priority, not whether it's real.",
+   opts:[{t:"A",c:"letter-a",l:"Yes, build now, full scope — every allowance/deduction on Salary Head Group needs the fixed/variable/formula choice fully working, including the referential formula structure (select other allowances + a percentage) already partially described in System Management"},
+         {t:"B",c:"letter-b",l:"Yes, build now, but scoped down — only a subset of allowances (e.g. Basic, HRA, DA) need formula support initially; specify which in the notes field below, with the rest remaining fixed for this phase"},
+         {t:"C",c:"letter-c",l:"Confirmed as a real gap, but deferred — this phase continues with fixed-amount allowances only; formula-based calculation is tracked as a future phase, not built now"}]},
+  {id:"q5",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"DA — Is the Variable-Rate Settings Mechanism Actually Wired to Payroll, or Still \"Fixed\"?",
+   text:"This document states \"currently all the allowances are fixed amounts\" and separately notes \"DA can be variable according to the price index published by government.\" System Management separately describes a DA Base Point And Rate Settings screen plus DA Index Settings (price index per DA Centre) that appear designed exactly for this purpose. Is DA actually computed from that Settings mechanism today, or is it still a plain fixed amount like every other allowance, with the DA Settings screens built but not yet connected to payroll?",
+   why:"BRD Process · Gross Salary & Allowances vs BRD System Management · DA Base Point And Rate Settings / DA Index Settings: this document's own \"currently all allowances are fixed amounts\" statement, taken literally, would mean DA is fixed too — but Settings has two dedicated screens seemingly built specifically to make DA variable.\nIf DA Settings exist but aren't wired to payroll, this is the same pattern already found for Shift Group and Varying Shift Allocation elsewhere in this BRD set — a configuration screen with no actual downstream effect — and DA's real rate source needs to be confirmed before payroll computation can be built against it.",
+   opts:[{t:"A",c:"letter-a",l:"DA is still a fixed amount — the DA Base Point/Rate and DA Index Settings screens exist in Settings but are not yet connected to the payroll engine; DA needs to be wired to read from them as part of this phase's work"},
+         {t:"B",c:"letter-b",l:"DA already reads from the Settings mechanism — the \"fixed amounts\" statement refers to every allowance except DA, which is the one exception already computed from DA Base Point/Rate × DA Index; this document's wording was just imprecise"},
+         {t:"C",c:"letter-c",l:"Neither — DA Base Point/Rate and DA Index Settings are not actually meant to drive per-employee payroll calculation at all; they serve a different purpose (please describe in the notes field below)"}]},
+  {sec:"Section 3: PF Contribution",scBg:"#fff8c5",scFg:"#92400e",
+   id:"q6",gap:"MISSING RULE",gc:"badge-missing",title:"PF Contribution Basis Options — Which of the Three Apply, for Employee and Employer?",
+   text:"A cross-referenced part of this BRD's Employee screen explicitly requests: \"Employees and Employers should have the option to contribute: 1. Based on statutory limit (12% of ₹15,000 = ₹1,800) 2. On full PF salary (e.g., 12% of actual PF salary) 3. Fixed contribution or voluntary PF (e.g., ₹2,000) — This applies to both Employee PF Contribution and Employer PF Contribution.\" This three-option requirement doesn't appear anywhere in this Process document's own PF section. Confirm this is in scope for payroll computation, and how the three options interact.",
+   why:"Employee Screen (cross-referenced in the same consolidated BRD) vs BRD Process · Employee PF Contribution: the Process module's own PF formula only describes option 1 (statutory limit) plus a separate, unquantified \"voluntary contribution up to 100% of Basic+DA\" — it doesn't structure this as the same three clean options requested elsewhere, and doesn't address the Employer side having its own separate optional bases at all.\nWithout confirming this, the payroll PF calculation can't be built to match the field-level requirement already specified on the Employee screen side — the two need to agree on the exact same three options.",
+   opts:[{t:"A",c:"letter-a",l:"All three options apply, independently selectable, to both Employee and Employer PF — the payroll engine reads whichever basis is selected for each side (statutory 1,800 / full PF salary / fixed amount) and computes accordingly; the existing \"voluntary up to 100% of Basic+DA\" language becomes option 3's upper bound for the employee side only"},
+         {t:"B",c:"letter-b",l:"Only the employee side gets all three options; the employer side stays statutory-only (12% of PF Gross, capped at 1,800), matching this document's current \"employer has no liability to contribute voluntarily above statutory\" statement"},
+         {t:"C",c:"letter-c",l:"This three-option structure is a different, not-yet-scoped request — for this phase, PF stays exactly as described in this Process document (statutory 12%/1,800 cap plus a simple voluntary amount); the three-option redesign is deferred"}]},
+  {id:"q7",gap:"MISSING RULE",gc:"badge-missing",title:"Employer Voluntary PF Contribution — Confirm as In-Scope New Requirement",
+   text:"This document states the employer \"has no liability to contribute voluntarily above the statutory contribution even if the employee does so. But if the employer wishes to do so, it's permitted\" — yet gives no field or mechanism for entering an employer voluntary contribution. A cross-referenced part of the Employee screen explicitly requests: \"Need provision to enter Employer voluntary PF contribution.\" Confirm this is in scope.",
+   why:"BRD Process · Employer PF Contribution vs Employee Screen (cross-referenced): the Process document permits employer voluntary contribution in principle but provides no field or UI for it anywhere; the Employee screen section explicitly names this as a missing provision.\nA straightforward, well-scoped gap — worth confirming as in-scope so the Employer PF Contribution formula and the Employee screen's Statutory Information section can both be built with a matching field.",
+   opts:[{t:"A",c:"letter-a",l:"Yes, in scope — add an Employer Voluntary PF Contribution field (amount or percentage — specify in the notes field below) alongside the existing statutory calculation"},
+         {t:"B",c:"letter-b",l:"Not needed for this phase — employer contribution stays statutory-only (12%, capped at 1,800); the \"if the employer wishes to do so, it's permitted\" language describes a theoretical policy allowance, not a system requirement"},
+         {t:"C",c:"letter-c",l:"Needed, but tie it to the three-option PF basis structure above rather than building a separate standalone field — resolve them together"}]},
+  {sec:"Section 4: TDS & Tax Regime",scBg:"#dafbe1",scFg:"#14532d",
+   id:"q8",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"TDS — Does a Calculator Already Exist Elsewhere, or Must One Be Built From Scratch?",
+   text:"This document states: \"TDS calculation under new regime is recently incorporated in the payroll system. But it's not integrated with payroll process.\" This implies a TDS calculator already exists somewhere outside the payroll process flow. Where does it currently exist, and is the actual ask to integrate that existing calculator into Payroll Process, or to build TDS calculation from scratch?",
+   why:"BRD Process · TDS: \"recently incorporated... but not integrated with payroll process\" is a specific claim that a TDS calculation capability already exists — but no screen, module, or location for it is named anywhere in this document or any other BRD reviewed so far, and System Management's own account of TDS (\"TDS calculation is not currently covered in payroll solution. TDS calculator needs to be included in the new system\") reads as if nothing exists at all.\nThese two statements — \"recently incorporated... elsewhere\" versus \"not currently covered... needs to be included\" — describe different starting points (integration work vs. ground-up build), a very different size of task, and need to be reconciled before TDS can be scoped.",
+   opts:[{t:"A",c:"letter-a",l:"A TDS calculator genuinely exists somewhere outside payroll (e.g. a manual tool, spreadsheet, or separate accounts-department process) — the task is integration: wire its output (or its calculation logic) into Payroll Process's deduction step, not build a new calculator from scratch"},
+         {t:"B",c:"letter-b",l:"Nothing exists yet — the \"recently incorporated\" language is inaccurate/aspirational; TDS calculation (using the New Regime slabs given in this document) needs to be built from scratch and integrated into Payroll Process in one combined effort"},
+         {t:"C",c:"letter-c",l:"Partially exists — a slab/rate table exists somewhere but no calculation engine reads it automatically; describe exactly what already exists in the notes field below"}]},
+  {id:"q9",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Old vs New Tax Regime — Can Employees Choose, or Is New Regime Mandatory?",
+   text:"This document gives only New Tax Regime (Section 115BAC) slabs as the TDS computation basis, yet separately states \"HRA and LTA has TDS implications as employees can claim exemption on these allowances\" — an Old Regime concept, since the New Regime generally does not allow HRA/LTA exemptions. Can employees choose their tax regime, or is New Regime mandatory for all, in which case the HRA/LTA exemption statement needs correcting?",
+   why:"BRD Process · TDS (New Regime slabs given) vs Gross Salary & Allowances (\"HRA and LTA has TDS implications as employees can claim exemption\"): these two statements are inconsistent unless the system supports employee-level regime choice, which is never stated anywhere.\nThis directly determines the shape of the TDS calculation this BRD keeps asking to be built (see the previous question) — a single fixed New-Regime slab table is a much simpler build than a dual-regime system with employee choice and exemption tracking.",
+   opts:[{t:"A",c:"letter-a",l:"New Regime only, mandatory for all employees — the HRA/LTA exemption sentence is a documentation error (likely carried over from before the New Regime became the default) and should be disregarded; only the standard deduction (₹75,000) applies"},
+         {t:"B",c:"letter-b",l:"Employees can choose their regime — TDS calculation needs to support both Old Regime (with HRA/LTA/other exemptions) and New Regime (with the given slabs and standard deduction), selected per employee, likely via the investment-declaration mechanism referenced elsewhere in the BRD"},
+         {t:"C",c:"letter-c",l:"New Regime only for this phase, but the HRA/LTA exemption note should be tracked as a future Old-Regime-support request rather than silently dropped"}]},
+  {sec:"Section 5: ESI Edge Cases",scBg:"#ccfbf1",scFg:"#0d5b52",
+   id:"q10",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"ESI Ceiling-Crossing Reminder — Confirm as In-Scope Requirement",
+   text:"A cross-referenced part of the Employee screen explicitly requests: \"Need a reminder when the employee gross salary is above Rs. 21,000/- (ESI statutory ceiling) and employee is not made out of coverage in ESI during payroll process in April & October months.\" This requirement doesn't appear in this Process document's own ESI section at all, despite belonging directly to payroll processing.",
+   why:"Employee Screen (cross-referenced) vs BRD Process · Employee ESI Contribution: the Process document's ESI section describes the coverage-continuation rule correctly (coverage continues to the end of the contribution period even after crossing 21,000) but never mentions this reminder requirement, even though it's the natural trigger point (April/October payroll processing) for exactly the scenario this section already describes.\nWithout this reminder, an employee who should be moved \"out of coverage\" at a contribution-period boundary could be silently missed, continuing incorrect ESI deductions or coverage.",
+   opts:[{t:"A",c:"letter-a",l:"Yes, in scope — Payroll Process must check, during April and October processing specifically, for any employee whose gross salary exceeds ₹21,000 and is not yet flagged Out of Coverage, and surface a reminder/warning before or during that run"},
+         {t:"B",c:"letter-b",l:"Yes, in scope, but as a standalone report/dashboard check rather than an inline payroll-process warning — HR reviews it separately, not during the Process screen itself"},
+         {t:"C",c:"letter-c",l:"Not needed for this phase — HR tracks ESI ceiling crossings manually; no system reminder is built"}]},
+  {id:"q11",gap:"MISSING RULE",gc:"badge-missing",title:"ESI Report Conflict (Out of Coverage vs Relieved) — Confirm the Priority Rule",
+   text:"A cross-referenced part of the Employee screen explicitly requests: \"If an employee has both: Out of Coverage in August, Resigned/Relieved (REL) in September 30, Then in October's ESI report, only RELIEVED should appear — not 'Out of Coverage'.\" Confirm this exact priority rule, and whether it generalizes to any Out-of-Coverage employee who is later relieved, not just this specific August/September example.",
+   why:"Employee Screen (cross-referenced) vs BRD Process (no mention at all): this is a precise, well-specified conflict-resolution rule for the ESI report, but it appears nowhere in this Process document's own account of ESI reporting, and the example given is dated to one specific month pair (August/September) without confirming it as a general rule.\nGetting this rule wrong produces an incorrect statutory ESI report — Relieved status needs to take priority over Out of Coverage whenever both would otherwise apply to the same employee in the same reporting month, and this needs to be confirmed as the general rule, not just true for the one example given.",
+   opts:[{t:"A",c:"letter-a",l:"General rule — Relieved status always takes priority over Out of Coverage in the ESI report for any employee who is both, regardless of which months the two statuses fall in relative to each other"},
+         {t:"B",c:"letter-b",l:"Specific to the given example only — the priority rule applies only when Out of Coverage and Relieved fall in that particular sequence (Out of Coverage the month before Relieved); other sequences need their own rule, to be specified in the notes field below"},
+         {t:"C",c:"letter-c",l:"Needs more real-world examples before a general rule can be confirmed — flag this as needing a walkthrough with the actual ESI report before building the conflict-resolution logic"}]},
+  {sec:"Section 6: Profession Tax",scBg:"#fef3c7",scFg:"#b45309",
+   id:"q12",gap:"SCALABILITY",gc:"badge-scalability",title:"Profession Tax — Monthly Deduction Scope, Priority, and Slab Data Source",
+   text:"The Monthly PT Deduction requirement (spreading the half-yearly PT amount evenly across 6 months, with a rounding adjustment in the final month, and different period boundaries for Panchayat vs Municipality/Corporation jurisdictions) is unusually well-specified compared to most other open items in this BRD set. Is it confirmed in scope for this phase, and where should the PT slab table itself live as its single source of truth — this document, the Profession Tax Group master (System Management), or both?",
+   why:"BRD Process · Profession Tax (Monthly PT Deduction, explicitly flagged): the requirement itself is precise and buildable, but its complexity (branch-jurisdiction-dependent period boundaries, mid-period relieving handling) warrants an explicit priority confirmation rather than being bundled in with vaguer items. Separately, the identical PT slab table appears in this document, in the System Management BRD, and will also need to be entered into the Profession Tax Group master screen — three places with no stated single source of truth.\nA jurisdiction-dependent, rounding-sensitive statutory deduction is exactly the kind of feature that's easy to get subtly wrong; confirming scope and a single data source up front avoids building it against stale or duplicated slab data.",
+   opts:[{t:"A",c:"letter-a",l:"In scope now, full complexity — build the monthly-spread deduction with jurisdiction-dependent period boundaries exactly as specified; the Profession Tax Group master (System Management) is the single source of truth for slab data, and this document's table is just illustrative"},
+         {t:"B",c:"letter-b",l:"In scope now, but simplified first — build monthly spreading using a single period-boundary convention (confirm which — Panchayat or Municipality/Corporation — in the notes field below) as a first pass, with full jurisdiction-dependent logic as a fast-follow"},
+         {t:"C",c:"letter-c",l:"Keep the current half-yearly (August/February) deduction for this phase — Monthly PT Deduction is deferred to a later phase despite being well-specified"}]},
+  {sec:"Section 7: Employer NPS Contribution",scBg:"#ffebe9",scFg:"#7f1d1d",
+   id:"q13",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Employer NPS Contribution — Genuinely In Scope, or Informational Only?",
+   text:"This document introduces Employer NPS (National Pension System) Contribution — \"a maximum of 14% of Basic Plus DA salary... can be tax exempted under new regime (Old regime 10%)\" — with no corresponding Salary Head, Settings group, or Employee-screen statutory field found anywhere else in this BRD set. Is NPS a genuine payroll component that needs to be built (new master, new Salary Head, new employee-level fields), or purely informational tax-law context with no build implication for this phase?",
+   why:"BRD Process · Employer Contributions: NPS appears in exactly one sentence, nowhere else in any BRD document reviewed — no NPS Salary Head code exists in Masters' confirmed 30-component list, no NPS group exists in System Management's Payroll Group structure, and the Employee screen's Statutory Information section only covers PF and ESI.\nIf NPS needs building, it's a meaningfully-sized new scope item (new master, new Salary Head, new employee statutory field, new formula) that hasn't been budgeted anywhere; if it's informational only, no action is needed beyond noting the tax-exemption context for future reference.",
+   opts:[{t:"A",c:"letter-a",l:"Genuinely in scope — Employer NPS Contribution needs its own Salary Head, an NPS-eligibility flag and NPS account number field on the Employee screen's Statutory Information, and a formula (up to 14%/10% of Basic+DA depending on regime); treat as new scope, not an afterthought"},
+         {t:"B",c:"letter-b",l:"Informational only for this phase — NPS is mentioned for completeness/tax-law awareness; no employees currently need it, and no build work is required unless a specific employee case arises"},
+         {t:"C",c:"letter-c",l:"Needed, but scoped down — only a manual/free-text mechanism is needed for now (e.g. entered through Monthly Allowances & Deductions as a one-off, not a full dedicated master/Salary Head structure)"}]},
+  {sec:"Section 8: Bonus Process",scBg:"#e0e7ff",scFg:"#3730a3",
+   id:"q14",gap:"MISSING RULE",gc:"badge-missing",title:"Bonus Set-Off/Set-On Rule — The BRD's Own Flagged Open Item",
+   text:"This document explicitly states, in its own words: \"If the employer makes higher profits, they can pay more bonus (up to 20%) and carry forward any excess or shortfall to adjust over the next 4 years. This rule needs to be elaborated after discussion with the client.\" This is a rare case where the source BRD itself names an unresolved item in plain language. What are the actual set-off/set-on mechanics to be built?",
+   why:"BRD Process · Bonus Process (Set-off and Set-on): the document's own author explicitly flags this as needing client discussion — a higher-confidence signal of a genuine, acknowledged gap than most other open items in this BRD set, which had to be inferred rather than stated outright.\nThe Payment of Bonus Act's actual set-off/set-on mechanism is a multi-year carry-forward ledger (excess profit-linked bonus in good years offsets shortfall in bad years, over a rolling 4-year window) — without the specific mechanics, no calculation or ledger structure can be built.",
+   opts:[{t:"A",c:"letter-a",l:"Full statutory mechanism — build the complete 4-year rolling set-off/set-on ledger exactly as the Payment of Bonus Act describes it, tracking excess and shortfall year by year and applying carry-forward automatically during each year's Bonus Process run"},
+         {t:"B",c:"letter-b",l:"Simplified for now — Bonus Process pays the statutory minimum (8.33%) or a manually-entered percentage each year with no automatic set-off/set-on carry-forward; the full 4-year mechanism is deferred to a later phase, as the document itself suggests further client discussion is needed"},
+         {t:"C",c:"letter-c",l:"Not needed — Muziris does not intend to use the set-off/set-on provision at all; bonus is always paid at a single percentage decided fresh each year with no cross-year carry-forward"}]},
+  {id:"q15",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Monthly \"Bonus\" Allowance vs Annual Bonus Process — How Do They Reconcile?",
+   text:"Salary Structure & Process states \"Bonus is an allowance that is included to cover the bonus liability\" — implying a monthly salary-head component. Bonus Process separately describes an annual statutory bonus computation under the Payment of Bonus Act, paid once within 8 months of the financial year's close. Are these the same liability tracked two different ways, or two unrelated things that happen to share the name \"Bonus\"?",
+   why:"BRD Process · Gross Salary & Allowances vs Bonus Process: both sections use the word \"Bonus\" for what appear to be different mechanisms (a monthly recurring salary component vs. a once-a-year statutory computation) with no stated relationship between them anywhere in the document.\nIf they're the same liability, Bonus Process needs to true-up against whatever was already paid monthly through the Bonus allowance (a reconciliation step not described anywhere); if they're unrelated, the shared name is confusing and worth renaming one of them to avoid ambiguity in reports and payslips.",
+   opts:[{t:"A",c:"letter-a",l:"Same liability, monthly accrual — the monthly Bonus allowance is a running accrual toward the annual statutory bonus; Bonus Process at year-end reconciles the accrued monthly total against the final statutory calculation and pays/adjusts the difference"},
+         {t:"B",c:"letter-b",l:"Unrelated — the monthly Bonus allowance is a separate, discretionary component (e.g. a performance-linked monthly payout) with no connection to the annual statutory Bonus Process; the shared name is coincidental and should be clarified in the PRD (e.g. rename one to avoid confusion)"},
+         {t:"C",c:"letter-c",l:"Same liability, but no monthly accrual — the monthly \"Bonus\" allowance line only appears on the payslip in the specific month Bonus Process actually pays out, not every month; \"allowance\" here just means it's a Salary Head, not a recurring monthly payment"}]},
+  {id:"q16",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Bonus Process Screen — What Does It Actually Look Like?",
+   text:"Unlike Payroll Process (which describes a screen: select employees, click Process, a Delete option, and Wage Register generation), Bonus Process has zero UI or workflow description anywhere in this document — no fields, no access control, no batch-processing pattern.",
+   why:"BRD Process · Bonus Process: the statutory calculation rules are thoroughly specified, but the actual screen that performs the calculation and captures the result is never described at all, unlike every other process screen in this module.\nWithout at least the same level of UI detail Payroll Process has (a select/process/delete pattern, or something else entirely), this feature cannot be scoped into a PRD's UI requirements.",
+   opts:[{t:"A",c:"letter-a",l:"Same pattern as Payroll Process — a screen listing eligible employees (per the Payment of Bonus Act's own eligibility rules already given), with select/Process/Delete actions and a report generated afterward, run once a year"},
+         {t:"B",c:"letter-b",l:"Different pattern — Bonus Process needs its own year-level entry screen (profit percentage for the year, set-off/set-on ledger view) rather than a simple per-employee batch-process screen; describe the actual screen needed in the notes field below"},
+         {t:"C",c:"letter-c",l:"Not clear yet — this needs a walkthrough of the live system (if a Bonus Process screen already exists there) before it can be specified; don't assume it matches Payroll Process's pattern"}]},
+  {sec:"Section 9: Gratuity & Salary Arrears",scBg:"#fff7ed",scFg:"#7c2d12",
+   id:"q17",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Gratuity Process Screen — Field-Level Detail Needed",
+   text:"Like Bonus Process, Gratuity Process has thorough statutory calculation rules but no screen/field description beyond naming its four processing modes (On exit, As on date, On superannuation, On a specific date) — no field list, no access control, no batch/single-employee distinction.",
+   why:"BRD Process · Gratuity Process: the formula, eligibility, rounding rule, and maximum limit are all precisely specified, and the four processing modes are explicitly confirmed to be retained — but what each mode's screen actually looks like (fields, filters, output) is never described.\nWithout this, the four confirmed processing modes can't be turned into actual screen requirements, even though the underlying calculation itself is unusually well-specified for this BRD set.",
+   opts:[{t:"A",c:"letter-a",l:"One screen, mode selector — a single Gratuity Process screen with a dropdown/tab for the four modes (On exit / As on date / On superannuation / On a specific date), each filtering the eligible employee list differently but sharing the same calculation and output display"},
+         {t:"B",c:"letter-b",l:"Four distinct screens — each processing mode is different enough (especially \"As on date,\" which computes organization-wide liability rather than processing an actual payment) to warrant its own screen with mode-specific fields; describe the differences in the notes field below"},
+         {t:"C",c:"letter-c",l:"Needs a live walkthrough — this requires seeing the actual current system's Gratuity Process screen(s) before specifying field-level requirements, since the four modes likely behave quite differently from each other"}]},
+  {id:"q18",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Salary Arrears Formula — Does It Account for Formula-Derived Allowances?",
+   text:"Salary Arrear Process's formula is simple: \"increment amount × number of months delayed.\" Given the confirmed gap that formula-based allowances don't exist yet — every allowance is currently a flat fixed amount — this simple multiplication may be sufficient today. But once formula-based allowances are built, would an increment to Basic also need to recompute (and arrear) any HRA/other allowances that are formula-derived FROM Basic, or does Salary Arrears only ever apply to the single component that was actually incremented?",
+   why:"BRD Process · Salary Arrear Process: the formula as stated only multiplies a single increment amount by months delayed — it implicitly assumes increments are isolated to one component, which is true today (fixed amounts) but may not remain true once formula-based allowances exist (where a Basic increase could cascade into HRA/other formula-linked components).\nThis is a forward-compatibility question, not an immediate blocker, but worth confirming now so the Salary Arrears calculation isn't built in a way that has to be redesigned the moment formula-based allowances ship.",
+   opts:[{t:"A",c:"letter-a",l:"Single-component only, by design — Salary Arrears always applies to exactly the one component that was incremented, even after formula-based allowances exist; a formula-derived allowance's own \"arrears\" (if any) would need its own separate increment/arrear entry, not automatic cascading"},
+         {t:"B",c:"letter-b",l:"Should cascade — once formula-based allowances exist, an arrear on a component other allowances are formula-derived from should automatically recompute and arrear those derived allowances too; this needs to be designed in from the start even if not usable until then"},
+         {t:"C",c:"letter-c",l:"Not a real concern — increments in practice are always given as a flat Basic (or Gross) revision, not something that would cascade through formulas even after formula-based allowances are built; the simple formula is sufficient permanently"}]},
+  {sec:"Section 10: Payroll Verification & Other Screens",scBg:"#fae8ff",scFg:"#86198f",
+   id:"q19",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Payroll Verification — Any Post-Verification Correction Path?",
+   text:"Payroll Process Verification confirms that \"after verification, payroll process cannot be deleted or reprocessed\" — a clear, permanent, irreversible rule. But if an error is discovered after verification (e.g. wrong LOP days used, a missed Monthly Allowance entry), is there any correction mechanism, or is a verified payroll run permanently uncorrectable for that month?",
+   why:"BRD Process · Payroll Process Verification: the irreversibility rule itself is clearly stated, but no correction path for post-verification errors is described anywhere — unlike the Employee module elsewhere in this BRD set, which has an explicit amendment mechanism for exactly this kind of \"already finalized, but needs a correction\" scenario.\nPayroll errors have direct financial consequences for employees; a genuinely uncorrectable verified run (with no adjustment path at all, not even in the following month) is a significant operational risk worth confirming explicitly rather than assuming.",
+   opts:[{t:"A",c:"letter-a",l:"No direct correction — a verified month cannot be touched at all; any error must be corrected via an adjustment entry in a later month's Monthly Allowances & Deductions screen, not by reopening the original month"},
+         {t:"B",c:"letter-b",l:"A formal correction/amendment mechanism is needed — similar to the Employee module's amendment pattern, a verified payroll month should support a tracked, audited correction process rather than only next-month adjustment entries"},
+         {t:"C",c:"letter-c",l:"Reprocessing should be allowed with Super Admin override — the current \"cannot be deleted or reprocessed\" rule is too rigid; a higher-privilege role should be able to reverse verification when a genuine error is found"}]},
+  {id:"q20",gap:"MISSING RULE",gc:"badge-missing",title:"Monthly Allowances & Deductions Screen — What Fields and Access Control?",
+   text:"This entire feature is described in a single sentence: \"Any allowances or deductions which are not defined in the allowances and deductions settings... will be entered through this screen.\" No field list, no access control, and no statement of how it relates to Salary Head Group's own \"Variable\" calculation-type classification is given anywhere.",
+   why:"BRD Process · Monthly Allowances & Deductions: this is the thinnest section in the entire Process module — a single sentence with no field-level or workflow detail, despite being the screen this document itself says handles exactly the kind of ad-hoc entries (like the post-verification correction path above) that other gaps in this module depend on.\nGiven how much other functionality implicitly depends on this screen, it needs proper field-level specification, not a one-line description.",
+   opts:[{t:"A",c:"letter-a",l:"Employee, Salary Head, Amount, Month, and Reason/Remarks fields, entered per employee per month, with HR Admin access; this is exactly the mechanism Salary Head Group's \"Variable\" calculation-type components route through — anything marked Variable in Salary Head Group has no other entry point but this screen"},
+         {t:"B",c:"letter-b",l:"Same fields as A, but bulk-entry capable — supports entering the same allowance/deduction for multiple employees in one action, not strictly one row per employee per screen visit"},
+         {t:"C",c:"letter-c",l:"Broader than just Variable components — this screen is also the general-purpose correction/override mechanism, so it needs to support entries against Fixed and Formula components too, not just ones classified Variable in Salary Head Group"}]},
+  {id:"q21",gap:"MISSING RULE",gc:"badge-missing",title:"Incentives Process — Confirm Field List Against the Screenshot",
+   text:"The text description of Incentives Process is thin, but a screenshot elsewhere in the source material shows an actual Incentive Process screen with columns: Process Month/Year, Employee Code, Employee Name, Credit Frequency, Payout Frequency, Incentive Amount, Process Amount, Deduction, Payout Amount. Confirm this field list is complete and correct, and clarify what \"Process Amount\" and \"Deduction\" specifically represent, since neither is explained in the text.",
+   why:"BRD Process · Incentives Process: the text only describes the concept (fixed monthly amount, detached credit date, appears on payslip as project incentives, excluded from gross but included in CTC) while a separate screenshot shows real field-level UI that was never described in words — including two columns (\"Process Amount,\" \"Deduction\") whose meaning isn't explained anywhere.\nConfirming the screenshot's field list against the text description ensures nothing was lost in only capturing one or the other, and resolves what Process Amount and Deduction mean for an incentive (is Deduction, for example, a TDS withholding on the incentive itself?).",
+   opts:[{t:"A",c:"letter-a",l:"The screenshot's field list is complete and correct — Process Amount is the amount actually being processed this run (which may differ from the declared Incentive Amount if pro-rated), and Deduction is any TDS or other withholding applied to the incentive payout specifically"},
+         {t:"B",c:"letter-b",l:"The screenshot is close but needs adjustment — describe what's missing or incorrect in the notes field below"},
+         {t:"C",c:"letter-c",l:"Process Amount and Deduction need clarification from the business before this screen can be confirmed — flag as still open rather than assuming either interpretation above"}]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const sel = {};
+Q.forEach(q => { sel[q.id] = null; });
+
+// ── BUILD FORM (pure DOM — no innerHTML with template literals) ───────────────
+function buildForm() {
+  const container = document.getElementById('formContainer');
+
+  Q.forEach(function(q, idx) {
+    const num = idx + 1;
+
+    // Section pill
+    if (q.sec) {
+      const pill = document.createElement('div');
+      pill.className = 'section-pill';
+      pill.style.background = q.scBg;
+      pill.style.color = q.scFg;
+      pill.style.border = '1px solid ' + q.scFg + '30';
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      dot.setAttribute('width','8'); dot.setAttribute('height','8'); dot.setAttribute('viewBox','0 0 8 8');
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','4'); circle.setAttribute('cy','4'); circle.setAttribute('r','4'); circle.setAttribute('fill', q.scFg);
+      dot.appendChild(circle);
+      pill.appendChild(dot);
+      pill.appendChild(document.createTextNode(' ' + q.sec));
+      container.appendChild(pill);
+    }
+
+    // Card
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Top section
+    const top = document.createElement('div');
+    top.className = 'q-card-top';
+
+    // Meta row
+    const meta = document.createElement('div');
+    meta.className = 'q-meta';
+
+    const numBadge = document.createElement('div');
+    numBadge.className = 'q-number';
+    numBadge.id = 'num-' + q.id;
+    numBadge.textContent = num;
+    meta.appendChild(numBadge);
+
+    const gapBadge = document.createElement('span');
+    gapBadge.className = 'gap-badge ' + q.gc;
+    gapBadge.textContent = q.gap;
+    meta.appendChild(gapBadge);
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'q-title-text';
+    titleSpan.textContent = q.title;
+    meta.appendChild(titleSpan);
+    top.appendChild(meta);
+
+    // Question text
+    const qtext = document.createElement('div');
+    qtext.className = 'q-text';
+    qtext.textContent = q.text;
+    const star = document.createElement('span');
+    star.className = 'req-star';
+    star.textContent = ' *';
+    qtext.appendChild(star);
+    top.appendChild(qtext);
+
+    // Why box
+    const why = document.createElement('div');
+    why.className = 'q-why';
+    const parts = q.why.split('\n');
+    if (parts.length >= 2) {
+      // Line 1: BRD reference
+      const brdRef = document.createElement('div');
+      brdRef.style.cssText = 'font-size:11px;color:#0969da;font-weight:600;margin-bottom:4px;';
+      brdRef.textContent = parts[0];
+      why.appendChild(brdRef);
+      // Line 2: Why this matters
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      const whyText = document.createElement('span');
+      whyText.textContent = parts[1];
+      why.appendChild(whyB);
+      why.appendChild(whyText);
+    } else {
+      const whyB = document.createElement('b');
+      whyB.textContent = 'Why this matters: ';
+      why.appendChild(whyB);
+      why.appendChild(document.createTextNode(q.why));
+    }
+    top.appendChild(why);
+
+    card.appendChild(top);
+
+    // Options
+    const optsWrap = document.createElement('div');
+    optsWrap.className = 'options-wrap';
+
+    q.opts.forEach(function(o) {
+      const lbl = document.createElement('div');
+      lbl.className = 'opt-label';
+      lbl.id = 'lbl-' + q.id + '-' + o.t;
+
+      const ind = document.createElement('div');
+      ind.className = 'opt-indicator';
+      lbl.appendChild(ind);
+
+      const letter = document.createElement('span');
+      letter.className = 'opt-letter ' + o.c;
+      letter.textContent = o.t;
+      lbl.appendChild(letter);
+
+      const optText = document.createElement('span');
+      optText.className = 'opt-text';
+      optText.textContent = o.l;
+      lbl.appendChild(optText);
+
+      lbl.addEventListener('click', function() { toggleOpt(q.id, o.t); });
+      optsWrap.appendChild(lbl);
+    });
+
+    card.appendChild(optsWrap);
+
+    // Custom textarea
+    const customWrap = document.createElement('div');
+    customWrap.className = 'custom-wrap';
+
+    const customLbl = document.createElement('span');
+    customLbl.className = 'custom-lbl';
+    customLbl.textContent = 'D \u2014 Custom answer or additional notes (optional):';
+    customWrap.appendChild(customLbl);
+
+    const ta = document.createElement('textarea');
+    ta.className = 'custom-ta';
+    ta.id = 'custom-' + q.id;
+    ta.placeholder = 'Add your own answer or clarify your selection...';
+    ta.addEventListener('input', function() { onCustomInput(q.id); });
+    customWrap.appendChild(ta);
+    card.appendChild(customWrap);
+
+    // Error message
+    const err = document.createElement('div');
+    err.className = 'err-msg';
+    err.id = 'err-' + q.id;
+    err.textContent = 'This question is required \u2014 please select an option or provide a custom answer.';
+    card.appendChild(err);
+
+    container.appendChild(card);
+  });
+}
+
+buildForm();
+
+// ── TOGGLE: click to select, click same to deselect ───────────────────────────
+function toggleOpt(qid, tag) {
+  const current = sel[qid];
+  if (current === tag) {
+    sel[qid] = null;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.remove('selected');
+    const custom = document.getElementById('custom-' + qid).value.trim();
+    if (!custom) unmark(qid);
+  } else {
+    if (current) document.getElementById('lbl-' + qid + '-' + current).classList.remove('selected');
+    sel[qid] = tag;
+    document.getElementById('lbl-' + qid + '-' + tag).classList.add('selected');
+    mark(qid);
+  }
+}
+
+function onCustomInput(qid) {
+  const custom = document.getElementById('custom-' + qid).value.trim();
+  if (custom || sel[qid]) mark(qid); else unmark(qid);
+}
+
+function mark(qid) {
+  const card = document.getElementById('card-' + qid);
+  card.classList.add('answered'); card.classList.remove('has-error');
+  document.getElementById('num-' + qid).classList.add('answered-num');
+  document.getElementById('err-' + qid).classList.remove('visible');
+  updateProgress();
+}
+function unmark(qid) {
+  document.getElementById('card-' + qid).classList.remove('answered');
+  document.getElementById('num-' + qid).classList.remove('answered-num');
+  updateProgress();
+}
+function updateProgress() {
+  let answered = 0;
+  Q.forEach(function(q) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (sel[q.id] || (custom && custom.value.trim())) answered++;
+  });
+  const pct = Math.round((answered / Q.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = answered + ' / ' + Q.length;
+  document.getElementById('submitBtn').classList.toggle('all-good', answered === Q.length);
+}
+
+// ── RESET: clear name, all selections and text boxes after submit ─────────────
+function resetForm() {
+  // Name
+  document.getElementById('userName').value = '';
+  const nameCard = document.getElementById('nameCard');
+  nameCard.classList.remove('answered', 'has-error');
+  document.getElementById('err-name').classList.remove('visible');
+  // Each question: clear selected option + custom text + state
+  Q.forEach(function(q) {
+    sel[q.id] = null;
+    q.opts.forEach(function(o) {
+      const lbl = document.getElementById('lbl-' + q.id + '-' + o.t);
+      if (lbl) lbl.classList.remove('selected');
+    });
+    const custom = document.getElementById('custom-' + q.id);
+    if (custom) custom.value = '';
+    const card = document.getElementById('card-' + q.id);
+    if (card) card.classList.remove('answered', 'has-error');
+    const num = document.getElementById('num-' + q.id);
+    if (num) num.classList.remove('answered-num');
+    const err = document.getElementById('err-' + q.id);
+    if (err) err.classList.remove('visible');
+  });
+  document.getElementById('incompleteMsg').classList.remove('show');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────────
+function onNameInput() {
+  const nameCard = document.getElementById('nameCard');
+  const val = document.getElementById('userName').value.trim();
+  if (val) {
+    nameCard.classList.add('answered');
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  } else {
+    nameCard.classList.remove('answered');
+  }
+}
+
+function handleSubmit() {
+  // Name is required
+  const nameCard = document.getElementById('nameCard');
+  const nameVal = document.getElementById('userName').value.trim();
+  const nameMissing = !nameVal;
+  if (nameMissing) {
+    nameCard.classList.add('has-error');
+    document.getElementById('err-name').classList.add('visible');
+  } else {
+    nameCard.classList.remove('has-error');
+    document.getElementById('err-name').classList.remove('visible');
+  }
+
+  const missing = [];
+  Q.forEach(function(q, i) {
+    const custom = document.getElementById('custom-' + q.id);
+    if (!sel[q.id] && !(custom && custom.value.trim())) {
+      missing.push({ id: q.id, num: i + 1, title: q.title });
+      document.getElementById('card-' + q.id).classList.add('has-error');
+      document.getElementById('err-' + q.id).classList.add('visible');
+    }
+  });
+
+  if (nameMissing || missing.length > 0) {
+    const msgEl = document.getElementById('incompleteMsg');
+    if (missing.length > 0) {
+      const listEl = document.getElementById('missingList');
+      listEl.innerHTML = '';
+      missing.slice(0, 5).forEach(function(m) {
+        const li = document.createElement('li');
+        li.textContent = 'Q' + m.num + ': ' + m.title;
+        listEl.appendChild(li);
+      });
+      if (missing.length > 5) {
+        const li = document.createElement('li');
+        li.textContent = '...and ' + (missing.length - 5) + ' more';
+        listEl.appendChild(li);
+      }
+      msgEl.classList.add('show');
+    } else {
+      msgEl.classList.remove('show');
+    }
+    const fc = nameMissing ? nameCard : document.getElementById('card-' + missing[0].id);
+    fc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fc.classList.add('shake');
+    setTimeout(function() { fc.classList.remove('shake'); }, 400);
+    return;
+  }
+  document.getElementById('incompleteMsg').classList.remove('show');
+  generateAndSend();
+}
+
+// ── TEXT SUMMARY FOR EMAIL BODY ─────────────────────────────────────────────────
+function buildSummary() {
+  var userName = (document.getElementById('userName').value || '').trim();
+  var lines = ['MUZPAYROLL PROCESS MODULE — BRD STAKEHOLDER RESPONSES',
+    'Submitted by: ' + (userName || '(not provided)'),
+    '='.repeat(60), ''];
+  var curSec = '';
+  Q.forEach(function(q, i) {
+    if (q.sec && q.sec !== curSec) {
+      curSec = q.sec;
+      lines.push('', '-'.repeat(60), curSec.toUpperCase(), '-'.repeat(60), '');
+    }
+    var s = sel[q.id];
+    var custom = document.getElementById('custom-' + q.id).value.trim();
+    var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+    lines.push('Q' + (i+1) + '. [' + q.gap + '] ' + q.title);
+    lines.push('Question : ' + q.text);
+    lines.push('ANSWER   : ' + (opt ? '(' + opt.t + ') ' + opt.l : '(Custom)'));
+    if (custom) lines.push('NOTES    : ' + custom);
+    lines.push('');
+  });
+  lines.push('='.repeat(60), 'End of BRD Responses');
+  return lines.join('\n');
+}
+
+// ── GENERATE DOCX + OPEN EMAIL ─────────────────────────────────────────────────
+async function generateAndSend() {
+  var overlay = document.getElementById('genOverlay');
+  var titleEl = document.getElementById('genTitle');
+  var subEl   = document.getElementById('genSub');
+  var userName = (document.getElementById('userName').value || '').trim();
+  overlay.classList.add('show');
+
+  try {
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    await new Promise(function(r) { setTimeout(r, 80); });
+
+    var D = docx;
+    var nb = { style: D.BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+    var tb = { style: D.BorderStyle.SINGLE, size: 4,  color: 'D0D7DE' };
+    function al(col) { return { style: D.BorderStyle.SINGLE, size: 12, color: col }; }
+    function sp(pt) {
+      return new D.Paragraph({ spacing: { before: 0, after: pt*20 }, children: [new D.TextRun('')] });
+    }
+    var secCols = {
+      'Section 1: CTC & Payroll Fundamentals':'0550AE',
+      'Section 2: Formula-Based Allowances':'5B21B6',
+      'Section 3: PF Contribution':'92400E',
+      'Section 4: TDS & Tax Regime':'14532D',
+      'Section 5: ESI Edge Cases':'0D5B52',
+      'Section 6: Profession Tax':'B45309',
+      'Section 7: Employer NPS Contribution':'7F1D1D',
+      'Section 8: Bonus Process':'3730A3',
+      'Section 9: Gratuity & Salary Arrears':'7C2D12',
+      'Section 10: Payroll Verification & Other Screens':'86198F'
+    };
+    function secHead(text) {
+      var col = secCols[text] || '0969DA';
+      return new D.Paragraph({
+        spacing: { before: 480, after: 120 },
+        border: { bottom: { style: D.BorderStyle.SINGLE, size: 10, color: col, space: 4 } },
+        children: [new D.TextRun({ text: text, font: 'Arial', size: 28, bold: true, color: col })]
+      });
+    }
+    function qRow(num, q) {
+      var s = sel[q.id];
+      var custom = document.getElementById('custom-' + q.id).value.trim();
+      var opt = s ? q.opts.find(function(o) { return o.t === s; }) : null;
+      var tagColMap = { 'badge-missing':'CF222E','badge-ambiguous':'9A6700','badge-workflow':'0969DA','badge-scalability':'6639BA' };
+      var tc = tagColMap[q.gc] || 'CF222E';
+      var ansText = opt ? 'ANSWER (' + opt.t + '):  ' + opt.l : 'ANSWER (Custom)';
+      var ansBg   = opt ? 'EAF5EA' : 'FFF8C5';
+      var ansCol  = opt ? '1A7F37' : '9A6700';
+      var ansLeft = al(ansCol);
+      var rows = [
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 80, bottom: 40, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: 'Q' + num + '  ', font: 'Arial', size: 18, bold: true, color: '0D1117' }),
+            new D.TextRun({ text: '[' + q.gap + ']  ', font: 'Arial', size: 17, bold: true, color: tc }),
+            new D.TextRun({ text: q.title, font: 'Arial', size: 18, color: '57606A' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: al('0969DA'), right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 20, bottom: 80, left: 160, right: 120 },
+          children: [new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+            new D.TextRun({ text: q.text, font: 'Arial', size: 22, bold: true, color: '0D1117' })
+          ]})]
+        })]
+        }),
+        new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: tb, bottom: tb, left: ansLeft, right: nb },
+          shading: { fill: ansBg, type: D.ShadingType.CLEAR },
+          margins: { top: 100, bottom: 100, left: 160, right: 120 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
+              new D.TextRun({ text: ansText, font: 'Arial', size: 21, bold: true, color: ansCol })
+            ]}),
+            ...(custom ? [new D.Paragraph({ spacing: { before: 60, after: 0 }, children: [
+              new D.TextRun({ text: 'Notes:  ' + custom, font: 'Arial', size: 20, italics: true, color: '57606A' })
+            ]})] : [])
+          ]
+        })]
+        })
+      ];
+      return [
+        new D.Table({ width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626], rows: rows }),
+        sp(8)
+      ];
+    }
+
+    var children = [];
+    // Cover
+    children.push(
+      new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'CONFIDENTIAL - FOR INTERNAL USE ONLY', font: 'Arial', size: 17, color: '999999', bold: true })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 100 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA', space: 8 } }, children: [new D.TextRun({ text: 'MUZPAYROLL', font: 'Arial', size: 48, bold: true, color: '0969DA' })] }),
+      new D.Paragraph({ spacing: { before: 100, after: 40 }, children: [new D.TextRun({ text: 'BRD Stakeholder Responses', font: 'Arial', size: 32, color: '0D1117' })] }),
+      new D.Paragraph({ spacing: { before: 0, after: 40 }, children: [new D.TextRun({ text: 'Process Module', font: 'Arial', size: 26, color: '57606A' })] }),
+      new D.Paragraph({ spacing: { before: 60, after: 40 }, children: [
+        new D.TextRun({ text: 'Submitted by: ', font: 'Arial', size: 24, bold: true, color: '0D1117' }),
+        new D.TextRun({ text: userName || '(not provided)', font: 'Arial', size: 24, color: '0969DA', bold: true })
+      ]}),
+      sp(8)
+    );
+    // Stats table
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
+        rows: [new D.TableRow({ children: [['21','Total Questions'],['10','Sections'],['21','Answered'],['0','Skipped']].map(function(pair) {
+          return new D.TableCell({
+            width: { size: 2156, type: D.WidthType.DXA },
+            borders: { top: tb, bottom: tb, left: tb, right: tb },
+            shading: { fill: 'E8F4FD', type: D.ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 120, right: 120 },
+            children: [
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[0], font: 'Arial', size: 44, bold: true, color: '0969DA' })] }),
+              new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ text: pair[1], font: 'Arial', size: 18, color: '57606A' })] })
+            ]
+          });
+        })})]
+      }),
+      sp(12)
+    );
+    // Purpose box
+    children.push(
+      new D.Table({
+        width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [8626],
+        rows: [new D.TableRow({ children: [new D.TableCell({
+          width: { size: 8626, type: D.WidthType.DXA },
+          borders: { top: nb, bottom: nb, left: { style: D.BorderStyle.SINGLE, size: 20, color: '0969DA' }, right: nb },
+          shading: { fill: 'F6F8FA', type: D.ShadingType.CLEAR },
+          margins: { top: 140, bottom: 140, left: 180, right: 180 },
+          children: [
+            new D.Paragraph({ spacing: { before: 0, after: 60 }, children: [new D.TextRun({ text: 'Instructions for Development Team', font: 'Arial', size: 21, bold: true, color: '0969DA' })] }),
+            new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [new D.TextRun({ text: 'These are confirmed business decisions from HR and payroll stakeholders. Use these answers directly to build the production HRMS system. Each answer maps to a specific code or configuration decision. Do not make assumptions where an answer is provided.', font: 'Arial', size: 20, color: '57606A' })] })
+          ]
+        })]
+        })]
+      }),
+      sp(16)
+    );
+    // Meta
+    [['Submitted by', userName || '(not provided)'],['Module','Process Module'],['Prepared for','Development Team - MUZPAYROLL Rebuild'],['Document type','BRD Stakeholder Response File']].forEach(function(pair) {
+      children.push(new D.Paragraph({ spacing: { before: 40, after: 40 }, children: [
+        new D.TextRun({ text: pair[0] + ':', font: 'Arial', size: 19, bold: true, color: '57606A' }),
+        new D.TextRun({ text: '  ' + pair[1], font: 'Arial', size: 19, color: '0D1117' })
+      ]}));
+    });
+    children.push(sp(14));
+
+    // Questions
+    var qi = 0; var curSec = '';
+    Q.forEach(function(q) {
+      qi++;
+      if (q.sec && q.sec !== curSec) {
+        curSec = q.sec;
+        children.push(secHead(curSec));
+        children.push(sp(6));
+      }
+      qRow(qi, q).forEach(function(b) { children.push(b); });
+    });
+
+    children.push(sp(16));
+    children.push(new D.Paragraph({
+      border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 6 } },
+      spacing: { before: 120, after: 0 },
+      children: [new D.TextRun({ text: 'End of BRD Responses - Do not modify above this line', font: 'Arial', size: 17, color: '999999', italics: true })]
+    }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{
+        properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1260, right: 1260, bottom: 1260, left: 1260 } } },
+        headers: { default: new D.Header({ children: [new D.Paragraph({ border: { bottom: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 0, after: 80 }, children: [new D.TextRun({ text: 'MUZPAYROLL Process Module - BRD Stakeholder Responses', font: 'Arial', size: 17, color: '888888' })] })] }) },
+        footers: { default: new D.Footer({ children: [new D.Paragraph({ border: { top: { style: D.BorderStyle.SINGLE, size: 4, color: 'D0D7DE', space: 4 } }, spacing: { before: 80, after: 0 }, children: [new D.TextRun({ text: 'Process Module  |  Confidential', font: 'Arial', size: 17, color: '999999' })] })] }) },
+        children: children
+      }]
+    });
+
+    var FILENAME = 'MUZPAYROLL_ProcessModule_BRD_Answers.docx';
+    var blob = await D.Packer.toBlob(doc);
+
+    // Trigger local download
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = FILENAME;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+
+    // Email the actual Word document as a real attachment via a small
+    // Cloudflare Worker (see email-worker.js) that relays it through Resend.
+    // The Resend API key lives only on the Worker, never in this page.
+    titleEl.textContent = 'Sending email...';
+    subEl.textContent   = 'Attaching the Word file';
+    try {
+      var fd = new FormData();
+      fd.append('subject', 'MUZPAYROLL Process Module BRD Submission - ' + userName);
+      fd.append('message', buildSummary());
+      fd.append('filename', FILENAME);
+      fd.append('attachment', blob, FILENAME);
+      var resp = await fetch(EMAIL_WORKER_URL, { method: 'POST', body: fd });
+      var result = await resp.json();
+      document.getElementById('toastMsg').textContent = result.success
+        ? 'Word file downloaded & emailed!'
+        : 'Word file downloaded! (Email failed: ' + (result.error || (result.result && result.result.message) || 'unknown error') + ')';
+    } catch (e) {
+      console.warn('Email failed:', e);
+      document.getElementById('toastMsg').textContent = 'Word file downloaded! (Email send failed)';
+    }
+
+    overlay.classList.remove('show');
+    titleEl.textContent = 'Building Word document...';
+    subEl.textContent   = 'Please wait a moment';
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 4500);
+
+    // Clear the form for the next submission
+    resetForm();
+
+  } catch(err) {
+    overlay.classList.remove('show');
+    console.error(err);
+    alert('Error: ' + err.message);
+  }
+}
+
+</script>
+</body>
+</html>
