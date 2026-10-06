@@ -5,9 +5,9 @@
 | | |
 |---|---|
 | Module | Employee Self-Service Portal → Compensatory Offs (Claim Compensatory Off, Recommendations & Rejections, Comp Off Approval/Rejection, Claim Comp Off Register) |
-| Status | Draft — confirmed content only; 8 items remain open pending stakeholder sign-off |
-| Source documents | `12_Compensatory_Offs.md`, cross-referenced against Masters (Attendance and Leave codes), System Management Settings (Attendance and Leave Group), the Attendance & Leave Management module (Compensatory Off Entry, Leave Encashment), and the Leave Management (Employee Portal) module (two-level approval structure) |
-| Companion document | `CompensatoryOffs_BRD_Questionnaire.html` — every OPEN item below is numbered against this file's live 8-question list; regenerate this BRD if further answers are recorded there |
+| Status | Draft — confirmed content only; 9 items remain open pending stakeholder sign-off |
+| Source documents | `12_Compensatory_Offs.md`, cross-referenced against Masters (Attendance and Leave codes), System Management Settings (Attendance and Leave Group), the Attendance & Leave Management module (Compensatory Off Entry, Leave Encashment), and the Leave Management (Employee Portal) module (two-level approval structure, and the confirmed Type of Leave list) |
+| Companion document | `CompensatoryOffs_BRD_Questionnaire.html` — every OPEN item below is numbered against this file's live 9-question list; regenerate this BRD if further answers are recorded there |
 
 ## 1. Purpose
 
@@ -96,16 +96,25 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 > **OPEN — Questionnaire Q6.** The module's own "Utilization & Expiry" section never states the expiry rule for ordinary Compensatory Off or Sunday Comp Off — only Holiday Comp Off's same-year, no-carry-forward rule is confirmed elsewhere. What's the actual rule?
 > **A)** Same as Holiday Comp Off — same leave year only, no carry-forward, manual encashment only before lapse. **B)** More lenient — carries forward up to a configured limit; specify the limit. **C)** No fixed expiry at all — accumulates indefinitely.
 
+### 6.1a Plain "Compensatory Off" Missing From the Confirmed Leave-Application List
+
+**Confirmed (source, cross-referenced).** This module's own Key Features state "Employees can apply for comp-off through the leave module" — comp-off balances are consumed via the Leave Management (ESS) module's own leave-application screen. That module's Type of Leave dropdown is stakeholder-confirmed (`LeaveManagementESS_BRD.md` LM-010) to contain exactly six values: Leave, Loss of Pay, Optional Holiday, Holiday Comp Off, Sunday Comp Off, Rest Day. Sunday Comp Off and Rest Day appear in both that list and this module's own claimable Comp Off Type list (CO-001); Holiday Comp Off is correctly absent from the claim list (HR auto-credits it) but present in the leave-application list. Plain "Compensatory Off" is claimable here (CO-001) but has no corresponding entry in the already-confirmed six-value leave-application list at all.
+
+> **OPEN — Questionnaire Q7.** If an employee earns and is credited a plain CO balance, what leave type do they actually select to use it, given the confirmed six-value list has no plain "Compensatory Off" entry?
+> **A)** The Leave Management module's confirmed list is incomplete — plain "Compensatory Off" needs a seventh Type of Leave entry; flag this back to the Leave Management (ESS) BRD for its own explicit amendment. **B)** Plain CO is never separately availed — every plain CO credit is automatically merged into (or re-coded as) Sunday Comp Off or Rest Day at crediting time, depending on which day the overtime was worked. **C)** A different consumption mechanism — describe in the notes field.
+>
+> *This finding has a direct implication for `LeaveManagementESS_BRD.md`'s already-confirmed LM-010, which this pass does not alter — any amendment to that module's Type of Leave list needs its own explicit go-ahead, not a silent edit made from here.*
+
 ### 6.2 Employee-Initiated Encashment
 
-> **OPEN — Questionnaire Q7.** Corroborated by two independent sources (this module, and the Attendance & Leave Management module's Leave Encashment section, almost verbatim) — confirm scope and approval routing for letting employees initiate their own comp-off encashment.
+> **OPEN — Questionnaire Q8.** Corroborated by two independent sources (this module, and the Attendance & Leave Management module's Leave Encashment section, almost verbatim) — confirm scope and approval routing for letting employees initiate their own comp-off encashment.
 > **A)** In scope now, same two-level approval as a claim. **B)** In scope now, single-step HR approval only (a payout decision, not a leave-balance decision). **C)** Confirmed as real, but deferred — encashment stays HR-initiated-only for this phase.
 
 ## 7. Claim Comp Off Register
 
 **Confirmed (source):** a report in the employee portal showing the status of all comp-off claims, filterable to all / availed / unavailed.
 
-> **OPEN — Questionnaire Q8.** No column list or additional filter is given anywhere. What fields and filters does this report actually need?
+> **OPEN — Questionnaire Q9.** No column list or additional filter is given anywhere. What fields and filters does this report actually need?
 > **A)** Date, Comp Off Type, Hours Claimed, Quantum Allocated, Status, with date-range and status filters. **B)** The above, plus a Comp Off Type filter and traceability into which leave application/encashment consumed each availed entry. **C)** Minimal — just date, hours, status, with the all/availed/unavailed filter already stated.
 
 ## 8. Open Items Register
@@ -118,8 +127,9 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 | 4 | Q4 | Comp Off Approval/Rejection | Is HR's crediting step a real gate or administrative sync? |
 | 5 | Q5 | Comp Off Approval/Rejection | Is the 7th-of-the-month deadline system-enforced? |
 | 6 | Q6 | Utilization & Expiry | What's the expiry/carry-forward rule for ordinary Compensatory Off? |
-| 7 | Q7 | Recommendations & Rejections | Confirm scope for employee-initiated encashment. |
-| 8 | Q8 | Claim Comp Off Register | What fields/filters does the report need? |
+| 7 | Q7 | Utilization & Expiry | Plain "Compensatory Off" has no matching Type-of-Leave entry in the confirmed Leave Management list — how is it actually used? |
+| 8 | Q8 | Recommendations & Rejections | Confirm scope for employee-initiated encashment. |
+| 9 | Q9 | Claim Comp Off Register | What fields/filters does the report need? |
 
 **Confirmed cross-references, not open items:** CO-010 extends `LeaveManagementESS_BRD.md`'s LM-001/LM-002 (the shared two-level Reporting Head/Person approval structure) with a third independent confirming source; CO-014 notes a related-but-out-of-scope requirement belonging to the Attendance & Leave Management BRD.
 
@@ -127,10 +137,10 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 - `12_Compensatory_Offs.md` — primary source for this module.
 - `Masters_BRD.md` / `07_Masters.md` — Attendance and Leave code list (CO, COH, SCO, RD).
-- `07_System_Management.md` — Attendance and Leave Group settings (Expiry Type, Validity Period, Carry Forward Limit, Accumulation, Encashment fields per comp-off type).
+- `07_System_Management.md` — Attendance and Leave Group settings; on direct reading, this screen's own topic sentence names carry-forward/encashment/expiry-date as what it defines per leave type, but does not actually specify them per comp-off type in the source text — corroborating, not resolving, this module's own §6.1 open item (see `SystemManagement_BRD.md` §7.1 / Questionnaire Q2 there, which raises the same gap from the settings side).
 - Attendance & Leave Management module (consolidated PRD) — Compensatory Off Entry (employer portal), Leave Encashment.
-- `LeaveManagementESS_BRD.md` — LM-001/LM-002, the confirmed cross-module two-level approval structure.
-- `CompensatoryOffs_BRD_Questionnaire.html` — the live, numbered list of the 8 open questions this document references; regenerate this BRD if further answers are recorded there.
+- `LeaveManagementESS_BRD.md` — LM-001/LM-002 (confirmed cross-module two-level approval structure) and LM-010 (confirmed six-value Type of Leave list, cross-referenced in §6.1a).
+- `CompensatoryOffs_BRD_Questionnaire.html` — the live, numbered list of the 9 open questions this document references; regenerate this BRD if further answers are recorded there.
 
 ---
 

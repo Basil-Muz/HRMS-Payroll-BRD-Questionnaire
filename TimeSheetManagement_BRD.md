@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Module | Employee Self-Service Portal → Time Sheet Management (Time Log Management, Time Sheet Entry, Time Sheet Approval) |
-| Status | Draft — confirmed content only; 8 items remain open pending stakeholder sign-off |
+| Status | Draft — confirmed content only; 10 items remain open pending stakeholder sign-off |
 | Source documents | `11_Time_Sheet_Management.md`, cross-referenced against Attendance & Leave Management (Employee Time Sheet Upload, Muster Roll), Compensatory Offs, Day Off Management, and the Leave Management (ESS) BRD in the consolidated PRD |
 | Companion document | `TimeSheetManagement_BRD_Questionnaire.html` — every OPEN item below is numbered against this file's live 8-question list; regenerate this BRD if further answers are recorded there |
 
@@ -59,7 +59,7 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 ### 6.1 Approval Role — Reporting Person or Reporting Head
 
-> **OPEN — Questionnaire Q8.** "Only one level approval is needed for time sheets," but the Employee screen configures two distinct roles (Reporting Person, Reporting Head) already confirmed elsewhere as the shared routing source for two-level approvals. Which role performs time sheet approval?
+> **OPEN — Questionnaire Q10.** "Only one level approval is needed for time sheets," but the Employee screen configures two distinct roles (Reporting Person, Reporting Head) already confirmed elsewhere as the shared routing source for two-level approvals. Which role performs time sheet approval?
 > **A)** Reporting Person only. **B)** Reporting Head only. **C)** Configurable per employee — whichever role is that employee's actual day-to-day supervisor.
 
 ### 6.2 Level 1 / Level 2 Employee Scope
@@ -78,17 +78,24 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 > **OPEN — Questionnaire Q3.** The Compensatory Offs module flags, as its own new requirement, that "the time sheet" needs start-time/end-time fields so comp-off claims can be verified against it. Is that field addition in scope for this build?
 > **A)** Not in scope now — Time Sheet Entry stays total-hours-only; Comp Off's cross-verification requirement stays deferred. **B)** In scope — add start-time/end-time fields to Time Sheet Entry, and have Comp Off Approval/Rejection cross-validate against them. **C)** Partial — capture the fields now, defer the cross-verification logic itself.
 
+### 6.4 Overtime Capture — Where Does It Actually Happen?
+
+**Confirmed (source, cross-referenced).** Time Log Management's own Key Features state employees "record their daily working hours and overtime, if any" — but Time Sheet Entry's actual field description is silent on any distinct overtime field, and Compensatory Offs' Claim Compensatory Off screen separately captures overtime for comp-off purposes with its own start/end-time fields.
+
+> **OPEN — Questionnaire Q5.** Does Time Sheet Entry need its own distinct overtime field, is overtime meant to be derived automatically from hours worked past the standard threshold (per Muster Roll's Over Time tab), or does the intro's "record...overtime" phrase actually describe the separate Compensatory Offs screen rather than Time Sheet Entry?
+> **A)** Auto-derived only — no distinct field in Time Sheet Entry; anything above the standard threshold becomes overtime downstream via Muster Roll. **B)** Captured only via the separate Compensatory Offs Claim screen — Time Sheet Entry never touches overtime. **C)** Time Sheet Entry needs its own distinct overtime field, currently missing from this module's field list.
+
 ## 7. Time Sheet Approval
 
 **Purpose:** the supervisor-facing screen for reviewing, approving, correcting, and uploading direct reports' time sheets.
 
 **TS-020.** This screen SHALL list all of a supervisor's direct reports and display each one's time sheet for a chosen month; a submitted time sheet SHALL be approved by the supervisor clicking Save.
 
-**TS-021.** If an already-approved time sheet needs to change, the supervisor SHALL be able to select the employee and remove the approval, after which the employee can make changes. *(Whether this correction path still works once the month has already been uploaded is Questionnaire Q5 — see §7.1.)*
+**TS-021.** If an already-approved time sheet needs to change, the supervisor SHALL be able to select the employee and remove the approval, after which the employee can make changes. *(Whether this correction path still works once the month has already been uploaded is Questionnaire Q6 — see §7.1. Whether a reject path exists before approval at all is Questionnaire Q8 — see §7.2a.)*
 
-**TS-022.** By month end, the supervisor SHALL ensure that a full month's time sheet has been submitted by every team member before uploading that month's time sheets for attendance processing. *(What happens if one team member's submission is incomplete is Questionnaire Q6 — see §7.2.)*
+**TS-022.** By month end, the supervisor SHALL ensure that a full month's time sheet has been submitted by every team member before uploading that month's time sheets for attendance processing. *(What happens if one team member's submission is incomplete is Questionnaire Q7 — see §7.2.)*
 
-**TS-023.** Time Sheet Approval SHALL highlight work-from-home days within the list. *(Whether this marking carries any policy or payroll consequence beyond display is Questionnaire Q7 — see §7.3.)*
+**TS-023.** Time Sheet Approval SHALL highlight work-from-home days within the list. *(Whether this marking carries any policy or payroll consequence beyond display is Questionnaire Q9 — see §7.3.)*
 
 **TS-024.** The supervisor SHALL be blocked from uploading a month's time sheets if any leave application or off day swap request (per the Day Off Management module's Off Day Swap Request) is pending for that particular month.
 
@@ -96,17 +103,24 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 ### 7.1 Correction After Upload
 
-> **OPEN — Questionnaire Q5.** Remove-approval correction (TS-021) is described only for the pre-upload list. Can a time sheet still be corrected once it's been uploaded to the employer portal?
+> **OPEN — Questionnaire Q6.** Remove-approval correction (TS-021) is described only for the pre-upload list. Can a time sheet still be corrected once it's been uploaded to the employer portal?
 > **A)** Correction stops at upload; further correction must go through Muster Roll's own Set Option tool. **B)** Remove-approval still works post-upload, independent of the employer-portal side. **C)** Blocked once attendance/payroll has consumed the data (i.e. after Muster Roll conversion specifically, not merely after upload).
 
 ### 7.2 Incomplete Month-End Submission
 
-> **OPEN — Questionnaire Q6.** Does one team member's incomplete time sheet block the supervisor's entire month-end upload for the whole team, or can complete employees be uploaded individually?
+> **OPEN — Questionnaire Q7.** Does one team member's incomplete time sheet block the supervisor's entire month-end upload for the whole team, or can complete employees be uploaded individually?
 > **A)** All-or-nothing — the whole batch is blocked until everyone is complete. **B)** Per-employee, partial upload allowed. **C)** Not yet handled — flag as a genuine open design question.
+
+### 7.2a Reject Path Before Approval
+
+**Confirmed (source, cross-referenced).** Only two supervisor actions are described anywhere in Time Sheet Approval: approving a submitted time sheet (Save) and removing approval from an already-approved one. No action is described for rejecting a submitted-but-not-yet-approved time sheet directly. This is the same missing-rejection-path pattern independently found twice elsewhere in this project (Attendance & Leave Management's Compensatory Off Entry; Compensatory Offs' own Comp Off Approval/Rejection screen).
+
+> **OPEN — Questionnaire Q8.** Does a reject/return-for-revision action exist for a submitted, not-yet-approved time sheet, or must every submission be approved first and then have approval removed if it needs a fix?
+> **A)** No separate reject action — approve-then-remove-approval is the intended correction path. **B)** A genuine reject action exists or is needed, distinct from both Save and remove-approval. **C)** Rejection isn't needed — supervisors review before ever clicking Save, so an incorrect submission is simply never approved in the first place.
 
 ### 7.3 Work-From-Home Marking — Consequence
 
-> **OPEN — Questionnaire Q7.** Is the office/home marking (TS-013, TS-023) purely informational, or does it drive an approval requirement or payroll/allowance consequence?
+> **OPEN — Questionnaire Q9.** Is the office/home marking (TS-013, TS-023) purely informational, or does it drive an approval requirement or payroll/allowance consequence?
 > **A)** Purely informational — self-declared, no approval or payroll effect. **B)** Requires prior approval elsewhere; Time Sheet Entry only reflects an already-approved WFH status. **C)** Drives a concrete payroll/allowance difference that needs to be specified.
 
 ### 7.4 Cross-Portal Hand-Off
@@ -126,12 +140,14 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 | 2 | Q2 | Time Sheet Entry, Time Sheet Approval | Do Level 1 (Senior Management) employees use this module's screens at all? |
 | 3 | Q3 | Time Sheet Entry | Are start-time/end-time fields (for Comp Off verification) in scope for this build? |
 | 4 | Q4 | Time Log Management | Distinct screen, or just this module's summary heading? |
-| 5 | Q5 | Time Sheet Approval | Can a time sheet still be corrected after month-end upload? |
-| 6 | Q6 | Time Sheet Approval | Does one incomplete team member block the whole team's upload? |
-| 7 | Q7 | Time Sheet Entry, Time Sheet Approval | Does WFH marking carry any approval/payroll consequence? |
-| 8 | Q8 | Time Sheet Approval | Which configured role — Reporting Person or Reporting Head — performs the single approval? |
+| 5 | Q5 | Time Sheet Entry | Where is overtime actually captured — a Time Sheet Entry field, auto-derived, or the separate Comp Off screen? |
+| 6 | Q6 | Time Sheet Approval | Can a time sheet still be corrected after month-end upload? |
+| 7 | Q7 | Time Sheet Approval | Does one incomplete team member block the whole team's upload? |
+| 8 | Q8 | Time Sheet Approval | Is there a reject path for a submitted, not-yet-approved time sheet? |
+| 9 | Q9 | Time Sheet Entry, Time Sheet Approval | Does WFH marking carry any approval/payroll consequence? |
+| 10 | Q10 | Time Sheet Approval | Which configured role — Reporting Person or Reporting Head — performs the single approval? |
 
-**Resolved items:** none yet — this is the first pass through this module's source document.
+**Resolved items:** none yet. **Double-checked** against `11_Time_Sheet_Management.md` after the module was re-run: all 8 original questions remain accurate; two new gaps were found and added (Q5, Q8) — see §6.4 and §7.2a.
 
 ## 9. Source References
 

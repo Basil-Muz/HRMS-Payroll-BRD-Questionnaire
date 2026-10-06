@@ -140,7 +140,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   </div>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="pFill"></div></div>
-    <span class="progress-label" id="pLabel">0 / 8</span>
+    <span class="progress-label" id="pLabel">0 / 9</span>
   </div>
 </header>
 
@@ -152,7 +152,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <h1>Compensatory Offs<br><em>Employee Portal &mdash; BRD Requirements Form</em></h1>
   <p>Every question is required. Select the option matching your organisation’s policy. Click a selected option again to deselect it.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="n">8</div><div class="l">Questions</div></div>
+    <div class="hero-stat"><div class="n">9</div><div class="l">Questions</div></div>
     <div class="hero-stat"><div class="n">3</div><div class="l">Sections</div></div>
     <div class="hero-stat"><div class="n">3+D</div><div class="l">Options each</div></div>
   </div>
@@ -167,7 +167,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0f3f7;color:var(--ink);min-he
   <div id="formContainer"></div>
   <div class="submit-zone">
     <h3>Ready to submit?</h3>
-    <p>All 8 questions must be answered. On submit, your answers download as a Word document.</p>
+    <p>All 9 questions must be answered. On submit, your answers download as a Word document.</p>
     <div class="incomplete-msg" id="incompleteMsg">
       <strong>Please answer all required questions before submitting:</strong>
       <ul id="missingList"></ul>
@@ -217,7 +217,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Allow a single cross-midnight entry — the claim form accepts a start date/time and end date/time on different calendar dates as one continuous entry, with hours and break-time rules computed against the combined duration"},
          {t:"B",c:"letter-b",l:"Keep it split into two claims (one per calendar date), but link them with a shared reference so approval and quantum calculation can treat them as one continuous shift when applying the break-mandatory and hour-threshold rules"},
          {t:"C",c:"letter-c",l:"Keep it split into two independent claims with no linkage — each half is evaluated entirely on its own hours; a shift that splits into two sub-4-hour halves simply doesn't qualify for comp-off on either half, even though the combined duration would have"}]},
-
   {sec:"Section 2: Comp Off Approval & Quantum Calculation",scBg:"#ede9fe",scFg:"#5b21b6",
    id:"q3",gap:"MISSING RULE",gc:"badge-missing",title:"Comp-Off Quantum — Per Claim, or Against the Monthly Consolidated Total?",
    text:"The rule given is \"4 hours of overtime qualifies for half a comp off, 7.5 hours qualifies for a full day comp off\" — but approval works on a monthly consolidated total (\"Total overtime hours of a month is displayed and the quantum of comp off allocated is also calculated\"). Do these two thresholds apply to each individual claim entry separately (then summed for the month), or to the single monthly total? And what happens to overtime under 4 hours, or between 4 and 7.5 hours cumulatively — is any of it simply lost?",
@@ -237,7 +236,6 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Not currently enforced — the Approval screen has no date guard today; add one that disables/blocks approval action for a given month until the 8th, closing this known risk as part of this phase's build"},
          {t:"B",c:"letter-b",l:"Already enforced in some form — the screen already prevents approval before the 8th; the document's warning is describing what would happen if that guard were ever bypassed or removed, not a live gap"},
          {t:"C",c:"letter-c",l:"Intentionally left procedural — the guard is deliberately not system-enforced (e.g. to allow an authorised override in genuine exceptional cases), and the risk is accepted as a training/process matter rather than a system requirement"}]},
-
   {sec:"Section 3: Balance, Encashment & Reporting",scBg:"#fff8c5",scFg:"#92400e",
    id:"q6",gap:"MISSING RULE",gc:"badge-missing",title:"Compensatory Off Expiry & Carry-Forward — What's the Actual Rule?",
    text:"The module's Key Features list a section titled \"Utilization & Expiry,\" but its body only describes utilization (via the leave module, and encashment) — it never states what the expiry rule actually is for an ordinary, overtime-earned Compensatory Off. The Attendance & Leave module confirms Holiday Compensatory Off specifically must be used within the same leave year with no carry-forward or encashment — but says nothing about whether that same rule applies to ordinary Compensatory Off or Sunday Compensatory Off, which are separate, differently-coded leave types.",
@@ -245,13 +243,19 @@ const Q = [
    opts:[{t:"A",c:"letter-a",l:"Same rule as Holiday Comp Off — ordinary Compensatory Off and Sunday Comp Off must also be used within the same leave year, with no carry-forward and no automatic encashment; only manual encashment (per the existing Leave Encashment screen) is available before it lapses"},
          {t:"B",c:"letter-b",l:"Different, more lenient rule — ordinary Compensatory Off carries forward (up to a configured limit) rather than lapsing at year end, unlike Holiday Comp Off; specify the carry-forward limit and validity period in the notes field below"},
          {t:"C",c:"letter-c",l:"No fixed expiry at all — Compensatory Off accumulates indefinitely until used or encashed, with no year-end lapse; only Holiday Comp Off has the strict same-year rule"}]},
-  {id:"q7",gap:"SCALABILITY",gc:"badge-scalability",title:"Employee-Initiated Comp-Off Encashment — Confirm Scope (Corroborated by Two Independent Sources)",
+  {id:"q7",gap:"AMBIGUOUS",gc:"badge-ambiguous",title:"Plain \"Compensatory Off\" (CO) — Missing From the Leave Application's Confirmed Type-of-Leave List",
+   text:"This module's own Key Features state \"Employees can apply for comp-off through the leave module\" — meaning comp-off balances are consumed via the Leave Management (ESS) module's own leave-application screen, selecting a comp-off variant as the Type of Leave. That module's Type of Leave dropdown has since been stakeholder-confirmed to contain exactly six values: Leave, Loss of Pay, Optional Holiday, Holiday Comp Off, Sunday Comp Off, and Rest Day. But this module's own Claim Compensatory Off screen confirms a claimable, distinct comp-off code — plain \"Compensatory Off\" (CO) — that does not appear anywhere in that confirmed six-value list. If an employee earns and is credited a plain CO balance, what leave type do they actually select to use it?",
+   why:"Compensatory Offs · Claim Compensatory Off (Comp Off Type options: Compensatory Off, Sunday Compensatory Off, Rest Day) cross-referenced against the Leave Management (ESS) module's own stakeholder-confirmed Type of Leave dropdown (Leave, Loss of Pay, Optional Holiday, Holiday Comp Off, Sunday Comp Off, Rest Day): Sunday Comp Off and Rest Day appear in both lists, and Holiday Comp Off is correctly absent from the claim list (since HR auto-credits it) but present in the leave-application list — but plain Compensatory Off is claimable here and yet has no corresponding entry in the already-confirmed leave-application list at all.\nAn employee with a plain CO balance would have no way to actually apply it as a day off through the confirmed leave-application screen as it stands today — this either means the Leave Management module's confirmed six-value list needs a seventh addition (which would require its own explicit amendment there, not silently assumed here), or plain CO is consumed through some other, currently undescribed mechanism.",
+   opts:[{t:"A",c:"letter-a",l:"The Leave Management module's confirmed list is incomplete — plain \"Compensatory Off\" needs to be added as a seventh Type of Leave option; flag this back to the Leave Management (ESS) BRD for its own explicit amendment rather than assuming it here"},
+         {t:"B",c:"letter-b",l:"Plain CO is never separately availed — every plain CO credit is automatically merged into (or re-coded as) Sunday Comp Off or Rest Day at the point of crediting, depending on which day the overtime was worked, so no separate Type of Leave entry is ever needed for it"},
+         {t:"C",c:"letter-c",l:"A different consumption mechanism — describe how a plain CO balance is actually used in the notes field below (e.g. automatic encashment only, no direct \"availing\" option at all)"}]},
+  {id:"q8",gap:"SCALABILITY",gc:"badge-scalability",title:"Employee-Initiated Comp-Off Encashment — Confirm Scope (Corroborated by Two Independent Sources)",
    text:"This document explicitly asks for \"provision for employees to initiate comp off encashment through the system,\" routed to the employer portal for approval. The Attendance & Leave module's own Leave Encashment section — describing the exact same encashment mechanism from the employer-portal side — independently flags the identical request: \"This facility can be modified and make available in the employee portal so that employee can initiate the encashment process. And it needs to come to employer portal only for approval of the request.\" Confirm this as in scope and its approval routing.",
    why:"Compensatory Offs · Recommendations & Rejections open item vs BRD Attendance & Leave · Leave Encashment open item: two independently-written module documents describe the identical new requirement in almost the same words, which is unusually strong corroboration compared to most single-source gaps in this BRD set.\nGiven that strength, this should be treated as a near-certain requirement rather than a hypothesis — the remaining question is scope (does it reuse the two-level Leave/Comp-Off approval structure, or a lighter single-step HR approval, since encashment is a payout decision rather than a leave-balance decision) and priority.",
    opts:[{t:"A",c:"letter-a",l:"In scope now, same two-level approval as a comp-off claim — the employee initiates encashment from the employee portal; it routes through the same recommend-then-approve structure before HR processes the payout via the existing employer-portal Leave Encashment screen"},
          {t:"B",c:"letter-b",l:"In scope now, but single-step HR approval only — encashment is a financial payout decision, not a leave-balance decision, so it skips the two-level recommend/approve structure and goes directly to HR for one-step approval"},
          {t:"C",c:"letter-c",l:"Confirmed as a real, well-corroborated gap, but deferred — this phase keeps encashment as an HR-initiated-only process (matching the current employer-portal-only screen); employee self-initiation is tracked as a near-term follow-up, not built in this phase"}]},
-  {id:"q8",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Claim Comp Off Register — What Fields and Filters Does It Actually Need?",
+  {id:"q9",gap:"MISSING WORKFLOW",gc:"badge-workflow",title:"Claim Comp Off Register — What Fields and Filters Does It Actually Need?",
    text:"This report is described in a single sentence: it shows the status of all comp off claims, filterable to all/availed/unavailed. No column list, date-range filter, or comp-off-type filter is given anywhere.",
    why:"Compensatory Offs · Claim Comp Off Register: this is the thinnest section in the document — a single sentence with no field-level detail, similar to other under-specified report screens found elsewhere in this BRD set (e.g. the Advance Management module's Summary/Detailed Reports).\nWithout a field list, this report can't be scoped into the employee portal's build — even a modest report needs its columns and filters defined before implementation.",
    opts:[{t:"A",c:"letter-a",l:"Match the pattern used for the claim screen itself — columns for Date, Comp Off Type, Hours Claimed, Quantum Allocated (half/full), Status (Applied/Approved/Rejected/Availed/Encashed), with filters for date range and status (matching the all/availed/unavailed split already stated)"},
@@ -681,7 +685,7 @@ async function generateAndSend() {
     children.push(
       new D.Table({
         width: { size: 8626, type: D.WidthType.DXA }, columnWidths: [2156, 2157, 2156, 2157],
-        rows: [new D.TableRow({ children: [['8','Total Questions'],['3','Sections'],['8','Answered'],['0','Skipped']].map(function(pair) {
+        rows: [new D.TableRow({ children: [['9','Total Questions'],['3','Sections'],['9','Answered'],['0','Skipped']].map(function(pair) {
           return new D.TableCell({
             width: { size: 2156, type: D.WidthType.DXA },
             borders: { top: tb, bottom: tb, left: tb, right: tb },

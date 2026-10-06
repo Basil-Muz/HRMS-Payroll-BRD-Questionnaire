@@ -56,6 +56,8 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 > **OPEN — Questionnaire Q2.** What field or rule determines whether a given employee is Level 1 or Level 2, and where does Level 1's auto-populated data actually come from?
 > **A)** Same as Designation's Level field, above a stated threshold; Level 1 auto-populates as fixed full-day hours every working day. **B)** A separate, new classification field, not tied to Designation's Level. **C)** Role-based, determined dynamically from reporting hierarchy, not a stored field.
+>
+> *`TimeSheetManagement_BRD_Questionnaire.html` has a complementary Q2 asking whether Level 1 employees use its employee-portal screens at all — that question depends on how this one resolves.*
 
 ### 4.2 Biometric / Mobile-Punch Data Sources
 
@@ -68,7 +70,7 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 **AL-010.** The Time Sheet tab SHALL display month-wise saved time sheet data, showing each employee's total hours and total working days; clicking an employee's name SHALL open a popup showing that employee's leave balance as of that month. Saving this tab SHALL populate data into the Attendance/Leave tab.
 
-**AL-011.** The Attendance/Leave tab SHALL mark entries of 7:30 hrs/day as Present, SHALL fetch additional leave data from the Leave Application module, and SHALL constitute the official record that determines payroll implications. It SHALL show total LOP days and total working days per employee, and SHALL show a weekly attendance summary when an employee row is highlighted. *(Whether the 7:30 hrs threshold varies by shift is OPEN; see §5.1.)*
+**AL-011.** The Attendance/Leave tab SHALL mark entries of 7:30 hrs/day as Present, SHALL fetch additional leave data from the Leave Application module, and SHALL constitute the official record that determines payroll implications. It SHALL show total LOP days and total working days per employee, and SHALL show a weekly attendance summary when an employee row is highlighted. *(Whether the 7:30 hrs threshold varies by shift or branch is OPEN; see §5.1.)*
 
 **AL-012.** Confirmed final attendance status codes SHALL include at minimum P (Present), LOP (Loss of Pay), H (Holiday), and OD (Off Day); an additional "L" code is described but its mapping to the Masters BRD's specific leave-type codes (EL, OH, etc.) is unresolved, and the full code list is not confirmed complete. *(See §5.2.)*
 
@@ -78,8 +80,8 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 ### 5.1 7:30-Hrs Standard Workday
 
-> **OPEN — Questionnaire Q5.** Does the 7:30 hrs Present/Overtime/Short-Time threshold vary by an employee's assigned shift (per Settings' Shift Group, which allows differing shift timings), or is it one fixed value for every employee regardless of shift?
-> **A)** Fixed system-wide; Shift Group's timings are scheduling-only. **B)** Varies by shift; Shift Group needs its own expected-hours field driving this calculation. **C)** Fixed today, shift-based variation is a new requirement for later.
+> **OPEN — Questionnaire Q5.** Does the 7:30 hrs Present/Overtime/Short-Time threshold vary by an employee's assigned shift (per Settings' Shift Group), by their branch (System Management's Payroll Settings confirms "Full day working hours" and "Half day working hours" as distinct per-branch fields — a second axis neither this document nor Shift Group's own description considers), by both, or is it one fixed value regardless of either?
+> **A)** Branch-level — the confirmed Branch Wage Settings fields are authoritative; Shift Group's timings are scheduling-only. **B)** Shift-level; Shift Group needs its own expected-hours field driving this calculation, independent of the branch fields. **C)** Both, layered — branch sets the default, shift overrides it when assigned; specify the precedence in the notes field.
 
 ### 5.2 NFH and the "L" Status Code
 
@@ -127,6 +129,8 @@ Every requirement below is written as a firm statement (*"The system SHALL…"*)
 
 > **OPEN — Questionnaire Q8.** Compensatory Off Entry is described as "view and approval" only, with no rejection path mentioned anywhere in the OT → supervisor → HR chain. Can HR reject an entry at this stage, and if so, what happens to the underlying overtime record?
 > **A)** No rejection at HR stage — supervisor sanction is effectively final. **B)** HR can reject — specify whether it returns to the supervisor or cancels the record. **C)** Rejection happens further upstream; this screen's approval is a formality.
+>
+> *The same missing-rejection-path pattern independently recurs in two other modules — Compensatory Offs' own Comp Off Approval/Rejection screen, and Time Sheet Management's Time Sheet Approval screen — three instances of the same gap across this project.*
 
 ### 8.2 Holiday Comp Off Expiry Notification
 
@@ -212,6 +216,8 @@ Four transaction types, each with distinct logic: Employee Joining, Yearly Openi
 
 > **OPEN — Questionnaire Q20.** The source states, in consecutive sentences, both "all compensatory offs are carry forward to next year" and "No carry forward for Sunday comp off, holiday comp off, rest day" — three of the four comp-off codes named in the exclusion. These cannot both be true as written. What is the actual rule?
 > **A)** Only plain CO carries forward; the exclusion list is authoritative. **B)** All comp-off types carry forward; the exclusion list is the error. **C)** A different split — describe in the notes field.
+>
+> *Two other modules independently hit the same underlying gap from different angles, without resolving it: `CompensatoryOffs_BRD.md` §6.1 (no stated expiry/carry-forward rule for ordinary Compensatory Off) and `SystemManagement_BRD.md` §7.1 (the Attendance & Leave Group settings screen promises carry-forward/encashment/expiry rules per leave type in its own topic sentence, but never actually specifies them) — three independent sources, none resolving it.*
 
 ## 13. Documentation Consistency
 
