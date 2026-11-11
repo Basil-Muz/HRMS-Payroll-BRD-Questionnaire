@@ -5,9 +5,9 @@
 | | |
 |---|---|
 | Module | System Management — Settings (Payroll Group, Minimum Wages, DA, Attendance & Leave Group, Holiday & Off Day, Shift, Salary Head, Profession Tax, Payroll Settings, Act Abstract, Report Definition, Incentives Settings) and User Rights Management (User Group, Location Group, User/Location Group Rights, User Settings, Authorization User Allocation, Employee And User Linking, Company Allocation), plus Database Back Up |
-| Status | Draft — confirmed content only; 13 items remain open pending stakeholder sign-off |
+| Status | Draft — confirmed content only; 12 items remain open pending stakeholder sign-off (former Q2, the Attendance & Leave Group per-type rules, resolved by scope redirect to `AttendanceLeave_BRD.md` — SM-031) |
 | Source documents | `07_System_Management.md` (Settings and User Rights Management sections only — see §2.2), cross-referenced against Process Module, Attendance & Leave Management, and Compensatory Offs BRDs |
-| Companion document | `SystemManagement_BRD_Questionnaire.html` — every OPEN item below is numbered against this file's live 13-question list; regenerate this BRD if further answers are recorded there |
+| Companion document | `SystemManagement_BRD_Questionnaire.html` — every OPEN item below is numbered against this file's live 12-question list (renumbered after Q2's resolution); regenerate this BRD if further answers are recorded there |
 
 ## 1. Purpose
 
@@ -63,8 +63,13 @@ No open item applies to either screen; both are complete as described.
 
 ### 7.1 Per-Type Carry-Forward, Encashment, and Expiry Rules
 
-> **OPEN — Questionnaire Q2.** This screen's own introduction names carry-forward, encashment, and expiry date as what it defines per leave type, but none of the three is actually specified for any type in this document — and this is the authoritative settings source two other modules' open items expected to resolve against.
-> **A)** The rules exist on the live screen but were omitted here — supply them. **B)** Not yet actually configurable per type; still hardcoded elsewhere. **C)** A different situation — describe in the notes field.
+**SM-031 [Confirmed by stakeholder — direct statement; doesn't match any of Q2's three drafted options, written from the free text itself].** Per-leave-type carry-forward, encashment, and expiry rules are **not this document's responsibility to define**, despite this screen's own introduction naming them. That information belongs to, and is substantially already confirmed in, the separate Attendance & Leave Management module (`AttendanceLeave_BRD.md`):
+- Earned Leave / Optional Holiday carry-forward is confirmed there (AL-070): exactly 2 leaves carry forward combined, EL balance used first.
+- Holiday Comp Off's no-carry-forward, no-encashment rule is confirmed there (AL-031).
+- The Leave Encashment formula is confirmed there (AL-060/061), with one input ("Salary") still open as that module's own Q18.
+- The one piece genuinely unresolved anywhere — which comp-off types actually carry forward, given the source material's own internal self-contradiction — is already tracked as that module's own Q20; not duplicated here.
+
+This closes former Questionnaire Q2 without supplying new rule values; the questionnaire has been renumbered accordingly (12 questions remain).
 
 ## 8. Holiday & Off Day Group
 
@@ -179,32 +184,34 @@ No open item applies to this screen. (Its interaction with the Attendance & Leav
 
 ## 16. Open Items Register
 
+**Resolved:** former Q2 (Attendance & Leave Group per-type carry-forward/encashment/expiry rules) — closed by scope redirect, not by new rule values: this content belongs to `AttendanceLeave_BRD.md`, not this document (SM-031).
+
 | # | Questionnaire Q# | Screen | One-line summary |
 |---|---|---|---|
 | 1 | Q1 | Minimum Wages Group | Is the minimum-wage cross-check a hard block or a warning, and against what figure? |
-| 2 | Q2 | Attendance & Leave Group | Where are the per-leave-type carry-forward, encashment, and expiry rules? |
-| 3 | Q3 | Payroll Settings — Branch Wage | Is "No. Of month days" auto-derived from the calendar, or manually maintained? |
-| 4 | Q4 | Salary Head Group | What rounding methodology does the rounding factor apply, and to which calculations? |
-| 5 | Q5 | Payroll Settings — Branch | What attendance process does a branch use when "Time Sheet applicable" is off? |
-| 6 | Q6 | Act Abstract / Payroll Settings | Is there a definitive statutory-coverage checklist, or is it open-ended? |
-| 7 | Q7 | Incentives Settings | How does "credited monthly, paid out half-yearly" actually work? |
-| 8 | Q8 | User Group | Is the User Group list fixed, or freely creatable? |
-| 9 | Q9 | User Group Rights | Is Add/Edit/Delete the complete permission model, given how many workflows are approval-based? |
-| 10 | Q10 | User Settings | When an employee's multiple groups disagree on a right, which rule wins? |
-| 11 | Q11 | User/Location Group Rights, Authorization User Allocation | How do these three rights-assignment screens combine, and what governs Payroll Verification? |
-| 12 | Q12 | Employee And User Linking | When is manual linking required instead of automatic? |
-| 13 | Q13 | Database Back Up | What's the trigger, schedule, retention, and restore flow? |
+| 2 | Q2 | Payroll Settings — Branch Wage | Is "No. Of month days" auto-derived from the calendar, or manually maintained? |
+| 3 | Q3 | Salary Head Group | What rounding methodology does the rounding factor apply, and to which calculations? |
+| 4 | Q4 | Payroll Settings — Branch | What attendance process does a branch use when "Time Sheet applicable" is off? |
+| 5 | Q5 | Act Abstract / Payroll Settings | Is there a definitive statutory-coverage checklist, or is it open-ended? |
+| 6 | Q6 | Incentives Settings | How does "credited monthly, paid out half-yearly" actually work? |
+| 7 | Q7 | User Group | Is the User Group list fixed, or freely creatable? |
+| 8 | Q8 | User Group Rights | Is Add/Edit/Delete the complete permission model, given how many workflows are approval-based? |
+| 9 | Q9 | User Settings | When an employee's multiple groups disagree on a right, which rule wins? |
+| 10 | Q10 | User/Location Group Rights, Authorization User Allocation | How do these three rights-assignment screens combine, and what governs Payroll Verification? |
+| 11 | Q11 | Employee And User Linking | When is manual linking required instead of automatic? |
+| 12 | Q12 | Database Back Up | What's the trigger, schedule, retention, and restore flow? |
 
-**Confirmed cross-references, not open items:** SM-051 corroborates `AttendanceLeave_BRD.md`'s Shift Group findings from a third independent source; SM-052 flags new branch-level evidence bearing on that same BRD's still-open Q5, without editing it; SM-061 corroborates the Process Module BRD's TDS open items from a second source; SM-072 corroborates (without resolving) `AttendanceLeave_BRD_Questionnaire.html` Q12; SM-095 confirms Company Allocation as explicitly out of scope for Muziris.
+**Confirmed cross-references, not open items:** SM-031 resolves former Q2 by scope redirect to `AttendanceLeave_BRD.md` (AL-070, AL-031, AL-060/061), leaving that module's own Q18 and Q20 as the actual remaining open threads, not duplicated here; SM-051 corroborates `AttendanceLeave_BRD.md`'s Shift Group findings from a third independent source; SM-052 flags new branch-level evidence bearing on that same BRD's still-open Q5, without editing it; SM-061 corroborates the Process Module BRD's TDS open items from a second source; SM-072 corroborates (without resolving) `AttendanceLeave_BRD_Questionnaire.html` Q12; SM-095 confirms Company Allocation as explicitly out of scope for Muziris.
 
 ## 17. Source References
 
 - `07_System_Management.md` — primary source for this module (Settings and User Rights Management sections only; Masters section excluded per the document's own supersession note — see §2.2).
 - `07_Masters.md` / `Masters_BRD_Questionnaire.html` — the authoritative Masters BRD this document defers to; not touched by this pass.
 - `ProcessModule_BRD.md` — cross-referenced for the LOP formula denominator (§11.1) and TDS (§10) corroborations.
-- `AttendanceLeave_BRD.md` — cross-referenced for Shift Group (§9.1), Attendance & Leave Group per-type rules (§7.1), and Leave Year Start Month (§11) corroborations.
-- `CompensatoryOffs_BRD.md` — cross-referenced for the Attendance & Leave Group carry-forward/encashment/expiry gap (§7.1).
-- `SystemManagement_BRD_Questionnaire.html` — the live, numbered list of the 13 open questions this document references; regenerate this BRD if further answers are recorded there.
+- `AttendanceLeave_BRD.md` — cross-referenced for Shift Group (§9.1), Leave Year Start Month (§11) corroborations, and as the actual owner of the per-leave-type carry-forward/encashment/expiry rules this document's own Q2 (now resolved, SM-031) had been expected to define: AL-070 (EL/OH carry-forward), AL-031 (Holiday Comp Off), AL-060/061 (encashment formula), and that module's own still-open Q18/Q20.
+- `CompensatoryOffs_BRD.md` — cross-referenced for the Attendance & Leave Group carry-forward/encashment/expiry gap (§7.1), now resolved here by redirect (SM-031) to `AttendanceLeave_BRD.md`.
+- Direct stakeholder statement (not accompanying any screenshot) confirming SM-031.
+- `SystemManagement_BRD_Questionnaire.html` — the live, numbered list of the 12 open questions this document references (renumbered after Q2's resolution); regenerate this BRD if further answers are recorded there.
 
 ---
 
